@@ -1,0 +1,147 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+:root {
+    --pet-orange: #ff7e21; /* Màu cam chủ đạo */
+    --pet-dark: #2d2d2d;
+}
+
+/* Kiểu nút cam */
+.btn-pet {
+    background-color: var(--pet-orange);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+    .btn-pet:hover {
+        background-color: #e66a10;
+        color: white;
+    }
+
+/* Input style */
+.form-control-pet {
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+/* Login Split Layout */
+.login-card {
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    min-height: 600px;
+}
+
+.login-left {
+    background-color: var(--pet-orange);
+    color: white;
+    padding: 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.login-right {
+    background: white;
+    padding: 50px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Register Steps */
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.step-item {
+    text-align: center;
+    color: #ccc;
+    font-weight: 500;
+}
+
+    .step-item.active {
+        color: var(--pet-orange);
+    }
+
+.step-number {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px;
+}
+
+.active .step-number {
+    background: var(--pet-orange);
+    color: white;
+}
+
+/* --- QUẢN LÝ KÍCH THƯỚC HÌNH ẢNH --- */
+
+/* 1. Logo trên thanh Navbar (Layout) */
+.nav-logo {
+    height: 40px;
+    width: auto;
+    object-fit: contain; /* Đảm bảo ảnh không bị méo */
+}
+
+/* 2. Logo trên form Đăng nhập & Đăng ký */
+.auth-logo {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+/* 3. Icon mạng xã hội (Google, Apple...) */
+.social-icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* 4. Ảnh chú chó/mèo to ở bên trái trang Login */
+.login-pet-img {
+    max-width: 100%;
+    height: 450px;
+    object-fit: cover; /* Cắt cúp mượt mà nếu ảnh không đúng tỉ lệ */
+    border-radius: 15px; /* Bo góc nhẹ cho ảnh */
+}

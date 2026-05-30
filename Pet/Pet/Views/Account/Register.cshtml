@@ -1,0 +1,77 @@
+﻿@model PetSocial.ViewModels.RegisterVM
+@{
+    Layout = null; // Hiển thị trang độc lập
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <title>Register - PetSocial</title>
+</head>
+<body style="background-color: #fdfdfd;">
+    <div class="container py-5">
+        <div class="text-center mb-4">
+            <img src="~/images/logo.jpg" alt="Logo" style="height: 100px;">
+            <h5 class="mt-2 fw-bold">PetSocial</h5>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">Create your account</h3>
+                    <p class="text-muted">Join thousands of pet owners sharing their joy every day.</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small fw-bold text-center mb-3"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Full Name</label>
+                        <input asp-for="FullName" class="form-control form-control-pet" placeholder="Alex Johnson" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Email Address</label>
+                        <input asp-for="Email" class="form-control form-control-pet" placeholder="alex@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control form-control-pet" placeholder="0901234567" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Password</label>
+                        <input asp-for="Password" type="password" class="form-control form-control-pet" placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold">Confirm Password</label>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control form-control-pet" placeholder="Nhập lại mật khẩu" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-pet w-100 mb-3">Đăng Ký <i class="bi bi-arrow-right"></i></button>
+
+                    <div class="text-center small text-muted">
+                        Bạn đã có tài khoản? <a asp-action="Login" class="text-decoration-none text-orange fw-bold" style="color: var(--pet-orange)">Log in</a>
+                    </div>
+                </form>
+
+                <p class="text-center small text-muted mt-5" style="font-size: 0.75rem;">
+                    By joining, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. Let's make the world a pet-friendly place!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

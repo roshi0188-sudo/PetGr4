@@ -1,0 +1,76 @@
+﻿@model PetSocial.ViewModels.LoginVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <title>Login - PetSocial</title>
+</head>
+<body class="d-flex align-items-center" style="min-height: 100vh; background-color: #f4f7f6;">
+    <div class="container">
+        <div class="login-card mx-auto" style="max-width: 1000px;">
+            <div class="login-left d-none d-md-flex">
+                <img src="~/images/login.jpg" alt="Pets" class="img-fluid mb-4" style="max-height: 450px;">
+                <h2 class="fw-bold mt-3">Every pet has a story.</h2>
+                <p class="px-4">Join the community where whiskers, paws, and tails take center stage.</p>
+            </div>
+
+            <div class="login-right">
+                <div class="text-center mb-4">
+                    <img src="~/images/logo.jpg" alt="Logo" style="height: 100px;">
+                    <h3 class="fw-bold mt-3">PetSocial</h3>
+                    <p class="text-muted">Welcome back, animal lover!</p>
+                </div>
+
+                <form asp-action="Login" method="post" asp-route-returnurl="@ViewData["ReturnUrl"]">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Email or Username</label>
+                        <input asp-for="Email" class="form-control form-control-pet" placeholder="pawesome_owner@example.com" />
+                    </div>
+
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-label small fw-bold">Password</label>
+                            <a href="#" class="small text-decoration-none text-muted">Quên mật khẩu</a>
+                        </div>
+                        <input asp-for="Password" type="password" class="form-control form-control-pet" placeholder="••••••••" />
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label class="form-check-label small text-muted">Nhớ mật khẩu</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-pet w-100 shadow-sm">Đăng Nhập</button>
+
+                    <div class="text-center my-4">
+                        <span class="text-muted small">Or continue with</span>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-light text-dark w-100 border py-2 small fw-bold">
+                                <img src="~/images/google.jpg" width="30" class="me-1"> Google
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-outline-light text-dark w-100 border py-2 small fw-bold">
+                                <img src="~/images/ins.jpg" width="30" class="me-1"> Instagram
+                            </button>
+                        </div>
+                    </div>`
+
+                    <div class="text-center mt-4 small">
+                        Bạn chưa có tài khoản? <a asp-action="Register" class="fw-bold text-decoration-none" style="color: var(--pet-orange)">Join PetSocial today</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
