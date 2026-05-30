@@ -20,5 +20,9 @@ namespace PetSocial.ViewModels
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp.")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Display(Name = "Số điện thoại")]
+        [RegularExpression(@"^(0[3|5|7|8|9])+([0-9]{8})$", ErrorMessage = "Số điện thoại không hợp lệ (Phải có 10 số và bắt đầu bằng 0).")]
+        public string? PhoneNumber { get; set; }
     }
 }

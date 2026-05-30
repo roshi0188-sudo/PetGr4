@@ -1,8 +1,35 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="row justify-content-center text-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold text-primary mb-3">🐶 Chào mừng đến với PetSocial</h1>
+            <p class="lead text-muted mb-5">
+                Mạng xã hội thu nhỏ dành riêng cho những người yêu thú cưng. Nơi bạn có thể chia sẻ khoảnh khắc, kết bạn và giao lưu kinh nghiệm chăm sóc các bé.
+            </p>
+
+            @if (!User.Identity!.IsAuthenticated)
+            {
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4 gap-3">Tham gia ngay</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">Đăng nhập</a>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-success mt-4" role="alert">
+                    <h4 class="alert-heading">Đăng nhập thành công!</h4>
+                    <p>Bạn đang đăng nhập với tư cách: <strong>@User.Identity.Name</strong></p>
+                    <hr>
+                    <p class="mb-0">Hãy bắt đầu khám phá và chia sẻ những bài viết mới nhất về thú cưng của bạn.</p>
+                </div>
+
+                <div class="mt-4">
+                    <a asp-controller="Profile" asp-action="Index" class="btn btn-primary px-4">Đến trang cá nhân</a>
+                </div>
+            }
+        </div>
+    </div>
 </div>

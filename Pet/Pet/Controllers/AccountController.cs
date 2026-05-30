@@ -36,7 +36,8 @@ namespace PetSocial.Controllers
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    FullName = model.FullName
+                    FullName = model.FullName,
+                    PhoneNumber = model.PhoneNumber
                 };
 
                 // CreateAsync sẽ tự động dùng BCryptPasswordHasher ta đã cấu hình

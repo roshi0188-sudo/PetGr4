@@ -58,3 +58,9 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\splash.css
+wwwroot\js\splash.js
+wwwroot\images\logo.jpg
+wwwroot\images\google.jpg
+wwwroot\images\ins.jpg
+wwwroot\images\login.jpg

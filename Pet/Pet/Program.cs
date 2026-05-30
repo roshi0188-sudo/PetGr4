@@ -27,6 +27,12 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => {
 // Ghi đè Password Hasher mặc định bằng BCrypt
 builder.Services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher>();
 
+// Thêm cấu hình này để hệ thống không ép buộc Cookie phải qua HTTPS khi chạy ở localhost
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+
 // 3. Cấu hình Cookie (Thay thế cho Session Auth truyền thống)
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -63,6 +69,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Splash}/{id?}");
 
 app.Run();
