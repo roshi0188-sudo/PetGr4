@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin PetSocial</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+            :root {
+                --pet-orange: #ff7e21;
+                --bg-light: #f8fafc;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: var(--bg-light);
+                margin: 0;
+                padding: 0;
+            }
+
+            .dashboard-wrapper {
+                display: flex;
+                min-height: 100vh;
+            }
+
+            .admin-sidebar {
+                width: 260px;
+                background: #ffffff;
+                border-right: 1px solid #e2e8f0;
+                flex-shrink: 0;
+                padding: 24px 16px;
+                display: flex;
+                flex-direction: column; /* Đẩy nút Đăng xuất xuống đáy */
+            }
+
+            .main-content {
+                flex-grow: 1;
+                padding: 40px;
+                background-color: var(--bg-light);
+                overflow-y: auto;
+                height: 100vh;
+            }
+
+            /* Định dạng menu */
+            .sidebar-brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding-left: 12px;
+                margin-bottom: 40px;
+            }
+
+            .nav-menu {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .nav-menu-item {
+                margin-bottom: 8px;
+            }
+
+            .nav-menu-link {
+                display: flex;
+                align-items: center;
+                padding: 12px 16px;
+                color: #64748b;
+                text-decoration: none;
+                font-weight: 500;
+                border-radius: 12px;
+                transition: all 0.2s ease;
+            }
+
+                .nav-menu-link:hover {
+                    background-color: #f1f5f9;
+                    color: #0f172a;
+                }
+
+                .nav-menu-link.active {
+                    background-color: #ffedd5;
+                    color: var(--pet-orange);
+                    font-weight: 600;
+                }
+    </style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-paw text-warning fs-3"></i>
+                <h4 class="fw-bold mb-0 text-dark">PetSocial</h4>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link active" href="/Admin/Dashboard"><i class="fas fa-gauge me-3"></i>Dashboard</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="#"><i class="fas fa-users me-3"></i>User Management</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link" href="#"><i class="fas fa-paw me-3"></i>Pet Profiles</a>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto;">
+                <hr class="text-muted opacity-25">
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="nav-menu-link text-danger w-100 text-start" style="background: transparent; border: none;">
+                        <i class="fas fa-sign-out-alt me-3"></i>Đăng xuất
+                    </button>
+                </form>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

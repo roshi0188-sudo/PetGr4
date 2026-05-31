@@ -67,6 +67,12 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+// 1. Thêm Route cho Area Admin
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Splash}/{id?}");

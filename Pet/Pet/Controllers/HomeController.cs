@@ -10,6 +10,21 @@ namespace PetSocial.Controllers
         }
         public IActionResult Index()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    // Đá sang khu vực của Admin
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                }
+                else
+                {
+                    // Đá sang Bảng tin của User
+                    return RedirectToAction("Index", "Post");
+                }
+            }
+
+            // Nếu chưa đăng nhập thì hiện Landing Page
             return View();
         }
     }
