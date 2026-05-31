@@ -1,6 +1,12 @@
 wwwroot\css\site.css
+wwwroot\css\splash.css
 wwwroot\favicon.ico
+wwwroot\images\google.jpg
+wwwroot\images\ins.jpg
+wwwroot\images\login.jpg
+wwwroot\images\logo.jpg
 wwwroot\js\site.js
+wwwroot\js\splash.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
@@ -58,9 +64,3 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
-wwwroot\css\splash.css
-wwwroot\js\splash.js
-wwwroot\images\logo.jpg
-wwwroot\images\google.jpg
-wwwroot\images\ins.jpg
-wwwroot\images\login.jpg
