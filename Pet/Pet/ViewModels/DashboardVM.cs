@@ -1,4 +1,4 @@
-﻿namespace PetSocial.ViewModels
+namespace PetSocial.ViewModels
 {
     public class DashboardVM
     {

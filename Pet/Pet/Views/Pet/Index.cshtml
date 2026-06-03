@@ -1,0 +1,204 @@
+@using System.Collections.Generic
+@using System.Linq
+@model IEnumerable<PetSocial.Models.PetModule>
+
+@{
+    var isCommunity = ViewBag.IsCommunity as bool? ?? false;
+    var currentUserId = ViewBag.CurrentUserId as string;
+    var canManageAllPets = ViewBag.CanManageAllPets as bool? ?? false;
+    var pageAction = isCommunity ? "Community" : "Index";
+
+    ViewData["Title"] = isCommunity ? "Cộng đồng thú cưng" : "Thú cưng của tôi";
+    ViewData["FullWidth"] = true;
+    ViewData["ActiveMenu"] = isCommunity ? "PetCommunity" : "Pet";
+
+    var pets = Model?.ToList() ?? new List<PetSocial.Models.PetModule>();
+    var searchString = ViewBag.SearchString as string;
+    var ageRange = ViewBag.AgeRange as string;
+    var gender = ViewBag.Gender as string;
+    var personality = ViewBag.Personality as string;
+    var breedFilter = ViewBag.Breed as string;
+    var totalPets = ViewBag.TotalPetCount as int? ?? pets.Count;
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+}
+
+<section class="pet-page pet-directory-page">
+    <div class="pet-main pet-directory-main">
+        <div class="pet-directory-header">
+            <div>
+                <h1>@(isCommunity ? "Cộng đồng thú cưng" : "Thú cưng của tôi")</h1>
+                <p>@(isCommunity ? "Xem nhanh các hồ sơ thú cưng trong toàn hệ thống PetSocial." : "Tìm kiếm, quản lý hồ sơ và cập nhật thông tin thú cưng của bạn.")</p>
+            </div>
+
+            <div class="pet-directory-header-actions">
+                <a asp-action="Create" class="pet-add-button">
+                    <i class="fa fa-paw"></i>
+                    Thêm thú cưng
+                </a>
+
+                <div class="pet-total-card">
+                    <span class="pet-total-icon"><i class="fa fa-paw"></i></span>
+                    <span class="pet-total-copy">
+                        <strong>@totalPets Hồ sơ</strong>
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <form method="get" asp-action="@pageAction" class="pet-filter-panel">
+            <div class="pet-filter-row">
+                <div class="pet-filter-field pet-filter-search">
+                    <label>Tìm kiếm</label>
+                    <div>
+                        <i class="fa fa-search"></i>
+                        <input type="text" name="searchString" value="@searchString" placeholder="Nhập tên, loài hoặc giống thú cưng..." />
+                    </div>
+                </div>
+
+                <div class="pet-filter-field">
+                    <label>Độ tuổi</label>
+                    <select name="ageRange" aria-label="Lọc theo độ tuổi">
+                        <option value="">Mọi độ tuổi</option>
+                        <option value="under1" selected="@(ageRange == "under1" ? "selected" : null)">Dưới 1 tuổi</option>
+                        <option value="1to3" selected="@(ageRange == "1to3" ? "selected" : null)">1 - 3 tuổi</option>
+                        <option value="over3" selected="@(ageRange == "over3" ? "selected" : null)">Trên 3 tuổi</option>
+                    </select>
+                </div>
+
+                <div class="pet-filter-field">
+                    <label>Giới tính</label>
+                    <select name="gender" aria-label="Lọc theo giới tính">
+                        <option value="">Tất cả</option>
+                        <option value="Đực" selected="@(gender == "Đực" ? "selected" : null)">Đực</option>
+                        <option value="Cái" selected="@(gender == "Cái" ? "selected" : null)">Cái</option>
+                    </select>
+                </div>
+
+                <div class="pet-filter-field">
+                    <label>Giống</label>
+                    <div>
+                        <i class="fa fa-star"></i>
+                        <input type="text" name="breed" value="@breedFilter" placeholder="Ví dụ: Corgi, Poodle..." />
+                    </div>
+                </div>
+
+                <div class="pet-filter-field pet-filter-personality">
+                    <label>Tính cách</label>
+                    <select name="personality" aria-label="Lọc theo tính cách">
+                        <option value="">Tất cả tính cách</option>
+                        <option value="Năng động" selected="@(personality == "Năng động" ? "selected" : null)">Năng động</option>
+                        <option value="Dễ thương" selected="@(personality == "Dễ thương" ? "selected" : null)">Dễ thương</option>
+                        <option value="Thân thiện" selected="@(personality == "Thân thiện" ? "selected" : null)">Thân thiện</option>
+                        <option value="Tìm bạn" selected="@(personality == "Tìm bạn" ? "selected" : null)">Tìm bạn</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="pet-apply-button">Áp dụng lọc</button>
+            </div>
+        </form>
+
+        @if (!pets.Any())
+        {
+            <div class="pet-empty pet-directory-empty">
+                <div class="pet-empty-icon"><i class="fa fa-paw"></i></div>
+                <h2>Chưa có hồ sơ phù hợp</h2>
+                <p>Hãy thử đổi bộ lọc hoặc thêm hồ sơ thú cưng đầu tiên cho cộng đồng.</p>
+                <a asp-action="Create" class="pet-add-button">
+                    <i class="fa fa-plus"></i>
+                    Thêm thú cưng
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="pet-grid">
+                @foreach (var pet in pets)
+                {
+                    var imageUrl = string.IsNullOrWhiteSpace(pet.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(pet.AvatarUrl);
+                    var species = string.IsNullOrWhiteSpace(pet.Species) ? "Chưa cập nhật" : pet.Species;
+                    var location = string.IsNullOrWhiteSpace(pet.Location) ? "PetSocial" : pet.Location;
+                    var cardPersonality = string.IsNullOrWhiteSpace(pet.Personality) ? "Thân thiện" : pet.Personality;
+                    var cardWeight = pet.Weight.HasValue ? $"{pet.Weight:0.#} kg" : "Chưa cập nhật";
+                    var cardGender = string.IsNullOrWhiteSpace(pet.Gender) ? "Chưa cập nhật" : pet.Gender;
+                    var canManagePet = canManageAllPets || pet.UserId == currentUserId;
+                    var ownerName = !string.IsNullOrWhiteSpace(pet.User?.FullName) ? pet.User.FullName : pet.User?.Email ?? pet.User?.UserName ?? "PetSocial";
+                    var ownerAvatarUrl = string.IsNullOrWhiteSpace(pet.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(pet.User.AvatarUrl);
+
+                    <article class="pet-card">
+                        <a asp-action="Details" asp-route-id="@pet.Id" class="pet-card-photo">
+                            <img src="@imageUrl" alt="Ảnh của @pet.Name" />
+                        </a>
+
+                        <div class="pet-card-body">
+                            <div class="pet-card-heading">
+                                <h2>@pet.Name</h2>
+                                <span><i class="fa fa-birthday-cake"></i> @pet.Age tuổi</span>
+                            </div>
+
+                            @if (!isCommunity)
+                            {
+                                <a asp-controller="Profile" asp-action="Index" asp-route-id="@pet.UserId" class="pet-card-owner">
+                                    <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
+                                    <span>Người đăng: <strong>@ownerName</strong></span>
+                                </a>
+                            }
+
+                            <div class="pet-card-location">
+                                <span><i class="fa fa-paw"></i> @species</span>
+                                <span><i class="fa fa-map-marker"></i> @location</span>
+                            </div>
+
+                            <div class="pet-card-traits">
+                                <span><i class="fa fa-heart"></i><strong>@cardPersonality</strong></span>
+                                <span><i class="fa fa-balance-scale"></i><strong>@cardWeight</strong></span>
+                                <span><i class="fa fa-venus-mars"></i><strong>@cardGender</strong></span>
+                            </div>
+
+                            <div class="pet-card-actions">
+                                <a asp-action="Details" asp-route-id="@pet.Id" class="pet-view-button">
+                                    <i class="fa fa-eye"></i>
+                                    Xem chi tiết
+                                </a>
+                                @if (isCommunity)
+                                {
+                                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@pet.UserId" class="pet-card-owner pet-card-owner-action" aria-label="Xem tài khoản @ownerName">
+                                        <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
+                                        <span><strong>@ownerName</strong></span>
+                                    </a>
+                                }
+                                else if (canManagePet)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@pet.Id" class="pet-icon-button" aria-label="Sửa hồ sơ @pet.Name">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@pet.Id" class="pet-icon-button pet-icon-danger" aria-label="Xóa hồ sơ @pet.Name">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            @if (totalPages > 1)
+            {
+                <nav class="pet-pagination" aria-label="Phân trang thú cưng">
+                    @for (var i = 1; i <= totalPages; i++)
+                    {
+                        <a asp-action="@pageAction"
+                           asp-route-searchString="@searchString"
+                           asp-route-ageRange="@ageRange"
+                           asp-route-gender="@gender"
+                           asp-route-personality="@personality"
+                           asp-route-breed="@breedFilter"
+                           asp-route-page="@i"
+                           class="@(i == currentPage ? "active" : "")">@i</a>
+                    }
+                </nav>
+            }
+        }
+    </div>
+</section>

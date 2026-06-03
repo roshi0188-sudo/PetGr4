@@ -23,6 +23,10 @@ namespace PetSocial.Data
             builder.Entity<AppUser>().ToTable("Users");
             builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("Roles");
 
+            builder.Entity<PetModule>()
+                .Property(p => p.Weight)
+                .HasPrecision(5, 2);
+
             // 2. Mối quan hệ bảng Comment
             builder.Entity<Comment>()
                 .HasOne(c => c.Post)

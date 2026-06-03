@@ -1,0 +1,65 @@
+@model PetSocial.Models.PetModule
+
+@{
+    ViewData["Title"] = "Xóa hồ sơ thú cưng";
+    ViewData["FullWidth"] = true;
+    ViewData["ActiveMenu"] = "Pet";
+    var imageUrl = string.IsNullOrWhiteSpace(Model.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.AvatarUrl);
+    var species = string.IsNullOrWhiteSpace(Model.Species) ? "Chưa cập nhật" : Model.Species;
+    var breed = string.IsNullOrWhiteSpace(Model.Breed) ? species : Model.Breed;
+    var gender = string.IsNullOrWhiteSpace(Model.Gender) ? "Chưa cập nhật" : Model.Gender;
+    var furColor = string.IsNullOrWhiteSpace(Model.FurColor) ? "Chưa cập nhật" : Model.FurColor;
+    var weight = Model.Weight.HasValue ? $"{Model.Weight:0.#} kg" : "Chưa cập nhật";
+    var personality = string.IsNullOrWhiteSpace(Model.Personality) ? "Chưa cập nhật" : Model.Personality;
+    var hobbies = string.IsNullOrWhiteSpace(Model.Hobbies) ? "Chưa cập nhật" : Model.Hobbies;
+    var location = string.IsNullOrWhiteSpace(Model.Location) ? "PetSocial" : Model.Location;
+    var description = string.IsNullOrWhiteSpace(Model.Description) ? "Chưa có mô tả thêm." : Model.Description;
+}
+
+<section class="pet-page pet-delete-page">
+    <div class="pet-main pet-delete-main">
+        <div class="pet-delete-card">
+            <div class="pet-delete-photo">
+                <img src="@imageUrl" alt="Ảnh của @Model.Name" />
+            </div>
+
+            <div class="pet-delete-content">
+                <span class="pet-delete-eyebrow">Xác nhận xóa</span>
+                <h1>Xóa hồ sơ @Model.Name?</h1>
+                <p>Hành động này sẽ xóa hồ sơ thú cưng khỏi hệ thống. Vui lòng kiểm tra kỹ thông tin bên dưới trước khi xác nhận.</p>
+
+                <div class="pet-delete-summary">
+                    <div><i class="fa fa-paw"></i><small>Loài</small><strong>@species</strong></div>
+                    <div><i class="fa fa-star"></i><small>Giống</small><strong>@breed</strong></div>
+                    <div><i class="fa fa-birthday-cake"></i><small>Tuổi</small><strong>@Model.Age tuổi</strong></div>
+                    <div><i class="fa fa-venus-mars"></i><small>Giới tính</small><strong>@gender</strong></div>
+                    <div><i class="fa fa-map-marker"></i><small>Vị trí</small><strong>@location</strong></div>
+                    <div><i class="fa fa-balance-scale"></i><small>Cân nặng</small><strong>@weight</strong></div>
+                    <div><i class="fa fa-paint-brush"></i><small>Màu lông</small><strong>@furColor</strong></div>
+                    <div><i class="fa fa-heart"></i><small>Tính cách</small><strong>@personality</strong></div>
+                    <div><i class="fa fa-gamepad"></i><small>Sở thích</small><strong>@hobbies</strong></div>
+                </div>
+
+                <div class="pet-delete-description">
+                    <i class="fa fa-align-left"></i>
+                    <div>
+                        <small>Mô tả</small>
+                        <p>@description</p>
+                    </div>
+                </div>
+
+                <div class="pet-delete-warning">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    Kiểm tra kỹ trước khi xác nhận xóa.
+                </div>
+
+                <form asp-action="Delete" method="post" class="pet-delete-actions">
+                    <input type="hidden" asp-for="Id" />
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="pet-delete-cancel">Hủy</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="pet-delete-edit">Sửa lại</a>
+                    <button type="submit" class="pet-delete-submit"><i class="fa fa-trash"></i> Xóa hồ sơ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
