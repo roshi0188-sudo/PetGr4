@@ -15,10 +15,16 @@
             <i class="fa fa-home"></i>
             <span>Trang chủ</span>
         </a>
+
+        <a asp-controller="Pet" asp-action="Community" class="@(activeMenu == "PetCommunity" ? "active" : "")">
+            <i class="fa fa-users"></i>
+            <span>Cộng đồng thú cưng</span>
+        </a>
         <a asp-controller="Pet" asp-action="Index" class="@(activeMenu == "Pet" ? "active" : "")">
             <i class="fa fa-paw"></i>
-            <span>Thú cưng</span>
+            <span>Thú cưng của tôi</span>
         </a>
+        
         <a asp-controller="Profile" asp-action="Index" class="@(activeMenu == "Profile" ? "active" : "")">
             <i class="fa fa-user"></i>
             <span>Hồ sơ cá nhân</span>

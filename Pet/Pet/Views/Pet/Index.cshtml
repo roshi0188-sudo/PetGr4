@@ -3,9 +3,14 @@
 @model IEnumerable<PetSocial.Models.PetModule>
 
 @{
-    ViewData["Title"] = "Danh sách thú cưng";
+    var isCommunity = ViewBag.IsCommunity as bool? ?? false;
+    var currentUserId = ViewBag.CurrentUserId as string;
+    var canManageAllPets = ViewBag.CanManageAllPets as bool? ?? false;
+    var pageAction = isCommunity ? "Community" : "Index";
+
+    ViewData["Title"] = isCommunity ? "Cộng đồng thú cưng" : "Thú cưng của tôi";
     ViewData["FullWidth"] = true;
-    ViewData["ActiveMenu"] = "Pet";
+    ViewData["ActiveMenu"] = isCommunity ? "PetCommunity" : "Pet";
 
     var pets = Model?.ToList() ?? new List<PetSocial.Models.PetModule>();
     var searchString = ViewBag.SearchString as string;
@@ -22,8 +27,8 @@
     <div class="pet-main pet-directory-main">
         <div class="pet-directory-header">
             <div>
-                <h1>Danh sách thú cưng</h1>
-                <p>Tìm kiếm, quản lý hồ sơ và xem nhanh thông tin các bé thú cưng trong cộng đồng.</p>
+                <h1>@(isCommunity ? "Cộng đồng thú cưng" : "Thú cưng của tôi")</h1>
+                <p>@(isCommunity ? "Xem nhanh các hồ sơ thú cưng trong toàn hệ thống PetSocial." : "Tìm kiếm, quản lý hồ sơ và cập nhật thông tin thú cưng của bạn.")</p>
             </div>
 
             <div class="pet-directory-header-actions">
@@ -42,7 +47,7 @@
             </div>
         </div>
 
-        <form method="get" asp-action="Index" class="pet-filter-panel">
+        <form method="get" asp-action="@pageAction" class="pet-filter-panel">
             <div class="pet-filter-row">
                 <div class="pet-filter-field pet-filter-search">
                     <label>Tìm kiếm</label>
@@ -117,6 +122,9 @@
                     var cardPersonality = string.IsNullOrWhiteSpace(pet.Personality) ? "Thân thiện" : pet.Personality;
                     var cardWeight = pet.Weight.HasValue ? $"{pet.Weight:0.#} kg" : "Chưa cập nhật";
                     var cardGender = string.IsNullOrWhiteSpace(pet.Gender) ? "Chưa cập nhật" : pet.Gender;
+                    var canManagePet = canManageAllPets || pet.UserId == currentUserId;
+                    var ownerName = !string.IsNullOrWhiteSpace(pet.User?.FullName) ? pet.User.FullName : pet.User?.Email ?? pet.User?.UserName ?? "PetSocial";
+                    var ownerAvatarUrl = string.IsNullOrWhiteSpace(pet.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(pet.User.AvatarUrl);
 
                     <article class="pet-card">
                         <a asp-action="Details" asp-route-id="@pet.Id" class="pet-card-photo">
@@ -128,6 +136,14 @@
                                 <h2>@pet.Name</h2>
                                 <span><i class="fa fa-birthday-cake"></i> @pet.Age tuổi</span>
                             </div>
+
+                            @if (!isCommunity)
+                            {
+                                <a asp-controller="Profile" asp-action="Index" asp-route-id="@pet.UserId" class="pet-card-owner">
+                                    <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
+                                    <span>Người đăng: <strong>@ownerName</strong></span>
+                                </a>
+                            }
 
                             <div class="pet-card-location">
                                 <span><i class="fa fa-paw"></i> @species</span>
@@ -145,12 +161,22 @@
                                     <i class="fa fa-eye"></i>
                                     Xem chi tiết
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@pet.Id" class="pet-icon-button" aria-label="Sửa hồ sơ @pet.Name">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@pet.Id" class="pet-icon-button pet-icon-danger" aria-label="Xóa hồ sơ @pet.Name">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+                                @if (isCommunity)
+                                {
+                                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@pet.UserId" class="pet-card-owner pet-card-owner-action" aria-label="Xem tài khoản @ownerName">
+                                        <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
+                                        <span><strong>@ownerName</strong></span>
+                                    </a>
+                                }
+                                else if (canManagePet)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@pet.Id" class="pet-icon-button" aria-label="Sửa hồ sơ @pet.Name">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@pet.Id" class="pet-icon-button pet-icon-danger" aria-label="Xóa hồ sơ @pet.Name">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </article>
@@ -162,7 +188,7 @@
                 <nav class="pet-pagination" aria-label="Phân trang thú cưng">
                     @for (var i = 1; i <= totalPages; i++)
                     {
-                        <a asp-action="Index"
+                        <a asp-action="@pageAction"
                            asp-route-searchString="@searchString"
                            asp-route-ageRange="@ageRange"
                            asp-route-gender="@gender"

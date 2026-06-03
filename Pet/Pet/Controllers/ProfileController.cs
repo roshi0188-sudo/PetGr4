@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PetSocial.Models;
 using PetSocial.ViewModels;
 
@@ -19,10 +20,17 @@ namespace PetSocial.Controllers
         }
 
         // GET: /Profile/Index
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? id = null)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return NotFound();
+
+            var user = string.IsNullOrWhiteSpace(id)
+                ? currentUser
+                : await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+
             if (user == null) return NotFound();
+            ViewBag.IsOwnProfile = user.Id == currentUser.Id;
 
             return View(user);
         }
