@@ -1,0 +1,85 @@
+@model PetSocial.Models.PetModule
+
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["FullWidth"] = true;
+    ViewData["ActiveMenu"] = "Pet";
+    var imageUrl = string.IsNullOrWhiteSpace(Model.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.AvatarUrl);
+    var breed = string.IsNullOrWhiteSpace(Model.Breed) ? Model.Species : Model.Breed;
+    var gender = string.IsNullOrWhiteSpace(Model.Gender) ? "Chưa cập nhật" : Model.Gender;
+    var personality = string.IsNullOrWhiteSpace(Model.Personality) ? "Thân thiện" : Model.Personality;
+    var hasLocation = !string.IsNullOrWhiteSpace(Model.Location);
+    var location = hasLocation ? Model.Location! : "Chưa cập nhật";
+    var mapQuery = hasLocation ? System.Net.WebUtility.UrlEncode(Model.Location) : string.Empty;
+    var mapUrl = hasLocation ? $"https://www.google.com/maps?q={mapQuery}&output=embed" : string.Empty;
+    var mapLink = hasLocation ? $"https://www.google.com/maps/search/?api=1&query={mapQuery}" : "#";
+}
+
+<section class="pet-page pet-detail-page">
+    <div class="pet-main pet-detail-main">
+        <div class="pet-detail-header">
+            <a asp-action="Index" class="pet-detail-back"><i class="fa fa-arrow-left"></i> Quay lại</a>
+            <div class="pet-detail-actions">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="pet-detail-edit"><i class="fa fa-pencil"></i> Sửa</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="pet-detail-delete"><i class="fa fa-trash"></i> Xóa</a>
+            </div>
+        </div>
+
+        <div class="pet-detail-shell">
+            <div class="pet-detail-photo-card">
+                <img src="@imageUrl" alt="Ảnh của @Model.Name" />
+                <span class="pet-detail-status"><i class="fa fa-check-circle"></i> Hồ sơ đang hoạt động</span>
+            </div>
+
+            <div class="pet-detail-right">
+                <div class="pet-detail-hero-card">
+                    <div class="pet-detail-title">
+                        <span class="pet-detail-eyebrow"><i class="fa fa-paw"></i> @Model.Species</span>
+                        <h1>@Model.Name</h1>
+                        <p class="pet-detail-meta"><span><i class="fa fa-star"></i> @breed</span><span><i class="fa fa-birthday-cake"></i> @Model.Age tuổi</span></p>
+                        <p class="pet-detail-location-line"><i class="fa fa-map-marker"></i> @location</p>
+                    </div>
+                    <a href="#" class="pet-detail-connect"><i class="fa fa-heart"></i> Kết nối</a>
+                </div>
+
+                <div class="pet-detail-content">
+                    <div class="pet-detail-tags">
+                        <span><i class="fa fa-tag"></i> #@personality.Replace(" ", "")</span>
+                        <span><i class="fa fa-tag"></i> #@breed.Replace(" ", "")</span>
+                        <span><i class="fa fa-tag"></i> #@Model.Age Tuổi</span>
+                    </div>
+
+                    <div class="pet-detail-stats">
+                        <div><i class="fa fa-paw"></i><small>Loài</small><strong>@Model.Species</strong></div>
+                        <div><i class="fa fa-venus-mars"></i><small>Giới tính</small><strong>@gender</strong></div>
+                        <div><i class="fa fa-balance-scale"></i><small>Cân nặng</small><strong>@(Model.Weight.HasValue ? $"{Model.Weight:0.#} kg" : "Chưa cập nhật")</strong></div>
+                    </div>
+
+                    <div class="pet-detail-info-grid">
+                        <article><h2><i class="fa fa-paint-brush"></i> Màu lông</h2><p>@(string.IsNullOrWhiteSpace(Model.FurColor) ? "Chưa cập nhật" : Model.FurColor)</p></article>
+                        <article><h2><i class="fa fa-heart"></i> Tính cách</h2><p>@personality</p></article>
+                        <article><h2><i class="fa fa-gamepad"></i> Sở thích</h2><p>@(string.IsNullOrWhiteSpace(Model.Hobbies) ? "Chưa cập nhật" : Model.Hobbies)</p></article>
+                        <article><h2><i class="fa fa-map-marker"></i> Vị trí/khu vực</h2><p>@location</p></article>
+                        <article class="wide"><h2><i class="fa fa-align-left"></i> Mô tả thêm</h2><p>@(string.IsNullOrWhiteSpace(Model.Description) ? "Chưa có mô tả thêm." : Model.Description)</p></article>
+
+                        @if (hasLocation)
+                        {
+                            <article class="wide pet-detail-map-card">
+                                <div class="pet-detail-map-heading">
+                                    <h2><i class="fa fa-map"></i> Bản đồ vị trí</h2>
+                                    <a href="@mapLink" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link"></i> Mở bản đồ</a>
+                                </div>
+                                <iframe
+                                    src="@mapUrl"
+                                    loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    title="Bản đồ vị trí @Model.Name">
+                                </iframe>
+                            </article>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

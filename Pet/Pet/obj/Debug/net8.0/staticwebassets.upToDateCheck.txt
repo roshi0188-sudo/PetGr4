@@ -5,6 +5,10 @@ wwwroot\images\google.jpg
 wwwroot\images\ins.jpg
 wwwroot\images\login.jpg
 wwwroot\images\logo.jpg
+wwwroot\images\Pet\cho-corgi.jpg
+wwwroot\images\Pet\e472f8c97d92417f9d1e81c400388dd2.jpg
+wwwroot\images\Pet\meo.jpg
+wwwroot\images\Pet\poodle.jpg
 wwwroot\js\site.js
 wwwroot\js\splash.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
