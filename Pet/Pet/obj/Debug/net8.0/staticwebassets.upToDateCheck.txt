@@ -1,6 +1,7 @@
 wwwroot\css\site.css
 wwwroot\css\splash.css
 wwwroot\favicon.ico
+wwwroot\images\avatars\416bd138-5ebc-4c53-bfbb-f3c3ef93a500_ChatGPT_Image_12_23_27_16_thg_12__2025-removebg-preview.png
 wwwroot\images\google.jpg
 wwwroot\images\ins.jpg
 wwwroot\images\login.jpg
@@ -9,6 +10,7 @@ wwwroot\images\Pet\cho-corgi.jpg
 wwwroot\images\Pet\e472f8c97d92417f9d1e81c400388dd2.jpg
 wwwroot\images\Pet\meo.jpg
 wwwroot\images\Pet\poodle.jpg
+wwwroot\images\posts\fd4be11bd2274eac8a7caf593ae81012.png
 wwwroot\js\site.js
 wwwroot\js\splash.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css

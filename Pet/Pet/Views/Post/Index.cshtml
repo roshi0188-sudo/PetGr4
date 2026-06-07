@@ -1,0 +1,267 @@
+@model IEnumerable<PetSocial.Models.Post>
+
+@{
+    ViewData["Title"] = "Bảng tin - PetPark";
+    // Lấy ID người dùng đăng nhập hiện tại để đối chiếu trạng thái nút tim ban đầu
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet" />
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+    darkMode: "class",
+    theme: {
+    extend: {
+    colors: {
+    'pet-primary': '#944a18',
+    'pet-primary-fixed': '#ffdbc9',
+    'pet-secondary': '#356668',
+    'pet-secondary-container': '#b9ecee',
+    'pet-background': '#fbf9f8',
+    'pet-surface-variant': '#e4e2e2'
+    }
+    }
+    }
+    }
+</script>
+
+<script>
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.follow-btn');
+        if (!btn) return;
+
+        var targetUserId = btn.getAttribute('data-user-id');
+        if (!targetUserId) return;
+
+        var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+        var token = tokenInput ? tokenInput.value : '';
+
+        // Send as form-encoded so default model binding binds primitive parameter
+        const form = new URLSearchParams();
+        form.append('targetUserId', targetUserId);
+
+        fetch('/Post/ToggleFollow', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': token
+            },
+            body: form.toString()
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.success) {
+                btn.innerText = data.isFollowing ? 'Đang theo dõi' : 'Theo dõi';
+                btn.classList.toggle('bg-gray-100', data.isFollowing);
+                btn.classList.toggle('text-pet-primary', !data.isFollowing);
+            }
+        })
+        .catch(err => console.error('Follow error', err));
+    });
+</script>
+
+<style>
+    body {
+    background-color: #fbf9f8;
+    font-family: 'Quicksand', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    }
+
+    .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined';
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    }
+
+    .ambient-shadow {
+    box-shadow: 0 4px 20px rgba(148, 74, 24, 0.05);
+    }
+
+    .ambient-shadow-hover:hover {
+    box-shadow: 0 10px 30px rgba(148, 74, 24, 0.08);
+    }
+</style>
+
+<main class="max-w-3xl mx-auto px-4 py-8">
+    
+    @Html.AntiForgeryToken()
+
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-2">
+            <a asp-controller="Home" asp-action="Index" class="hover:bg-gray-200/70 transition-colors p-2 rounded-full active:scale-95 duration-150 flex items-center justify-center" title="Quay lại trang chủ">
+                <span class="material-symbols-outlined text-gray-700 text-xl font-bold">arrow_back</span>
+            </a>
+            <h2 class="text-xl font-bold text-gray-800 font-['Plus_Jakarta_Sans'] tracking-tight">Bảng tin cộng đồng</h2>
+        </div>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a asp-action="Create" class="inline-flex items-center gap-1.5 bg-[#8f4e00] hover:bg-[#764000] text-white font-bold text-xs px-4 py-2.5 rounded-full transition-all shadow-sm active:scale-95">
+                <span class="material-symbols-outlined text-sm font-bold">add</span> Đăng bài mới
+            </a>
+        }
+    </div>
+
+    <div class="flex flex-col gap-6">
+        @if (!Model.Any())
+        {
+            <div class="bg-white rounded-[24px] p-12 text-center border border-gray-100 ambient-shadow">
+                <span class="material-symbols-outlined text-gray-300 text-6xl mb-3">auto_stories</span>
+                <p class="text-gray-500 font-medium">Chưa có bài viết nào được đăng tải trên PetPark.</p>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-action="Create" class="mt-4 inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-sm">create</span> Viết bài đầu tiên
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            @foreach (var post in Model)
+            {
+                bool isLikedByMe = !string.IsNullOrEmpty(currentUserId) && post.Likes != null && post.Likes.Any(l => l.UserId == currentUserId);
+                int totalLikesCount = post.Likes?.Count ?? 0;
+
+                <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden transition-all duration-200 ambient-shadow ambient-shadow-hover">
+                    
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            @if (!string.IsNullOrWhiteSpace(post.User?.AvatarUrl))
+                            {
+                                <div class="w-11 h-11 rounded-full border-2 border-pet-primary-fixed overflow-hidden bg-gray-50 flex items-center justify-center">
+                                    <img src="@post.User.AvatarUrl" alt="Avatar" class="w-11 h-11 object-cover" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="w-11 h-11 rounded-full border-2 border-pet-primary-fixed overflow-hidden bg-gray-50 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400 text-xl">person</span>
+                                </div>
+                            }
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-800 font-['Plus_Jakarta_Sans'] leading-tight">
+                                    @(post.User?.FullName ?? post.UserId)
+                                </h3>
+                                <p class="text-[11px] text-gray-400 font-medium mt-0.5">
+                                    @post.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                </p>
+                            </div>
+                        </div>
+
+                        @* Follow button removed *@
+
+                        <div class="flex items-center gap-2">
+                            <a asp-action="Details" asp-route-id="@post.Id" class="text-xs font-bold text-pet-secondary bg-pet-secondary-container/40 hover:bg-pet-secondary-container px-3 py-1.5 rounded-full transition-colors" title="Xem chi tiết">
+                                Chi tiết
+                            </a>
+
+                            <a asp-action="Edit" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-full transition-colors" title="Chỉnh sửa bài viết">
+                                <span class="material-symbols-outlined text-lg">edit</span>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="Xóa bài viết">
+                                <span class="material-symbols-outlined text-lg">delete</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pb-4">
+                        <p class="text-sm text-gray-700 font-medium leading-relaxed mb-3 whitespace-pre-line">
+                            @post.Content
+                        </p>
+                        
+                        @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
+                        {
+                            <div class="rounded-xl overflow-hidden max-h-[420px] bg-gray-50 border border-gray-100">
+                                <img src="@post.ImageUrl" alt="Hình ảnh đính kèm" class="w-full h-full object-cover" />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="px-4 py-3 border-t border-gray-50 bg-gray-50/20 flex items-center justify-between">
+                        <div class="flex gap-5">
+                            <button type="button"
+                                    onclick="toggleLike(this)"
+                                    data-post-id="@post.Id"
+                                    class="flex items-center gap-1.5 transition-colors group @(isLikedByMe ? "text-red-500" : "text-gray-500 hover:text-red-500")">
+                                
+                                <span class="material-symbols-outlined text-xl transition-transform group-active:scale-125"
+                                      style="@(isLikedByMe ? "font-variation-settings: 'FILL' 1" : "font-variation-settings: 'FILL' 0")">
+                                    favorite
+                                </span>
+                                <span class="text-xs font-bold font-['Plus_Jakarta_Sans']">
+                                    @(isLikedByMe ? "Đã thích" : "Yêu thích")
+                                </span>
+                                <span class="like-count text-xs font-semibold bg-gray-100 group-hover:bg-red-50 px-1.5 py-0.5 rounded-md transition-colors">
+                                    @totalLikesCount
+                                </span>
+                            </button>
+
+                            <a asp-action="Details" asp-route-id="@post.Id" class="flex items-center gap-1.5 text-gray-500 hover:text-pet-secondary transition-colors">
+                                <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                                <span class="text-xs font-bold font-['Plus_Jakarta_Sans']">Bình luận</span>
+                            </a>
+                        </div>
+                        <button type="button" class="text-gray-400 hover:text-pet-primary transition-colors">
+                            <span class="material-symbols-outlined text-xl">share</span>
+                        </button>
+                    </div>
+
+                </article>
+            }
+        }
+    </div>
+</main>
+
+<script>
+    function toggleLike(button) {
+    const postId = button.getAttribute('data-post-id');
+    if (!postId) return;
+
+    const icon = button.querySelector('.material-symbols-outlined');
+    const text = button.querySelector('span:not(.material-symbols-outlined)');
+    const countSpan = button.querySelector('.like-count');
+
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenInput ? tokenInput.value : '';
+
+    fetch(`/Post/ToggleLike?postId=${postId}`, {
+    method: 'POST',
+    headers: {
+    'RequestVerificationToken': token
+    }
+    })
+    .then(response => {
+    if (response.redirected) {
+    window.location.href = response.url;
+    return;
+    }
+    return response.json();
+    })
+    .then(data => {
+    if (data && data.success) {
+    if (data.isLiked) {
+    icon.style.fontVariationSettings = "'FILL' 1";
+    button.classList.add('text-red-500');
+    button.classList.remove('text-gray-500');
+    if (text) text.innerText = "Đã thích";
+    } else {
+    icon.style.fontVariationSettings = "'FILL' 0";
+    button.classList.remove('text-red-500');
+    button.classList.add('text-gray-500');
+    if (text) text.innerText = "Yêu thích";
+    }
+
+    if (countSpan) {
+    countSpan.innerText = data.count;
+    }
+    }
+    })
+    .catch(error => console.error('Lỗi hệ thống khi truyền nhận dữ liệu Like:', error));
+    }
+</script>

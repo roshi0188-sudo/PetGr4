@@ -1,0 +1,96 @@
+@model PetSocial.Models.Post
+
+@{
+    ViewData["Title"] = "Post Edit";
+}
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+<style>
+    body { background-color: #FFF9F1; }
+    .custom-shadow { box-shadow: 0 12px 20px rgba(45, 52, 54, 0.08); }
+</style>
+
+<div class="max-w-3xl mx-auto px-4 py-8 text-[#161d1f]">
+    <header class="mb-8">
+        <div class="flex items-center gap-2 text-[#8f4e00] mb-2">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span class="text-sm font-semibold uppercase tracking-wider">Cập nhật nội dung</span>
+        </div>
+        <h1 class="text-4xl font-bold font-['Quicksand']">Chỉnh sửa bài viết</h1>
+    </header>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="bg-white rounded-[24px] custom-shadow p-6 md:p-8 space-y-6 border border-[#e8eff1]">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Lỗi validation -->
+        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm font-semibold"></div>
+
+        <!-- Ô nhập nội dung văn bản -->
+        <div class="space-y-2">
+            <label asp-for="Content" class="block text-sm font-bold text-[#161d1f]">Nội dung văn bản</label>
+            <textarea asp-for="Content" class="w-full px-4 py-3 rounded-xl border border-[#dac2b1] focus:ring-2 focus:ring-[#8f4e00] focus:border-[#8f4e00] outline-none text-base resize-none transition-all" rows="6" placeholder="Viết nội dung bài viết thay thế tại đây..."></textarea>
+            <span asp-validation-for="Content" class="text-red-500 text-xs block"></span>
+        </div>
+
+        <!-- Khối hiển thị hình ảnh hiện tại nếu có -->
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-500">Hình ảnh hiện tại</label>
+                <div class="relative w-48 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
+                    <img src="@Model.ImageUrl" class="w-full h-32 object-cover" alt="Hình ảnh hiện tại" />
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <span class="text-white text-xs font-semibold">Ảnh đang hiển thị</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Thay thế hình ảnh mới -->
+        <div class="space-y-2">
+            <label class="block text-sm font-bold text-[#161d1f]">Thay đổi hình ảnh mới (Nếu muốn)</label>
+            <div class="relative group cursor-pointer">
+                <input type="file" name="imageFile" id="imageFile" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewNewImage(event)" />
+                <div class="border-2 border-dashed border-[#dac2b1] rounded-xl p-6 flex flex-col items-center justify-center gap-2 bg-[#f4fafd] hover:bg-[#eef5f7] transition-colors group-hover:border-[#8f4e00]">
+                    <span class="material-symbols-outlined text-2xl text-[#8f4e00]">add_photo_alternate</span>
+                    <p class="text-sm font-semibold">Nhấn để chọn tập tin ảnh mới thay thế</p>
+                </div>
+            </div>
+            
+            <!-- Vùng hiển thị ảnh mới chuẩn bị thay thế -->
+            <div id="new-preview-container" class="hidden mt-3">
+                <p class="text-xs text-green-600 font-semibold mb-1">Ảnh mới được chọn chuẩn bị thay đổi:</p>
+                <img id="new-image-preview" src="#" alt="New Preview" class="w-48 h-32 object-cover rounded-xl border" />
+            </div>
+        </div>
+
+        <!-- Thanh điều hướng nút lưu / hủy -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#e8eff1]">
+            <a asp-action="Index" class="px-6 py-2.5 rounded-full border-2 border-gray-300 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-all">
+                Hủy bỏ
+            </a>
+            <button type="submit" class="px-8 py-2.5 rounded-full bg-[#8f4e00] text-white font-semibold text-sm hover:brightness-110 shadow-md transition-all">
+                Lưu thay đổi
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewNewImage(event) {
+        const input = event.target;
+        const container = document.getElementById('new-preview-container');
+        const img = document.getElementById('new-image-preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                container.classList.remove('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

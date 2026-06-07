@@ -1,0 +1,55 @@
+@model PetSocial.Models.Post
+
+@{
+    ViewData["Title"] = "Post Delete";
+}
+
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+<style>
+    body {
+    background-color: #FFF9F1;
+    }
+</style>
+
+<div class="max-w-2xl mx-auto px-4 py-12 text-[#161d1f]">
+    <div class="bg-white rounded-[24px] border-2 border-red-200 shadow-xl p-6 md:p-8 space-y-6 text-center">
+        
+        <!-- Biểu tượng cảnh báo nguy hiểm nguy hiểm -->
+        <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto animate-pulse">
+            <span class="material-symbols-outlined text-[40px]">warning</span>
+        </div>
+
+        <div class="space-y-2">
+            <h1 class="text-2xl font-bold font-['Quicksand'] text-red-700">Xác nhận xóa bài viết?</h1>
+            <p class="text-sm text-[#544437]">Hành động này không thể hoàn tác. Bài viết của tác giả <strong class="text-gray-800">@(Model.User?.FullName ?? Model.UserId)</strong> sẽ biến mất vĩnh viễn khỏi cộng đồng.</p>
+        </div>
+
+        <!-- Thẻ tóm tắt hiển thị lại bài viết sắp xóa -->
+        <div class="bg-red-50/50 rounded-2xl p-4 text-left border border-red-100 space-y-3">
+            <p class="text-sm text-gray-700 italic line-clamp-3">
+                "@Model.Content"
+            </p>
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <div class="w-24 h-16 rounded-lg overflow-hidden border bg-white">
+                    <img src="@Model.ImageUrl" class="w-full h-full object-cover" alt="Hình ảnh đính kèm" />
+                </div>
+            }
+        </div>
+
+        <!-- Form thực hiện nhấn nút Xóa dữ liệu -->
+        <form asp-action="Delete" method="post" class="flex items-center justify-center gap-4 pt-2">
+            <input type="hidden" asp-for="Id" />
+            
+            <a asp-action="Index" class="px-6 py-2.5 rounded-full border border-gray-300 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-all">
+                Hủy bỏ
+            </a>
+            <button type="submit" class="px-8 py-2.5 rounded-full bg-[#ba1a1a] text-white font-semibold text-sm hover:bg-red-700 shadow-md active:scale-95 transition-all">
+                Xoá
+            </button>
+        </form>
+    </div>
+</div>
