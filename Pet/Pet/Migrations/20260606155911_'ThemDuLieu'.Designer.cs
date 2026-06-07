@@ -12,7 +12,7 @@ using PetSocial.Data;
 namespace PetSocial.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260603012220_ThemDuLieu")]
+    [Migration("20260606155911_'ThemDuLieu'")]
     partial class ThemDuLieu
     {
         /// <inheritdoc />
