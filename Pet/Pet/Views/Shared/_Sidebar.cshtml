@@ -3,61 +3,174 @@
 }
 
 <aside class="pet-sidebar">
-    <a class="pet-sidebar-brand" asp-controller="Home" asp-action="Index">
+
+    <!-- Logo -->
+    <a class="pet-sidebar-brand"
+       asp-controller="Home"
+       asp-action="Index">
+
         <span class="pet-sidebar-logo">
-            <img src="~/images/logo.jpg" alt="PetSocial" />
+            <img src="~/images/logo.jpg"
+                 alt="PetSocial" />
         </span>
+
         <strong>PetSocial</strong>
+
     </a>
 
+    <!-- Menu -->
     <nav class="pet-menu">
-        <a asp-controller="Home" asp-action="Index" class="@(activeMenu == "Home" ? "active" : "")">
+
+        <!-- Trang chủ -->
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="@(activeMenu == "Home" ? "active" : "")">
+
             <i class="fa fa-home"></i>
             <span>Trang chủ</span>
+
         </a>
-        <a asp-controller="Pet" asp-action="Index" class="@(activeMenu == "Pet" ? "active" : "")">
+
+        <!-- Thú cưng -->
+        <a asp-controller="Pet"
+           asp-action="Index"
+           class="@(activeMenu == "Pet" ? "active" : "")">
+
             <i class="fa fa-paw"></i>
             <span>Thú cưng</span>
+
         </a>
-        <a asp-controller="Profile" asp-action="Index" class="@(activeMenu == "Profile" ? "active" : "")">
+
+        <!-- Hồ sơ -->
+        <a asp-controller="Profile"
+           asp-action="Index"
+           class="@(activeMenu == "Profile" ? "active" : "")">
+
             <i class="fa fa-user"></i>
             <span>Hồ sơ cá nhân</span>
+
         </a>
-        <a href="#" class="@(activeMenu == "Dating" ? "active" : "")">
+
+        <!-- Pet Dating -->
+        <a asp-controller="Match"
+           asp-action="Index"
+           class="@(activeMenu == "Dating" ? "active" : "")">
+
             <i class="fa fa-heart"></i>
             <span>Pet Dating</span>
+
         </a>
+
+        <a asp-controller="Match"
+           asp-action="Matches">
+
+            <i class="fa fa-users"></i>
+            <span>Kết nối</span>
+
+        </a>
+
+        <!-- Bài viết -->
         <a asp-controller="Post" asp-action="Index" class="@(activeMenu == "Post" ? "active" : "")">
+
             <i class="fa fa-pencil-square-o"></i>
             <span>Bài viết</span>
+
         </a>
-        <a href="#" class="@(activeMenu == "Message" ? "active" : "")">
+
+        <!-- Tin nhắn -->
+        <a asp-controller="Chat"
+           asp-action="Index"
+           class="@(activeMenu == "Message" ? "active" : "")">
+
             <i class="fa fa-comments"></i>
             <span>Tin nhắn</span>
+
         </a>
+
+        <!-- Thông báo -->
+        <a asp-controller="Notification"
+           asp-action="Index"
+           class="@(activeMenu == "Notification" ? "active" : "")">
+
+            <i class="fa fa-bell"></i>
+
+            <span>
+                Thông báo
+
+                @if (ViewBag.UnreadCount != null &&
+                                (int)ViewBag.UnreadCount > 0)
+                {
+                    <span class="badge bg-danger">
+                        @ViewBag.UnreadCount
+                    </span>
+                }
+
+            </span>
+
+        </a>
+
     </nav>
 
+    <!-- Footer Sidebar -->
     <div class="pet-sidebar-bottom">
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
+
+        @if (User.Identity != null &&
+                User.Identity.IsAuthenticated)
         {
-            <a class="pet-sidebar-user" asp-controller="Profile" asp-action="Index">
-                <span class="pet-sidebar-avatar"><i class="fa fa-user"></i></span>
-                <span>
-                    <small>Tài khoản</small>
-                    <strong>@User.Identity.Name</strong>
+            <a class="pet-sidebar-user"
+               asp-controller="Profile"
+               asp-action="Index">
+
+                <span class="pet-sidebar-avatar">
+                    <i class="fa fa-user"></i>
                 </span>
+
+                <span>
+
+                    <small>Tài khoản</small>
+
+                    <strong>
+                        @User.Identity.Name
+                    </strong>
+
+                </span>
+
             </a>
-            <form asp-controller="Account" asp-action="Logout" method="post">
-                <button type="submit" class="pet-sidebar-logout">
+
+            <form asp-controller="Account"
+                  asp-action="Logout"
+                  method="post">
+
+                <button type="submit"
+                        class="pet-sidebar-logout">
+
                     <i class="fa fa-sign-out"></i>
+
                     Đăng xuất
+
                 </button>
+
             </form>
         }
         else
         {
-            <a class="pet-sidebar-login" asp-controller="Account" asp-action="Login">Đăng nhập</a>
-            <a class="pet-sidebar-register" asp-controller="Account" asp-action="Register">Đăng ký</a>
+            <a class="pet-sidebar-login"
+               asp-controller="Account"
+               asp-action="Login">
+
+                Đăng nhập
+
+            </a>
+
+            <a class="pet-sidebar-register"
+               asp-controller="Account"
+               asp-action="Register">
+
+                Đăng ký
+
+            </a>
         }
+
     </div>
+
 </aside>

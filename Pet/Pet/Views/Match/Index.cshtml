@@ -1,0 +1,99 @@
+﻿@model IEnumerable<PetSocial.Models.PetModule>
+
+@{
+    ViewData["Title"] = "Pet Dating";
+    ViewData["ActiveMenu"] = "Dating";
+    ViewData["FullWidth"] = true;
+}
+
+<div class="container-fluid p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold">
+                ❤️ Pet Dating
+            </h1>
+
+            <p class="text-muted">
+                Tìm kiếm bạn bè và ghép đôi cho thú cưng của bạn
+            </p>
+        </div>
+
+        <a asp-controller="Match"
+           asp-action="Requests"
+           class="btn btn-warning">
+
+            <i class="fa fa-envelope"></i>
+            Lời mời kết nối
+
+        </a>
+
+    </div>
+
+    <div class="row">
+
+        @foreach (var pet in Model)
+        {
+            <div class="col-lg-4 mb-4">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <img src="@pet.AvatarUrl"
+                         class="card-img-top"
+                         style="height:250px;object-fit:cover;" />
+
+                    <div class="card-body">
+
+                        <h4>
+                            @pet.Name
+                        </h4>
+
+                        <span class="badge bg-warning">
+                            @pet.Age tuổi
+                        </span>
+
+                        <span class="badge bg-info">
+                            @pet.Gender
+                        </span>
+
+                        <hr />
+
+                        <p>
+                            <i class="fa fa-paw"></i>
+                            @pet.Species
+                        </p>
+
+                        <p>
+                            <i class="fa fa-map-marker"></i>
+                            @pet.Location
+                        </p>
+
+                        <p>
+                            <i class="fa fa-heart"></i>
+                            @pet.Personality
+                        </p>
+
+                    </div>
+
+                    <div class="card-footer bg-white">
+
+                        <a asp-controller="Match"
+                           asp-action="Suggest"
+                           asp-route-id="@pet.Id"
+                           class="btn btn-primary w-100">
+
+                            ❤️ Ghép đôi
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>

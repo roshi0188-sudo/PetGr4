@@ -1,4 +1,4 @@
-@model PetSocial.Models.Post
+﻿@model PetSocial.Models.Post
 
 @{
     ViewData["Title"] = "Tạo bài viết - PetPark";
@@ -47,7 +47,7 @@
 </style>
 
 <div class="max-w-4xl mx-auto px-4 py-8 pb-24">
-    
+
     <!-- TIÊU ĐỀ TRANG -->
     <div class="mb-4 flex items-center justify-between">
         <h2 class="text-2xl font-extrabold text-gray-800 font-['Plus_Jakarta_Sans']">Tạo bài viết</h2>
@@ -56,7 +56,7 @@
 
     <!-- KHU VỰC FORM CHÍNH -->
     <form asp-action="Create" method="post" enctype="multipart/form-data" class="bg-white rounded-2xl border border-gray-100 ambient-shadow overflow-hidden">
-        
+
         <!-- Thông tin User -->
         <div class="p-6 flex items-center gap-3 border-b border-gray-50 bg-gray-50/30">
             <div class="w-11 h-11 rounded-full border-2 border-pet-primary-fixed overflow-hidden bg-gray-50 flex items-center justify-center flex-shrink-0">
@@ -89,11 +89,11 @@
         <!-- Khu vực tải và xem trước hình ảnh -->
         <div class="px-6 pb-6">
             <div class="relative group border-2 border-dashed border-gray-200 hover:border-pet-primary rounded-xl aspect-video w-full max-h-[340px] flex flex-col items-center justify-center bg-gray-50/50 hover:bg-gray-50 transition-all duration-200 overflow-hidden">
-                
+
                 <input type="file" name="imageFile" id="imageFile" accept="image/*"
                        class="absolute inset-0 opacity-0 cursor-pointer z-20 w-full h-full"
                        onchange="previewImage(event)" />
-                
+
                 <!-- Trạng thái chưa có ảnh -->
                 <div id="upload-placeholder" class="flex flex-col items-center justify-center p-4 text-center z-10">
                     <div class="w-12 h-12 rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center text-gray-500 mb-2 group-hover:text-pet-primary transition-colors">
@@ -150,7 +150,7 @@
     const input = event.target;
     const wrapper = document.getElementById('preview-wrapper');
     const preview = document.getElementById('image-preview');
-        
+
     if (input.files && input.files[0]) {
     const reader = new FileReader();
     reader.onload = function(e) {
@@ -167,7 +167,7 @@
     const input = document.getElementById('imageFile');
     const wrapper = document.getElementById('preview-wrapper');
     const preview = document.getElementById('image-preview');
-        
+
     input.value = "";
     preview.src = "#";
     wrapper.classList.add('hidden');

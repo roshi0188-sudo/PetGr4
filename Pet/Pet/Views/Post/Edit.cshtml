@@ -1,16 +1,21 @@
-@model PetSocial.Models.Post
+﻿@model PetSocial.Models.Post
 
 @{
     ViewData["Title"] = "Post Edit";
 }
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
 <style>
-    body { background-color: #FFF9F1; }
-    .custom-shadow { box-shadow: 0 12px 20px rgba(45, 52, 54, 0.08); }
+    body {
+        background-color: #FFF9F1;
+    }
+
+    .custom-shadow {
+        box-shadow: 0 12px 20px rgba(45, 52, 54, 0.08);
+    }
 </style>
 
 <div class="max-w-3xl mx-auto px-4 py-8 text-[#161d1f]">
@@ -59,7 +64,7 @@
                     <p class="text-sm font-semibold">Nhấn để chọn tập tin ảnh mới thay thế</p>
                 </div>
             </div>
-            
+
             <!-- Vùng hiển thị ảnh mới chuẩn bị thay thế -->
             <div id="new-preview-container" class="hidden mt-3">
                 <p class="text-xs text-green-600 font-semibold mb-1">Ảnh mới được chọn chuẩn bị thay đổi:</p>

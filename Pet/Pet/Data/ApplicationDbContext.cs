@@ -14,6 +14,8 @@ namespace PetSocial.Data
         public DbSet<Like> Likes { get; set; }
         public DbSet<Follow> Follows { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PetMatch> PetMatches { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -82,6 +84,18 @@ namespace PetSocial.Data
                 .HasOne(m => m.Receiver)
                 .WithMany()
                 .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PetMatch>()
+                .HasOne(pm => pm.SenderPet)
+                .WithMany()
+                .HasForeignKey(pm => pm.SenderPetId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<PetMatch>()
+                .HasOne(pm => pm.ReceiverPet)
+                .WithMany()
+                .HasForeignKey(pm => pm.ReceiverPetId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

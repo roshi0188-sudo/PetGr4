@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PetSocial.Models;
 using PetSocial.ViewModels;
@@ -16,6 +17,11 @@ namespace PetSocial.Controllers
             _signInManager = signInManager;
         }
 
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
         // GET: /Account/Register
         [HttpGet]
         public IActionResult Register()

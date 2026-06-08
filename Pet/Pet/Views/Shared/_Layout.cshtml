@@ -3,12 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - PetSocial</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 </head>
+
 <body>
+
     @{
         var isFullWidth = ViewData["FullWidth"] as bool? == true;
     }
@@ -16,30 +26,157 @@
     @if (isFullWidth)
     {
         <div class="app-shell">
+
+            <!-- Sidebar -->
             <partial name="_Sidebar" />
 
             <div class="app-shell-content">
+
                 <main role="main" class="pb-0">
                     @RenderBody()
                 </main>
 
                 <partial name="_Footer" />
+
             </div>
+
         </div>
     }
     else
     {
         <div class="container">
+
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
+
         </div>
 
         <partial name="_Footer" />
     }
 
+    <!-- Toast Notification -->
+    <div aria-live="polite"
+         aria-atomic="true"
+         class="position-fixed top-0 end-0 p-3"
+         style="z-index:9999">
+
+        <div id="toastContainer"></div>
+
+    </div>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+    <script>
+
+        const notificationConnection =
+            new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        notificationConnection.on(
+            "ReceiveNotification",
+            function (title, message, time)
+            {
+                // Badge thông báo
+
+                const badge =
+                    document.getElementById(
+                        "notificationBadge");
+
+                if (badge)
+                {
+                    let count =
+                        parseInt(badge.innerText) || 0;
+
+                    badge.innerText = count + 1;
+                }
+
+                // Toast Bootstrap
+
+                const container =
+                    document.getElementById(
+                        "toastContainer");
+
+                const toastHtml =
+                `
+                <div class="toast mb-2"
+                     role="alert"
+                     data-bs-delay="5000">
+
+                    <div class="toast-header">
+
+                        <i class="fa fa-bell text-warning me-2"></i>
+
+                        <strong class="me-auto">
+                            ${title}
+                        </strong>
+
+                        <small>
+                            ${time}
+                        </small>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="toast">
+                        </button>
+
+                    </div>
+
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+
+                </div>
+                `;
+
+                const wrapper =
+                    document.createElement("div");
+
+                wrapper.innerHTML =
+                    toastHtml.trim();
+
+                const toastElement =
+                    wrapper.firstChild;
+
+                container.appendChild(
+                    toastElement);
+
+                const toast =
+                    new bootstrap.Toast(
+                        toastElement);
+
+                toast.show();
+
+                toastElement.addEventListener(
+                    "hidden.bs.toast",
+                    function ()
+                    {
+                        toastElement.remove();
+                    });
+            });
+
+        notificationConnection.start()
+            .then(() =>
+            {
+                console.log(
+                    "SignalR Connected");
+            })
+            .catch(err =>
+            {
+                console.error(err);
+            });
+
+    </script>
+
+    @await RenderSectionAsync(
+    "Scripts",
+        required: false)
+
 </body>
 </html>

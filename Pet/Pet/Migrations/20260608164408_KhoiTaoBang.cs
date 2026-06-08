@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetSocial.Migrations
 {
     /// <inheritdoc />
-    public partial class ThemDuLieu : Migration
+    public partial class KhoiTaoBang : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -216,6 +216,29 @@ namespace PetSocial.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pets",
                 columns: table => new
                 {
@@ -266,6 +289,34 @@ namespace PetSocial.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PetMatches",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderPetId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverPetId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PetMatches", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PetMatches_Pets_ReceiverPetId",
+                        column: x => x.ReceiverPetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PetMatches_Pets_SenderPetId",
+                        column: x => x.SenderPetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -385,6 +436,21 @@ namespace PetSocial.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PetMatches_ReceiverPetId",
+                table: "PetMatches",
+                column: "ReceiverPetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PetMatches_SenderPetId",
+                table: "PetMatches",
+                column: "SenderPetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pets_UserId",
                 table: "Pets",
                 column: "UserId");
@@ -445,13 +511,19 @@ namespace PetSocial.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Pets");
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PetMatches");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "Pets");
 
             migrationBuilder.DropTable(
                 name: "Users");

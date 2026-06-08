@@ -1,0 +1,86 @@
+﻿@model IEnumerable<PetSocial.Models.PetMatch>
+
+@{
+    string currentUserId = ViewBag.CurrentUserId;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="~/css/match.css" />
+
+<div class="container mt-4 mb-5">
+
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-match-title">
+            <span class="heart-pulse"><i class="bi bi-heart-fill me-2 text-danger"></i></span>Kết nối thành công
+        </h2>
+        <p class="text-muted">Chúc mừng các bé đã tìm thấy một nửa hợp ý! Hãy trò chuyện với chủ nuôi để làm quen nhé.</p>
+    </div>
+
+    <div class="row">
+        @if (Model == null || !Model.Any())
+        {
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-heartbreak text-muted fs-1"></i>
+                <p class="text-muted mt-3">Chưa có kết nối nào thành công. Hãy tích cực tương tác tìm kiếm nhé!</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                // Xác định UserId của chủ nuôi đối phương để truyền vào nút Chat
+                var chatUserId = item.SenderPet.UserId == currentUserId
+                ? item.ReceiverPet.UserId
+                : item.SenderPet.UserId;
+
+                <div class="col-lg-6 col-md-12 mb-4">
+                    <div class="card match-card border-0 shadow-sm">
+                        <div class="card-body p-4 text-center">
+
+                            <div class="match-images-container d-flex justify-content-center align-items-center mb-4 position-relative">
+
+                                <div class="pet-avatar-wrapper left-avatar">
+                                    <img src="@(string.IsNullOrEmpty(item.SenderPet.AvatarUrl) ? "/images/default-avatar.png" : item.SenderPet.AvatarUrl)"
+                                         class="match-pet-img" alt="@item.SenderPet.Name" />
+                                    <span class="badge bg-orange-light text-orange mt-2 d-inline-block">@item.SenderPet.Name</span>
+                                </div>
+
+                                <div class="match-heart-center">
+                                    <div class="heart-bg shadow-sm">
+                                        <i class="bi bi-heart-fill text-danger fs-4"></i>
+                                    </div>
+                                </div>
+
+                                <div class="pet-avatar-wrapper right-avatar">
+                                    <img src="@(string.IsNullOrEmpty(item.ReceiverPet.AvatarUrl) ? "/images/default-avatar.png" : item.ReceiverPet.AvatarUrl)"
+                                         class="match-pet-img" alt="@item.ReceiverPet.Name" />
+                                    <span class="badge bg-orange-light text-orange mt-2 d-inline-block">@item.ReceiverPet.Name</span>
+                                </div>
+
+                            </div>
+
+                            <div class="match-info mb-4">
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    @item.SenderPet.Name & @item.ReceiverPet.Name
+                                </h5>
+                                <small class="text-muted">
+                                    <i class="bi bi-tag-fill me-1 text-orange"></i> @item.SenderPet.Breed <span class="mx-2">|</span> <i class="bi bi-tag-fill me-1 text-orange"></i> @item.ReceiverPet.Breed
+                                </small>
+                            </div>
+
+                            <div class="d-grid gap-2 col-8 mx-auto">
+                                <a asp-controller="Chat"
+                                   asp-action="Index"
+                                   asp-route-userId="@chatUserId"
+                                   class="btn btn-match-chat rounded-pill py-2 shadow-sm fw-bold">
+                                    <i class="bi bi-chat-heart-fill me-2"></i> Trò chuyện ngay
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

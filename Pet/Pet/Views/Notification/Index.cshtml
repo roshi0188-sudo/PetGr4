@@ -1,0 +1,98 @@
+﻿@model IEnumerable<PetSocial.Models.Notification>
+
+@{
+    ViewData["Title"] = "Thông báo";
+    ViewData["ActiveMenu"] = "Notification";
+    ViewData["FullWidth"] = true;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="~/css/notification.css" />
+
+<div class="container mt-4 mb-5 max-width-900">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-noti-title mb-1">
+                <i class="bi bi-bell-fill me-2"></i>Thông báo
+            </h2>
+            <p class="text-muted mb-0">
+                Cập nhật mới nhất về thú cưng và tương tác từ PetSocial
+            </p>
+        </div>
+
+        @if (Model != null && Model.Any(x => !x.IsRead))
+        {
+            <a asp-action="MarkAllRead" class="btn btn-outline-orange rounded-pill px-4 fw-bold shadow-sm">
+                <i class="bi bi-check2-all me-1"></i> Đánh dấu tất cả đã đọc
+            </a>
+        }
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="card border-0 shadow-sm rounded-4 empty-noti-card text-center py-5">
+            <div class="card-body p-5">
+                <div class="empty-icon-wrapper mb-3">
+                    <i class="bi bi-mailbox2 text-muted"></i>
+                </div>
+                <h5 class="fw-bold text-secondary">Hộp thư thông báo trống</h5>
+                <p class="text-muted small">Bạn chưa có thông báo nào vào lúc này. Hãy quay lại sau nhé!</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden noti-list-card">
+            <div class="list-group list-group-flush">
+
+                @foreach (var item in Model)
+                {
+                    <div class="list-group-item noti-item p-3 d-flex align-items-start gap-3 @(item.IsRead ? "" : "unread")">
+
+                        <div class="noti-icon-wrapper flex-shrink-0">
+                            @if (item.Title.Contains("Tin nhắn") || item.Title.Contains("Message"))
+                            {
+                                <div class="icon-circle bg-chat-light text-chat">
+                                    <i class="bi bi-chat-dots-fill"></i>
+                                </div>
+                            }
+                            else if (item.Title.Contains("kết nối") || item.Title.Contains("Match"))
+                            {
+                                <div class="icon-circle bg-heart-light text-danger">
+                                    <i class="bi bi-heart-fill"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="icon-circle bg-bell-light text-orange">
+                                    <i class="bi bi-bell-fill"></i>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="noti-body flex-grow-1">
+                            <h6 class="fw-bold mb-1 text-dark noti-item-title">
+                                @item.Title
+                            </h6>
+                            <p class="text-secondary small mb-2 lh-base">
+                                @item.Content
+                            </p>
+                            <span class="text-muted noti-time">
+                                <i class="bi bi-clock me-1"></i>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </div>
+
+                        @if (!item.IsRead)
+                        {
+                            <div class="noti-status-indicator flex-shrink-0 align-self-center">
+                                <span class="unread-dot" title="Chưa đọc"></span>
+                            </div>
+                        }
+                    </div>
+                }
+
+            </div>
+        </div>
+    }
+</div>

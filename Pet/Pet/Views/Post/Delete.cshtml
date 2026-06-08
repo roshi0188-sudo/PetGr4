@@ -1,4 +1,4 @@
-@model PetSocial.Models.Post
+﻿@model PetSocial.Models.Post
 
 @{
     ViewData["Title"] = "Post Delete";
@@ -10,13 +10,13 @@
 
 <style>
     body {
-    background-color: #FFF9F1;
+        background-color: #FFF9F1;
     }
 </style>
 
 <div class="max-w-2xl mx-auto px-4 py-12 text-[#161d1f]">
     <div class="bg-white rounded-[24px] border-2 border-red-200 shadow-xl p-6 md:p-8 space-y-6 text-center">
-        
+
         <!-- Biểu tượng cảnh báo nguy hiểm nguy hiểm -->
         <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto animate-pulse">
             <span class="material-symbols-outlined text-[40px]">warning</span>
@@ -43,7 +43,7 @@
         <!-- Form thực hiện nhấn nút Xóa dữ liệu -->
         <form asp-action="Delete" method="post" class="flex items-center justify-center gap-4 pt-2">
             <input type="hidden" asp-for="Id" />
-            
+
             <a asp-action="Index" class="px-6 py-2.5 rounded-full border border-gray-300 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-all">
                 Hủy bỏ
             </a>

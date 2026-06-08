@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetSocial.Data;
+using PetSocial.Hubs;
 using PetSocial.Models;
 using PetSocial.Services;
 
@@ -14,9 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSession();
 
-// 2. Cáº¥u hĂ¬nh Identity
+
 builder.Services.AddIdentity<AppUser, IdentityRole>(options => {
-    // TĂ¹y chá»‰nh policy password táº¡i Ä‘Ă¢y
+
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
 })
@@ -24,16 +25,16 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options => {
 .AddDefaultTokenProviders();
 
 
-// Ghi Ä‘Ă¨ Password Hasher máº·c Ä‘á»‹nh báº±ng BCrypt
+
 builder.Services.AddScoped<IPasswordHasher<AppUser>, BCryptPasswordHasher>();
 
-// ThĂªm cáº¥u hĂ¬nh nĂ y Ä‘á»ƒ há»‡ thá»‘ng khĂ´ng Ă©p buá»™c Cookie pháº£i qua HTTPS khi cháº¡y á»Ÿ localhost
+
 builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 });
 
-// 3. Cáº¥u hĂ¬nh Cookie (Thay tháº¿ cho Session Auth truyá»n thá»‘ng)
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.Name = "PetSocialAuthCookie";
@@ -42,9 +43,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-// ThĂªm Session thĂ´ng thÆ°á»ng náº¿u cáº§n lÆ°u trá»¯ data táº¡m thá»i
-builder.Services.AddSession();
-builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 
 var app = builder.Build();
@@ -78,7 +77,6 @@ app.MapControllerRoute(
     defaults: new { controller = "Pet" });
 
 
-// 1. ThĂªm Route cho Area Admin
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
@@ -86,5 +84,15 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Splash}/{id?}");
+
+app.MapHub<ChatHub>("/chatHub");
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    // Gọi file class vừa tạo và chạy hàm Seed
+    await PetSocial.Data.RoleSeeder.SeedRolesAndUsersAsync(services);
+}
+
 
 app.Run();

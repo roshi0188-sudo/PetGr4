@@ -352,6 +352,69 @@ namespace PetSocial.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("PetSocial.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("PetSocial.Models.PetMatch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReceiverPetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderPetId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverPetId");
+
+                    b.HasIndex("SenderPetId");
+
+                    b.ToTable("PetMatches");
+                });
+
             modelBuilder.Entity("PetSocial.Models.PetModule", b =>
                 {
                     b.Property<int>("Id")
@@ -565,6 +628,36 @@ namespace PetSocial.Migrations
                     b.Navigation("Receiver");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("PetSocial.Models.Notification", b =>
+                {
+                    b.HasOne("PetSocial.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PetSocial.Models.PetMatch", b =>
+                {
+                    b.HasOne("PetSocial.Models.PetModule", "ReceiverPet")
+                        .WithMany()
+                        .HasForeignKey("ReceiverPetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PetSocial.Models.PetModule", "SenderPet")
+                        .WithMany()
+                        .HasForeignKey("SenderPetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ReceiverPet");
+
+                    b.Navigation("SenderPet");
                 });
 
             modelBuilder.Entity("PetSocial.Models.PetModule", b =>
