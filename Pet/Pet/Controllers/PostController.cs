@@ -32,7 +32,41 @@ namespace PetSocial.Controllers
                 .Include(p => p.Likes)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
+
+            await LoadFollowingIdsAsync();
+
             return View(posts);
+        }
+
+        // 1B. NEWS FEED - CHỈ HIỂN THỊ BÀI VIẾT CỦA NHỮNG NGƯỜI MÌNH ĐANG THEO DÕI
+        [Authorize]
+        public async Task<IActionResult> Feed()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            // Lấy danh sách Id của những người mình đang theo dõi
+            var followingIds = await _context.Follows
+                .Where(f => f.FollowerId == user.Id)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
+
+            // Bao gồm cả bài viết của chính mình trong News Feed
+            followingIds.Add(user.Id);
+
+            var posts = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(p => p.Likes)
+                .Where(p => followingIds.Contains(p.UserId))
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            await LoadFollowingIdsAsync();
+
+            ViewData["IsFeed"] = true;
+
+            return View("Index", posts);
         }
 
 
@@ -55,7 +89,17 @@ namespace PetSocial.Controllers
 
         // 3. HIỂN THỊ FORM TẠO BÀI VIẾT MỚI
         [Authorize]
-        public IActionResult Create() => View(new Post());
+        public async Task<IActionResult> Create()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var model = new Post();
+            if (user != null)
+            {
+                model.User = user;
+                model.UserId = user.Id;
+            }
+            return View(model);
+        }
 
         // 4. XỬ LÝ TẠO BÀI VIẾT MỚI
         [HttpPost]
@@ -75,7 +119,11 @@ namespace PetSocial.Controllers
             ModelState.Remove("UserId");
             ModelState.Remove("ImageUrl");
 
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                model.User = user;
+                return View(model);
+            }
 
             // Xử lý lưu ảnh vào thư mục wwwroot/images/posts
             if (imageFile != null && imageFile.Length > 0)
@@ -289,6 +337,78 @@ namespace PetSocial.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+        // 11. THEO DÕI / HỦY THEO DÕI NGƯỜI DÙNG
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ToggleFollow(string targetUserId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            if (string.IsNullOrWhiteSpace(targetUserId) || targetUserId == user.Id)
+            {
+                return Json(new { success = false, message = "Không thể tự theo dõi chính mình." });
+            }
+
+            var targetUser = await _context.Users.FindAsync(targetUserId);
+            if (targetUser == null) return NotFound();
+
+            var existingFollow = await _context.Follows
+                .FirstOrDefaultAsync(f => f.FollowerId == user.Id && f.FollowingId == targetUserId);
+
+            bool isFollowingNow;
+
+            if (existingFollow != null)
+            {
+                _context.Follows.Remove(existingFollow);
+                isFollowingNow = false;
+            }
+            else
+            {
+                var newFollow = new Follow
+                {
+                    FollowerId = user.Id,
+                    FollowingId = targetUserId,
+                    CreatedAt = DateTime.Now
+                };
+                _context.Follows.Add(newFollow);
+                isFollowingNow = true;
+
+                // Tạo thông báo cho người được theo dõi
+                _context.Notifications.Add(new Notification
+                {
+                    UserId = targetUserId,
+                    Title = "Có người theo dõi mới",
+                    Content = $"{user.FullName} đã bắt đầu theo dõi bạn.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                });
+            }
+
+            await _context.SaveChangesAsync();
+
+            var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == targetUserId);
+
+            return Json(new { success = true, isFollowing = isFollowingNow, followerCount });
+        }
+
+        // HÀM NẠP DANH SÁCH ID ĐANG THEO DÕI CỦA USER HIỆN TẠI ĐỂ DÙNG TRONG VIEW
+        private async Task LoadFollowingIdsAsync()
+        {
+            var currentUserId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                ViewData["FollowingIds"] = new HashSet<string>();
+                return;
+            }
+
+            var followingIds = await _context.Follows
+                .Where(f => f.FollowerId == currentUserId)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
+
+            ViewData["FollowingIds"] = new HashSet<string>(followingIds);
         }
     }
 }

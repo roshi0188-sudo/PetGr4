@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetSocial.Data;
 
@@ -11,9 +12,11 @@ using PetSocial.Data;
 namespace PetSocial.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260615024205_KhoiTaoBang")]
+    partial class KhoiTaoBang
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -491,15 +494,6 @@ namespace PetSocial.Migrations
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RejectReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ReviewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()

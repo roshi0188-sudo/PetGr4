@@ -30,60 +30,68 @@
 
 <script>
     document.addEventListener('click', function (e) {
-        var btn = e.target.closest('.follow-btn');
-        if (!btn) return;
+    var btn = e.target.closest('.follow-btn');
+    if (!btn) return;
 
-        var targetUserId = btn.getAttribute('data-user-id');
-        if (!targetUserId) return;
+    var targetUserId = btn.getAttribute('data-user-id');
+    if (!targetUserId) return;
 
-        var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-        var token = tokenInput ? tokenInput.value : '';
+    var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    var token = tokenInput ? tokenInput.value : '';
 
-        // Send as form-encoded so default model binding binds primitive parameter
-        const form = new URLSearchParams();
-        form.append('targetUserId', targetUserId);
+    // Send as form-encoded so default model binding binds primitive parameter
+    const form = new URLSearchParams();
+    form.append('targetUserId', targetUserId);
 
-        fetch('/Post/ToggleFollow', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'RequestVerificationToken': token
-            },
-            body: form.toString()
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data && data.success) {
-                btn.innerText = data.isFollowing ? 'Đang theo dõi' : 'Theo dõi';
-                btn.classList.toggle('bg-gray-100', data.isFollowing);
-                btn.classList.toggle('text-pet-primary', !data.isFollowing);
-            }
-        })
-        .catch(err => console.error('Follow error', err));
+    fetch('/Post/ToggleFollow', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'RequestVerificationToken': token
+    },
+    body: form.toString()
+    })
+    .then(r => r.json())
+    .then(data => {
+    if (data && data.success) {
+    if (data.isFollowing) {
+    btn.innerText = 'Đang theo dõi';
+    btn.classList.remove('bg-pet-primary', 'text-white');
+    btn.classList.add('bg-gray-100', 'text-gray-600');
+    } else {
+    btn.innerText = 'Theo dõi';
+    btn.classList.remove('bg-gray-100', 'text-gray-600');
+    btn.classList.add('bg-pet-primary', 'text-white');
+    }
+    } else if (data && data.message) {
+    alert(data.message);
+    }
+    })
+    .catch(err => console.error('Follow error', err));
     });
 </script>
 
 <style>
     body {
-        background-color: #fbf9f8;
-        font-family: 'Quicksand', sans-serif;
-        -webkit-tap-highlight-color: transparent;
+    background-color: #fbf9f8;
+    font-family: 'Quicksand', sans-serif;
+    -webkit-tap-highlight-color: transparent;
     }
 
     .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        font-family: 'Material Symbols Outlined';
-        display: inline-block;
-        vertical-align: middle;
-        line-height: 1;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined';
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
     }
 
     .ambient-shadow {
-        box-shadow: 0 4px 20px rgba(148, 74, 24, 0.05);
+    box-shadow: 0 4px 20px rgba(148, 74, 24, 0.05);
     }
 
     .ambient-shadow-hover:hover {
-        box-shadow: 0 10px 30px rgba(148, 74, 24, 0.08);
+    box-shadow: 0 10px 30px rgba(148, 74, 24, 0.08);
     }
 </style>
 
@@ -96,15 +104,32 @@
             <a asp-controller="Home" asp-action="Index" class="hover:bg-gray-200/70 transition-colors p-2 rounded-full active:scale-95 duration-150 flex items-center justify-center" title="Quay lại trang chủ">
                 <span class="material-symbols-outlined text-gray-700 text-xl font-bold">arrow_back</span>
             </a>
-            <h2 class="text-xl font-bold text-gray-800 font-['Plus_Jakarta_Sans'] tracking-tight">Bảng tin cộng đồng</h2>
+            <h2 class="text-xl font-bold text-gray-800 font-['Plus_Jakarta_Sans'] tracking-tight">
+                @(ViewData["IsFeed"] != null ? "Bảng tin của bạn" : "Bảng tin cộng đồng")
+            </h2>
         </div>
 
-        @if (User.Identity?.IsAuthenticated == true)
-        {
-            <a asp-action="Create" class="inline-flex items-center gap-1.5 bg-[#8f4e00] hover:bg-[#764000] text-white font-bold text-xs px-4 py-2.5 rounded-full transition-all shadow-sm active:scale-95">
-                <span class="material-symbols-outlined text-sm font-bold">add</span> Đăng bài mới
-            </a>
-        }
+        <div class="flex items-center gap-2">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                @if (ViewData["IsFeed"] != null)
+                {
+                    <a asp-action="Index" class="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs px-4 py-2.5 rounded-full transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-sm font-bold">public</span> Tất cả bài viết
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Feed" class="inline-flex items-center gap-1.5 bg-pet-secondary-container/40 hover:bg-pet-secondary-container text-pet-secondary font-bold text-xs px-4 py-2.5 rounded-full transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-sm font-bold">dynamic_feed</span> Bảng tin của bạn
+                    </a>
+                }
+
+                <a asp-action="Create" class="inline-flex items-center gap-1.5 bg-[#8f4e00] hover:bg-[#764000] text-white font-bold text-xs px-4 py-2.5 rounded-full transition-all shadow-sm active:scale-95">
+                    <span class="material-symbols-outlined text-sm font-bold">add</span> Đăng bài mới
+                </a>
+            }
+        </div>
     </div>
 
     <div class="flex flex-col gap-6">
@@ -112,12 +137,22 @@
         {
             <div class="bg-white rounded-[24px] p-12 text-center border border-gray-100 ambient-shadow">
                 <span class="material-symbols-outlined text-gray-300 text-6xl mb-3">auto_stories</span>
-                <p class="text-gray-500 font-medium">Chưa có bài viết nào được đăng tải trên PetPark.</p>
-                @if (User.Identity?.IsAuthenticated == true)
+                @if (ViewData["IsFeed"] != null)
                 {
-                    <a asp-action="Create" class="mt-4 inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors">
-                        <span class="material-symbols-outlined text-sm">create</span> Viết bài đầu tiên
+                    <p class="text-gray-500 font-medium">Bảng tin trống. Hãy theo dõi thêm người dùng để xem bài viết của họ tại đây.</p>
+                    <a asp-action="Index" class="mt-4 inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-sm">public</span> Khám phá bài viết
                     </a>
+                }
+                else
+                {
+                    <p class="text-gray-500 font-medium">Chưa có bài viết nào được đăng tải trên PetPark.</p>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-action="Create" class="mt-4 inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors">
+                            <span class="material-symbols-outlined text-sm">create</span> Viết bài đầu tiên
+                        </a>
+                    }
                 }
             </div>
         }
@@ -128,10 +163,14 @@
                 bool isLikedByMe = !string.IsNullOrEmpty(currentUserId) && post.Likes != null && post.Likes.Any(l => l.UserId == currentUserId);
                 int totalLikesCount = post.Likes?.Count ?? 0;
 
+                var followingIds = ViewData["FollowingIds"] as HashSet<string> ?? new HashSet<string>();
+                bool isFollowingAuthor = post.UserId != null && followingIds.Contains(post.UserId);
+                bool isOwnPost = !string.IsNullOrEmpty(currentUserId) && post.UserId == currentUserId;
+
                 <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden transition-all duration-200 ambient-shadow ambient-shadow-hover">
 
                     <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
+                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@post.UserId" class="flex items-center gap-3 group">
                             @if (!string.IsNullOrWhiteSpace(post.User?.AvatarUrl))
                             {
                                 <div class="w-11 h-11 rounded-full border-2 border-pet-primary-fixed overflow-hidden bg-gray-50 flex items-center justify-center">
@@ -145,28 +184,38 @@
                                 </div>
                             }
                             <div>
-                                <h3 class="text-sm font-bold text-gray-800 font-['Plus_Jakarta_Sans'] leading-tight">
+                                <h3 class="text-sm font-bold text-gray-800 font-['Plus_Jakarta_Sans'] leading-tight group-hover:text-pet-primary transition-colors">
                                     @(post.User?.FullName ?? post.UserId)
                                 </h3>
                                 <p class="text-[11px] text-gray-400 font-medium mt-0.5">
                                     @post.CreatedAt.ToString("dd/MM/yyyy HH:mm")
                                 </p>
                             </div>
-                        </div>
-
-                        @* Follow button removed *@
+                        </a>
 
                         <div class="flex items-center gap-2">
+                            @if (User.Identity?.IsAuthenticated == true && !isOwnPost)
+                            {
+                                <button type="button"
+                                        class="follow-btn text-xs font-bold px-3 py-1.5 rounded-full transition-colors @(isFollowingAuthor ? "bg-gray-100 text-gray-600" : "bg-pet-primary text-white")"
+                                        data-user-id="@post.UserId">
+                                    @(isFollowingAuthor ? "Đang theo dõi" : "Theo dõi")
+                                </button>
+                            }
+
                             <a asp-action="Details" asp-route-id="@post.Id" class="text-xs font-bold text-pet-secondary bg-pet-secondary-container/40 hover:bg-pet-secondary-container px-3 py-1.5 rounded-full transition-colors" title="Xem chi tiết">
                                 Chi tiết
                             </a>
 
-                            <a asp-action="Edit" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-full transition-colors" title="Chỉnh sửa bài viết">
-                                <span class="material-symbols-outlined text-lg">edit</span>
-                            </a>
-                            <a asp-action="Delete" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="Xóa bài viết">
-                                <span class="material-symbols-outlined text-lg">delete</span>
-                            </a>
+                            @if (isOwnPost || User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-full transition-colors" title="Chỉnh sửa bài viết">
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@post.Id" class="inline-flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="Xóa bài viết">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </a>
+                            }
                         </div>
                     </div>
 

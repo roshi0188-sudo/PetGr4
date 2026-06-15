@@ -70,7 +70,7 @@
                 }
             </div>
             <div>
-                <p class="font-bold text-gray-800 text-sm">@(User.Identity?.Name ?? "chanh@gmail.com")</p>
+                <p class="font-bold text-gray-800 text-sm">@(Model?.User?.FullName ?? User.Identity?.Name ?? "Người dùng")</p>
                 <div class="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 rounded text-xs text-gray-600 mt-0.5">
                     <span>Tác giả</span>
                 </div>
