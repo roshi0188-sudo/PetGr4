@@ -12,11 +12,11 @@
 
 <style>
     body {
-        background-color: #FFFFF;
+    background-color: #FFFFF;
     }
 
     .custom-shadow {
-        box-shadow: 0 12px 20px rgba(45, 52, 54, 0.04);
+    box-shadow: 0 12px 20px rgba(45, 52, 54, 0.04);
     }
 </style>
 
@@ -30,7 +30,7 @@
     <article class="bg-white rounded-[24px] custom-shadow border border-[#e8eff1] overflow-hidden mb-8">
         <div class="p-6 flex items-center justify-between border-b border-[#e8eff1]">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-[#ffdcc2] overflow-hidden flex items-center justify-center border border-orange-100">
+                <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="w-12 h-12 rounded-full bg-[#ffdcc2] overflow-hidden flex items-center justify-center border border-orange-100">
                     @if (!string.IsNullOrWhiteSpace(Model.User?.AvatarUrl))
                     {
                         <img src="@Model.User.AvatarUrl" class="w-full h-full object-cover" alt="avatar" />
@@ -39,10 +39,12 @@
                     {
                         <span class="material-symbols-outlined text-2xl text-[#8f4e00]">account_circle</span>
                     }
-                </div>
+                </a>
                 <div>
                     <h3 class="font-bold text-base text-[#161d1f]">
-                        @(Model.User?.FullName ?? "Thành viên ẩn danh")
+                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="hover:text-pet-primary transition-colors">
+                            @(Model.User?.FullName ?? "Thành viên ẩn danh")
+                        </a>
                     </h3>
                     <p class="text-xs text-[#544437] flex items-center gap-1 mt-0.5">
                         <span class="material-symbols-outlined text-xs">schedule</span>

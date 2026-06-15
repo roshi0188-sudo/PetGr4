@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PetSocial.Data;
 using PetSocial.Models;
 using PetSocial.ViewModels;
 
@@ -11,11 +13,13 @@ namespace PetSocial.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ApplicationDbContext _context;
 
-        public ProfileController(UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment)
+        public ProfileController(UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context)
         {
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment; // Dùng để lấy đường dẫn lưu ảnh
+            _context = context;
         }
 
         // GET: /Profile/Index
@@ -25,6 +29,88 @@ namespace PetSocial.Controllers
             if (user == null) return NotFound();
 
             return View(user);
+        }
+
+        // GET: /Profile/Details/{id} - Xem hồ sơ người dùng khác kèm Follow/Followers/Following
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return NotFound();
+
+            var profileUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (profileUser == null) return NotFound();
+
+            var currentUserId = _userManager.GetUserId(User);
+
+            var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == id);
+            var followingCount = await _context.Follows.CountAsync(f => f.FollowerId == id);
+            var postCount = await _context.Posts.CountAsync(p => p.UserId == id);
+
+            bool isFollowing = !string.IsNullOrEmpty(currentUserId) &&
+                await _context.Follows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == id);
+
+            var posts = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(p => p.Likes)
+                .Where(p => p.UserId == id)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            var model = new ProfileDetails
+            {
+                User = profileUser,
+                FollowerCount = followerCount,
+                FollowingCount = followingCount,
+                PostCount = postCount,
+                IsOwnProfile = !string.IsNullOrEmpty(currentUserId) && currentUserId == id,
+                IsFollowing = isFollowing,
+                Posts = posts
+            };
+
+            return View(model);
+        }
+
+        // GET: /Profile/Followers/{id} - Danh sách người theo dõi
+        [AllowAnonymous]
+        public async Task<IActionResult> Followers(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return NotFound();
+
+            var profileUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (profileUser == null) return NotFound();
+
+            var followers = await _context.Follows
+                .Where(f => f.FollowingId == id)
+                .Include(f => f.Follower)
+                .Select(f => f.Follower)
+                .ToListAsync();
+
+            ViewData["ProfileUser"] = profileUser;
+            ViewData["ListTitle"] = "Người theo dõi";
+
+            return View("FollowList", followers);
+        }
+
+        // GET: /Profile/FollowingList/{id} - Danh sách đang theo dõi
+        [AllowAnonymous]
+        public async Task<IActionResult> FollowingList(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return NotFound();
+
+            var profileUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (profileUser == null) return NotFound();
+
+            var following = await _context.Follows
+                .Where(f => f.FollowerId == id)
+                .Include(f => f.Following)
+                .Select(f => f.Following)
+                .ToListAsync();
+
+            ViewData["ProfileUser"] = profileUser;
+            ViewData["ListTitle"] = "Đang theo dõi";
+
+            return View("FollowList", following);
         }
 
         // GET: /Profile/Edit
