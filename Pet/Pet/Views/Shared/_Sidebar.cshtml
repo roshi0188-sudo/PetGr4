@@ -1,38 +1,34 @@
 @{
     var activeMenu = ViewData["ActiveMenu"] as string;
 }
-
 <aside class="pet-sidebar">
 
-    <!-- Logo -->
     <a class="pet-sidebar-brand"
-       asp-controller="Home"
-       asp-action="Index">
-
+       asp-area=""
+       asp-controller="Post"
+       asp-action="Community">
         <span class="pet-sidebar-logo">
             <img src="~/images/logo.jpg"
                  alt="PetSocial" />
         </span>
 
-        <strong>PetSocial</strong>
+        <strong>PetGr4</strong>
 
     </a>
 
-    <!-- Menu -->
     <nav class="pet-menu">
 
-        <!-- Trang chủ -->
-        <a asp-controller="Home"
+        <a asp-area=""
+           asp-controller="Post"
            asp-action="Index"
            class="@(activeMenu == "Home" ? "active" : "")">
 
             <i class="fa fa-home"></i>
             <span>Trang chủ</span>
-
         </a>
 
-        <!-- Thú cưng -->
-        <a asp-controller="Pet"
+        <a asp-area=""
+           asp-controller="Pet"
            asp-action="Index"
            class="@(activeMenu == "Pet" ? "active" : "")">
 
@@ -41,18 +37,8 @@
 
         </a>
 
-        <!-- Hồ sơ -->
-        <a asp-controller="Profile"
-           asp-action="Index"
-           class="@(activeMenu == "Profile" ? "active" : "")">
-
-            <i class="fa fa-user"></i>
-            <span>Hồ sơ cá nhân</span>
-
-        </a>
-
-        <!-- Pet Dating -->
-        <a asp-controller="Match"
+        <a asp-area=""
+           asp-controller="Match"
            asp-action="Index"
            class="@(activeMenu == "Dating" ? "active" : "")">
 
@@ -61,24 +47,27 @@
 
         </a>
 
-        <a asp-controller="Match"
-           asp-action="Matches">
+        <a asp-area=""
+           asp-controller="Match"
+           asp-action="Matches"
+           class="@(activeMenu == "Matches" ? "active" : "")">
 
             <i class="fa fa-users"></i>
             <span>Kết nối</span>
 
         </a>
 
-        <!-- Bài viết -->
-        <a asp-controller="Post" asp-action="Index" class="@(activeMenu == "Post" ? "active" : "")">
+        <a asp-area=""
+           asp-controller="Post"
+           asp-action="MyPosts" class="@(activeMenu == "MyPost" ? "active" : "")">
 
             <i class="fa fa-pencil-square-o"></i>
-            <span>Bài viết</span>
+            <span>Bài viết của tôi</span>
 
         </a>
 
-        <!-- Tin nhắn -->
-        <a asp-controller="Chat"
+        <a asp-area=""
+           asp-controller="Chat"
            asp-action="Index"
            class="@(activeMenu == "Message" ? "active" : "")">
 
@@ -87,8 +76,8 @@
 
         </a>
 
-        <!-- Thông báo -->
-        <a asp-controller="Notification"
+        <a asp-area=""
+           asp-controller="Notification"
            asp-action="Index"
            class="@(activeMenu == "Notification" ? "active" : "")">
 
@@ -97,27 +86,35 @@
             <span>
                 Thông báo
 
-                @if (ViewBag.UnreadCount != null &&
-                                (int)ViewBag.UnreadCount > 0)
+                @if (ViewBag.UnreadCount != null && (int)ViewBag.UnreadCount > 0)
                 {
                     <span class="badge bg-danger">
                         @ViewBag.UnreadCount
                     </span>
                 }
-
             </span>
 
         </a>
 
+        @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
+        {
+            <a asp-area="Admin"
+               asp-controller="Dashboard"
+               asp-action="Index"
+               style="border-left: 4px solid #ff7e21; background: #fafafa; font-weight: bold;">
+                <i class="fa fa-shield" style="color: #ff7e21;"></i>
+                <span style="color: #ff7e21;">Quản trị hệ thống</span>
+            </a>
+        }
+
     </nav>
 
-    <!-- Footer Sidebar -->
     <div class="pet-sidebar-bottom">
 
-        @if (User.Identity != null &&
-                User.Identity.IsAuthenticated)
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             <a class="pet-sidebar-user"
+               asp-area=""
                asp-controller="Profile"
                asp-action="Index">
 
@@ -126,18 +123,16 @@
                 </span>
 
                 <span>
-
-                    <small>Tài khoản</small>
-
+                    <small>Tài khoản cá nhân</small>
                     <strong>
                         @User.Identity.Name
                     </strong>
-
                 </span>
 
             </a>
 
-            <form asp-controller="Account"
+            <form asp-area=""
+                  asp-controller="Account"
                   asp-action="Logout"
                   method="post">
 
@@ -145,7 +140,6 @@
                         class="pet-sidebar-logout">
 
                     <i class="fa fa-sign-out"></i>
-
                     Đăng xuất
 
                 </button>
@@ -155,22 +149,19 @@
         else
         {
             <a class="pet-sidebar-login"
+               asp-area=""
                asp-controller="Account"
                asp-action="Login">
-
                 Đăng nhập
-
             </a>
 
             <a class="pet-sidebar-register"
+               asp-area=""
                asp-controller="Account"
                asp-action="Register">
-
                 Đăng ký
-
             </a>
         }
 
     </div>
-
 </aside>

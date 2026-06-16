@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetSocial.Migrations
 {
     /// <inheritdoc />
-    public partial class KhoiTaoBang : Migration
+    public partial class KhoiTao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -7,6 +7,8 @@ using PetSocial.Models;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PetSocial.Controllers
 {
@@ -23,7 +25,7 @@ namespace PetSocial.Controllers
             _environment = environment;
         }
 
-        // 1. HIỂN THỊ DANH SÁCH BÀI VIẾT (BẢNG TIN CHÍNH)
+        // 1. TRANG CHỦ: HIỂN THỊ TOÀN BỘ BÀI VIẾT CỘNG ĐỒNG
         public async Task<IActionResult> Index()
         {
             var posts = await _context.Posts
@@ -35,8 +37,40 @@ namespace PetSocial.Controllers
 
             await LoadFollowingIdsAsync();
 
+            ViewData["ActiveMenu"] = "Home";
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
             return View(posts);
         }
+
+        // ====== THÊM MỚI NGHIỆP VỤ SIDEBAR: BÀI VIẾT CỦA TÔI ======
+        [Authorize]
+        public async Task<IActionResult> MyPosts()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId)) return Challenge();
+
+            // Lọc chính xác các bài viết do tài khoản đang đăng nhập tạo ra
+            var myPosts = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                .Include(p => p.Likes)
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            await LoadFollowingIdsAsync();
+
+            // Đánh dấu menu kích hoạt trên Sidebar gốc
+            ViewData["ActiveMenu"] = "MyPost";
+            ViewBag.CurrentUserId = userId;
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
+            // Tái sử dụng lại giao diện Index của Post để không cần viết lại giao diện mới
+            return View("Index", myPosts);
+        }
+        // =========================================================
 
         // 1B. NEWS FEED - CHỈ HIỂN THỊ BÀI VIẾT CỦA NHỮNG NGƯỜI MÌNH ĐANG THEO DÕI
         [Authorize]
@@ -45,13 +79,11 @@ namespace PetSocial.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            // Lấy danh sách Id của những người mình đang theo dõi
             var followingIds = await _context.Follows
                 .Where(f => f.FollowerId == user.Id)
                 .Select(f => f.FollowingId)
                 .ToListAsync();
 
-            // Bao gồm cả bài viết của chính mình trong News Feed
             followingIds.Add(user.Id);
 
             var posts = await _context.Posts
@@ -65,11 +97,11 @@ namespace PetSocial.Controllers
             await LoadFollowingIdsAsync();
 
             ViewData["IsFeed"] = true;
+            ViewBag.CurrentUserId = user.Id;
+            ViewBag.IsAdmin = User.IsInRole("Admin");
 
             return View("Index", posts);
         }
-
-
 
         // 2. HIỂN THỊ CHI TIẾT BÀI VIẾT
         public async Task<IActionResult> Details(int id)
@@ -82,10 +114,11 @@ namespace PetSocial.Controllers
 
             if (post == null) return NotFound();
 
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
             return View(post);
         }
-
-
 
         // 3. HIỂN THỊ FORM TẠO BÀI VIẾT MỚI
         [Authorize]
@@ -110,11 +143,9 @@ namespace PetSocial.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            // Gán dữ liệu hệ thống trước khi kiểm tra hợp lệ
             model.UserId = user.Id;
             model.CreatedAt = DateTime.Now;
 
-            // Loại bỏ kiểm tra thực thể liên kết để ModelState không báo lỗi oan
             ModelState.Remove("User");
             ModelState.Remove("UserId");
             ModelState.Remove("ImageUrl");
@@ -125,7 +156,6 @@ namespace PetSocial.Controllers
                 return View(model);
             }
 
-            // Xử lý lưu ảnh vào thư mục wwwroot/images/posts
             if (imageFile != null && imageFile.Length > 0)
             {
                 var imageUrl = await SavePostImageAsync(imageFile);
@@ -138,7 +168,6 @@ namespace PetSocial.Controllers
             _context.Posts.Add(model);
             await _context.SaveChangesAsync();
 
-            // SỬA LỖI: Quay về trang Bảng tin chính (Index) sau khi đăng thành công
             return RedirectToAction(nameof(Index));
         }
 
@@ -166,7 +195,6 @@ namespace PetSocial.Controllers
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
-            // Loại bỏ kiểm tra ràng buộc không cần thiết
             ModelState.Remove("User");
             ModelState.Remove("UserId");
             ModelState.Remove("ImageUrl");
@@ -176,27 +204,21 @@ namespace PetSocial.Controllers
                 return View(formModel);
             }
 
-            // Cập nhật nội dung văn bản
             post.Content = formModel.Content ?? string.Empty;
 
-            // Xử lý hình ảnh giống như ProductController tham khảo
             if (imageFile != null && imageFile.Length > 0)
             {
-                // Lưu hình ảnh mới
                 var newImageUrl = await SavePostImageAsync(imageFile);
                 if (!string.IsNullOrWhiteSpace(newImageUrl))
                 {
-                    // Xóa ảnh cũ trên server để tránh rác bộ nhớ dữ liệu
                     DeleteLocalImage(post.ImageUrl);
                     post.ImageUrl = newImageUrl;
                 }
             }
-            // Nếu không chọn ảnh mới (imageFile == null), post.ImageUrl sẽ giữ nguyên ảnh cũ giống code tham khảo
 
             _context.Update(post);
             await _context.SaveChangesAsync();
 
-            // Điều hướng về danh sách Bảng tin (Index) sau khi chỉnh sửa thành công
             return RedirectToAction(nameof(Index));
         }
 
@@ -221,7 +243,6 @@ namespace PetSocial.Controllers
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
-            // Xóa file ảnh vật lý trong thư mục wwwroot
             DeleteLocalImage(post.ImageUrl);
 
             _context.Posts.Remove(post);
@@ -230,7 +251,7 @@ namespace PetSocial.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // PHÂN QUYỀN: KIỂM TRA CHỦ SỞ HỮU BÀI VIẾT HOẶC ADMIN
+        // PHÂN QUYỀN TRUY CẬP: Chỉ chủ sở hữu bài viết hoặc Admin mới được phép can thiệp sâu
         private async Task<bool> CanManagePostAsync(Post post)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -239,7 +260,6 @@ namespace PetSocial.Controllers
             return post.UserId == user.Id || User.IsInRole("Admin");
         }
 
-        // HÀM LƯU ẢNH CHUẨN VÀO WWWROOT/IMAGES/POSTS
         private async Task<string?> SavePostImageAsync(IFormFile? imageFile)
         {
             if (imageFile == null || imageFile.Length == 0) return null;
@@ -251,7 +271,6 @@ namespace PetSocial.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            // Tạo tên file duy nhất bằng Guid để không bị đè file trùng tên
             var extension = Path.GetExtension(imageFile.FileName);
             var fileName = $"{Guid.NewGuid():N}{extension}";
             var filePath = Path.Combine(uploadsFolder, fileName);
@@ -259,11 +278,9 @@ namespace PetSocial.Controllers
             await using var stream = new FileStream(filePath, FileMode.Create);
             await imageFile.CopyToAsync(stream);
 
-            // Trả về đường dẫn tương đối để lưu vào DB
             return $"/images/posts/{fileName}";
         }
 
-        // HÀM XÓA FILE ẢNH VẬT LÝ KHỎI SERVER KHI SỬA/XÓA
         private void DeleteLocalImage(string? imageUrl)
         {
             if (string.IsNullOrWhiteSpace(imageUrl) || !imageUrl.StartsWith("/images/posts/", StringComparison.OrdinalIgnoreCase))
@@ -276,8 +293,7 @@ namespace PetSocial.Controllers
                 System.IO.File.Delete(fullPath);
         }
 
-        // 9. THẢ TIM BÀI VIẾT
-        // 9. THẢ TIM BÀI VIẾT (XỬ LÝ ASYNC QUA AJAX)
+        // 9. THẢ TIM BÀI VIẾT (XỬ LÝ AJAX)
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ToggleLike(int postId)
@@ -304,10 +320,8 @@ namespace PetSocial.Controllers
 
             await _context.SaveChangesAsync();
 
-            // Tính lại tổng số lượt thích hiện tại của bài viết
             var totalLikes = await _context.Likes.CountAsync(l => l.PostId == postId);
 
-            // Trả về dữ liệu JSON để JavaScript xử lý giao diện trực tiếp
             return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
         }
 
@@ -338,62 +352,7 @@ namespace PetSocial.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        // 11. THEO DÕI / HỦY THEO DÕI NGƯỜI DÙNG
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> ToggleFollow(string targetUserId)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
 
-            if (string.IsNullOrWhiteSpace(targetUserId) || targetUserId == user.Id)
-            {
-                return Json(new { success = false, message = "Không thể tự theo dõi chính mình." });
-            }
-
-            var targetUser = await _context.Users.FindAsync(targetUserId);
-            if (targetUser == null) return NotFound();
-
-            var existingFollow = await _context.Follows
-                .FirstOrDefaultAsync(f => f.FollowerId == user.Id && f.FollowingId == targetUserId);
-
-            bool isFollowingNow;
-
-            if (existingFollow != null)
-            {
-                _context.Follows.Remove(existingFollow);
-                isFollowingNow = false;
-            }
-            else
-            {
-                var newFollow = new Follow
-                {
-                    FollowerId = user.Id,
-                    FollowingId = targetUserId,
-                    CreatedAt = DateTime.Now
-                };
-                _context.Follows.Add(newFollow);
-                isFollowingNow = true;
-
-                // Tạo thông báo cho người được theo dõi
-                _context.Notifications.Add(new Notification
-                {
-                    UserId = targetUserId,
-                    Title = "Có người theo dõi mới",
-                    Content = $"{user.FullName} đã bắt đầu theo dõi bạn.",
-                    IsRead = false,
-                    CreatedAt = DateTime.Now
-                });
-            }
-
-            await _context.SaveChangesAsync();
-
-            var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == targetUserId);
-
-            return Json(new { success = true, isFollowing = isFollowingNow, followerCount });
-        }
-
-        // HÀM NẠP DANH SÁCH ID ĐANG THEO DÕI CỦA USER HIỆN TẠI ĐỂ DÙNG TRONG VIEW
         private async Task LoadFollowingIdsAsync()
         {
             var currentUserId = _userManager.GetUserId(User);

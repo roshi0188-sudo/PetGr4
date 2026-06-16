@@ -1,35 +1,153 @@
 ﻿@{
-    ViewData["Title"] = "Trang chủ";
+    ViewData["Title"] = "Chào mừng đến với PetSocial";
 }
 
-<div class="container mt-5">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<style>
+    :root {
+        --pet-primary: #FF6B00;
+        --pet-primary-hover: #E55A00;
+        --pet-surface: #F9F9FF;
+        --pet-dark: #151C27;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: radial-gradient(circle at top right, #fff5ee 0%, var(--pet-surface) 100%);
+    }
+
+    .hero-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(21, 28, 39, 0.04);
+        padding: 3rem 2rem;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-pet-primary {
+        background-color: var(--pet-primary);
+        color: white;
+        font-weight: 600;
+        border: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-pet-primary:hover {
+        background-color: var(--pet-primary-hover);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+    }
+
+    .btn-pet-secondary {
+        background-color: white;
+        color: var(--pet-primary);
+        border: 2px solid var(--pet-primary);
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-pet-secondary:hover {
+        background-color: #fff5ee;
+        color: var(--pet-primary-hover);
+        transform: translateY(-2px);
+    }
+
+    .feature-badge {
+        background: #fff0e5;
+        color: var(--pet-primary);
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 8px 16px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .paw-icon-bg {
+        font-size: 5rem;
+        color: var(--pet-primary);
+        opacity: 0.1;
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        transform: rotate(15deg);
+    }
+</style>
+
+<div class="container py-5 my-5 position-relative">
+    <div class="position-absolute w-100 h-100 overflow-hidden" style="z-index: -1; pointer-events: none;">
+        <i class="fas fa-paw position-absolute text-warning opacity-25" style="top: 10%; left: 5%; font-size: 3rem; transform: rotate(-20deg);"></i>
+        <i class="fas fa-heart position-absolute text-danger opacity-25" style="bottom: 15%; right: 5%; font-size: 2.5rem; transform: rotate(15deg);"></i>
+    </div>
+
     <div class="row justify-content-center text-center">
-        <div class="col-md-8">
-            <h1 class="display-4 fw-bold text-primary mb-3">🐶 Chào mừng đến với PetSocial</h1>
-            <p class="lead text-muted mb-5">
-                Mạng xã hội thu nhỏ dành riêng cho những người yêu thú cưng. Nơi bạn có thể chia sẻ khoảnh khắc, kết bạn và giao lưu kinh nghiệm chăm sóc các bé.
-            </p>
+        <div class="col-lg-8 col-md-10">
 
-            @if (!User.Identity!.IsAuthenticated)
-            {
-                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg px-4 gap-3">Tham gia ngay</a>
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg px-4">Đăng nhập</a>
-                </div>
-            }
-            else
-            {
-                <div class="alert alert-success mt-4" role="alert">
-                    <h4 class="alert-heading">Đăng nhập thành công!</h4>
-                    <p>Bạn đang đăng nhập với tư cách: <strong>@User.Identity.Name</strong></p>
-                    <hr>
-                    <p class="mb-0">Hãy bắt đầu khám phá và chia sẻ những bài viết mới nhất về thú cưng của bạn.</p>
+            <div class="hero-card position-relative overflow-hidden">
+                <i class="fas fa-paw paw-icon-bg"></i>
+
+                <div class="feature-badge">
+                    <i class="fas fa-sparkles"></i> Cộng đồng thú cưng lớn nhất Việt Nam
                 </div>
 
-                <div class="mt-4">
-                    <a asp-controller="Profile" asp-action="Index" class="btn btn-primary px-4">Đến trang cá nhân</a>
-                </div>
-            }
+                <h1 class="display-4 fw-extrabold mb-3" style="color: var(--pet-dark); font-weight: 800; letter-spacing: -1px;">
+                    Nơi lan tỏa yêu thương <br><span style="color: var(--pet-primary);">Thú Cưng của bạn</span>
+                </h1>
+
+                <p class="lead text-muted mb-5 px-md-4" style="font-size: 1.1rem; line-height: 1.7;">
+                    Chào mừng bạn đến với <strong style="color: var(--pet-dark)">PetSocial</strong> - không gian kết nối, chia sẻ khoảnh khắc đáng yêu, tìm kiếm bạn đời và trao đổi kinh nghiệm chăm sóc các bé yêu của bạn.
+                </p>
+
+                @if (!User.Identity!.IsAuthenticated)
+                {
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-pet-primary btn-lg rounded-pill px-5 py-3 shadow-sm">
+                            <i class="fas fa-user-plus me-2"></i>Tham gia ngay
+                        </a>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-pet-secondary btn-lg rounded-pill px-5 py-3 shadow-sm">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 rounded-4 text-start mb-4 border-0 shadow-inner" style="background-color: #f0f3ff; border-left: 5px solid #0d6efd !important;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; flex-shrink: 0;">
+                                <i class="fas fa-user-check fs-5"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0" style="color: var(--pet-dark)">Sẵn sàng khám phá!</h5>
+                                <p class="text-muted mb-0 small">Bạn đang đăng nhập với tài khoản: <span class="fw-semibold text-dark">@User.Identity.Name</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+                        <a asp-controller="Profile" asp-action="Index" class="btn btn-pet-primary btn-lg rounded-pill px-4 py-2.5 fs-6 shadow-sm">
+                            <i class="fas fa-user-circle me-2"></i>Trang cá nhân
+                        </a>
+                        <a asp-controller="Pet" asp-action="Index" class="btn btn-pet-secondary btn-lg rounded-pill px-4 py-2.5 fs-6 shadow-sm">
+                            <i class="fas fa-paw me-2"></i>Thú cưng của tôi
+                        </a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-dark btn-lg rounded-pill px-4 py-2.5 fs-6 shadow-sm text-warning fw-bold border-0" style="background-color: #1e293b;">
+                                <i class="fas fa-shield-halved me-2 text-warning"></i>Bảng quản trị Admin
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+
         </div>
     </div>
 </div>

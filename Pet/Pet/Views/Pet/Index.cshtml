@@ -16,8 +16,11 @@
     var totalPets = ViewBag.TotalPetCount as int? ?? pets.Count;
     var currentPage = ViewBag.CurrentPage as int? ?? 1;
     var totalPages = ViewBag.TotalPages as int? ?? 1;
-}
 
+    // LẤY DỮ LIỆU KIỂM TRA QUYỀN HẠN TỪ CONTROLLER TRUYỀN SANG
+    var currentUserId = ViewBag.CurrentUserId as string;
+    bool isAdmin = ViewBag.IsAdmin as bool? ?? false;
+}
 <section class="pet-page pet-directory-page">
     <div class="pet-main pet-directory-main">
         <div class="pet-directory-header">
@@ -36,7 +39,6 @@
                     <span class="pet-total-icon"><i class="fa fa-paw"></i></span>
                     <span class="pet-total-copy">
                         <strong>@totalPets Hồ sơ</strong>
-                        
                     </span>
                 </div>
             </div>
@@ -145,12 +147,16 @@
                                     <i class="fa fa-eye"></i>
                                     Xem chi tiết
                                 </a>
-                                <a asp-action="Edit" asp-route-id="@pet.Id" class="pet-icon-button" aria-label="Sửa hồ sơ @pet.Name">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@pet.Id" class="pet-icon-button pet-icon-danger" aria-label="Xóa hồ sơ @pet.Name">
-                                    <i class="fa fa-trash"></i>
-                                </a>
+
+                                @if (isAdmin || pet.UserId == currentUserId)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@pet.Id" class="pet-icon-button" aria-label="Sửa hồ sơ @pet.Name">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@pet.Id" class="pet-icon-button pet-icon-danger" aria-label="Xóa hồ sơ @pet.Name">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
                     </article>

@@ -76,7 +76,10 @@ app.MapControllerRoute(
     pattern: "Pet/{action=Index}/{id?}",
     defaults: new { controller = "Pet" });
 
-
+app.MapControllerRoute(
+    name: "post",
+    pattern: "Post/{action=Community}/{id?}", 
+    defaults: new { controller = "Post" });
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");

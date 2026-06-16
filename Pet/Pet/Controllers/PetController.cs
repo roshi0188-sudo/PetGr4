@@ -25,6 +25,7 @@ namespace PetSocial.Controllers
             _environment = environment;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index(
             string? searchString,
             string? ageRange,
@@ -33,8 +34,19 @@ namespace PetSocial.Controllers
             string? breed,
             int page = 1)
         {
+            // 1. Khởi tạo câu truy vấn gốc
             var query = _context.Pets.AsNoTracking().Include(p => p.User).AsQueryable();
 
+            if (!User.IsInRole("Admin"))
+            {
+                var userId = _userManager.GetUserId(User);
+                if (string.IsNullOrEmpty(userId)) return Challenge();
+
+                query = query.Where(p => p.UserId == userId);
+            }
+            // ========================================================
+
+            // 2. Các bộ lọc tìm kiếm (Giữ nguyên logic cũ của nhóm)
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 query = query.Where(p =>
@@ -60,6 +72,7 @@ namespace PetSocial.Controllers
             if (!string.IsNullOrWhiteSpace(breed))
                 query = query.Where(p => p.Breed != null && p.Breed.Contains(breed));
 
+            // Phân trang
             var totalPets = await query.CountAsync();
             var totalPages = Math.Max(1, (int)Math.Ceiling(totalPets / (double)PageSize));
             page = Math.Clamp(page, 1, totalPages);
@@ -70,6 +83,7 @@ namespace PetSocial.Controllers
                 .Take(PageSize)
                 .ToListAsync();
 
+            // Truyền dữ liệu bổ trợ sang View để xử lý ẩn hiện nút bấm
             ViewBag.SearchString = searchString;
             ViewBag.AgeRange = ageRange;
             ViewBag.Gender = gender;
@@ -78,6 +92,10 @@ namespace PetSocial.Controllers
             ViewBag.TotalPetCount = totalPets;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
+
+            // Gửi thêm ID người dùng hiện tại và trạng thái Admin để View check quyền
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ViewBag.IsAdmin = User.IsInRole("Admin");
 
             return View(pets);
         }

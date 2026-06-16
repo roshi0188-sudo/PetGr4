@@ -5,7 +5,7 @@
 namespace PetSocial.Migrations
 {
     /// <inheritdoc />
-    public partial class ThemDuLieu : Migration
+    public partial class ThemDL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
