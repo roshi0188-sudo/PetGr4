@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = Model.Name;
     ViewData["FullWidth"] = true;
-    ViewData["ActiveMenu"] = "Pet";
     var imageUrl = string.IsNullOrWhiteSpace(Model.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.AvatarUrl);
     var breed = string.IsNullOrWhiteSpace(Model.Breed) ? Model.Species : Model.Breed;
     var gender = string.IsNullOrWhiteSpace(Model.Gender) ? "Chưa cập nhật" : Model.Gender;
@@ -13,16 +12,24 @@
     var mapQuery = hasLocation ? System.Net.WebUtility.UrlEncode(Model.Location) : string.Empty;
     var mapUrl = hasLocation ? $"https://www.google.com/maps?q={mapQuery}&output=embed" : string.Empty;
     var mapLink = hasLocation ? $"https://www.google.com/maps/search/?api=1&query={mapQuery}" : "#";
+    var canManagePet = ViewBag.CanManagePet as bool? ?? false;
+    ViewData["ActiveMenu"] = canManagePet ? "MyPets" : "PetDirectory";
+    var ownerName = !string.IsNullOrWhiteSpace(Model.User?.FullName) ? Model.User.FullName : Model.User?.Email ?? Model.User?.UserName ?? "PetSocial";
+    var ownerAvatarUrl = string.IsNullOrWhiteSpace(Model.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.User.AvatarUrl);
+    var backAction = canManagePet ? "MyPets" : "Index";
 }
 
 <section class="pet-page pet-detail-page">
     <div class="pet-main pet-detail-main">
         <div class="pet-detail-header">
-            <a asp-action="Index" class="pet-detail-back"><i class="fa fa-arrow-left"></i> Quay lại</a>
-            <div class="pet-detail-actions">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="pet-detail-edit"><i class="fa fa-pencil"></i> Sửa</a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="pet-detail-delete"><i class="fa fa-trash"></i> Xóa</a>
-            </div>
+            <a asp-action="@backAction" class="pet-detail-back"><i class="fa fa-arrow-left"></i> Quay lại</a>
+            @if (canManagePet)
+            {
+                <div class="pet-detail-actions">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="pet-detail-edit"><i class="fa fa-pencil"></i> Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="pet-detail-delete"><i class="fa fa-trash"></i> Xóa</a>
+                </div>
+            }
         </div>
 
         <div class="pet-detail-shell">
@@ -37,9 +44,16 @@
                         <span class="pet-detail-eyebrow"><i class="fa fa-paw"></i> @Model.Species</span>
                         <h1>@Model.Name</h1>
                         <p class="pet-detail-meta"><span><i class="fa fa-star"></i> @breed</span><span><i class="fa fa-birthday-cake"></i> @Model.Age tuổi</span></p>
+                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="pet-detail-owner-line">
+                            <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
+                            <span>Người đăng: <strong>@ownerName</strong></span>
+                        </a>
                         <p class="pet-detail-location-line"><i class="fa fa-map-marker"></i> @location</p>
                     </div>
-                    <a href="#" class="pet-detail-connect"><i class="fa fa-heart"></i> Kết nối</a>
+                    @if (!canManagePet)
+                    {
+                        <a asp-controller="Chat" asp-action="Index" asp-route-userId="@Model.UserId" class="pet-detail-connect"><i class="fa fa-comments"></i> Kết nối</a>
+                    }
                 </div>
 
                 <div class="pet-detail-content">
@@ -64,17 +78,22 @@
 
                         @if (hasLocation)
                         {
-                            <article class="wide pet-detail-map-card">
+                            <article class="wide pet-detail-map-card" data-pet-map data-location="@location">
                                 <div class="pet-detail-map-heading">
                                     <h2><i class="fa fa-map"></i> Bản đồ vị trí</h2>
-                                    <a href="@mapLink" target="_blank" rel="noopener noreferrer"><i class="fa fa-external-link"></i> Mở bản đồ</a>
+                                    <a href="@mapLink" target="_blank" rel="noopener noreferrer" data-pet-map-link><i class="fa fa-external-link"></i> Mở bản đồ</a>
                                 </div>
-                                <iframe
-                                    src="@mapUrl"
-                                    loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"
-                                    title="Bản đồ vị trí @Model.Name">
-                                </iframe>
+                                <div class="pet-map-frame-wrap">
+                                    <iframe data-pet-map-frame
+                                            src="@mapUrl"
+                                            loading="lazy"
+                                            referrerpolicy="no-referrer-when-downgrade"
+                                            title="Bản đồ vị trí @Model.Name">
+                                    </iframe>
+                                    <span class="pet-map-paw-marker" title="Vị trí của @Model.Name">
+                                        <i class="fa fa-paw"></i>
+                                    </span>
+                                </div>
                             </article>
                         }
                     </div>
@@ -83,3 +102,56 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const mapCard = document.querySelector('[data-pet-map]');
+            if (!mapCard) return;
+
+            const locationText = mapCard.dataset.location;
+            const frame = mapCard.querySelector('[data-pet-map-frame]');
+            const link = mapCard.querySelector('[data-pet-map-link]');
+            if (!locationText || !frame || !link) return;
+
+            const getCoordsFromText = (value) => {
+                const match = value.match(/^\s*(-?\d+(?:[.,]\d+)?)\s*,\s*(-?\d+(?:[.,]\d+)?)\s*$/);
+                if (!match) return null;
+
+                return {
+                    lat: match[1].replace(',', '.'),
+                    lng: match[2].replace(',', '.')
+                };
+            };
+
+            const setMapPosition = ({ lat, lng }) => {
+                const query = `${lat},${lng}`;
+                frame.src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=17&output=embed`;
+                link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+            };
+
+            const geocodeLocation = async () => {
+                const coords = getCoordsFromText(locationText);
+                if (coords) {
+                    setMapPosition(coords);
+                    return;
+                }
+
+                try {
+                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=vi&q=${encodeURIComponent(locationText)}`;
+                    const response = await fetch(url);
+                    if (!response.ok) return;
+
+                    const results = await response.json();
+                    if (!results.length) return;
+
+                    setMapPosition({ lat: results[0].lat, lng: results[0].lon });
+                } catch {
+                    // Nếu không đổi được địa chỉ sang tọa độ, vẫn giữ bản đồ theo địa chỉ đã lưu.
+                }
+            };
+
+            geocodeLocation();
+        })();
+    </script>
+}

@@ -20,5 +20,6 @@ namespace PetSocial.ViewModels
         public List<AppUser> FollowingList { get; set; } = new();
 
         public List<Post> Posts { get; set; } = new();
+        public List<PetModule> Pets { get; set; } = new();
     }
 }

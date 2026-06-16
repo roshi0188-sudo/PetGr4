@@ -1,5 +1,4 @@
 wwwroot\css\chat.css
-wwwroot\css\site.css
 wwwroot\css\splash.css
 wwwroot\favicon.ico
 wwwroot\images\avatars\416bd138-5ebc-4c53-bfbb-f3c3ef93a500_ChatGPT_Image_12_23_27_16_thg_12__2025-removebg-preview.png
@@ -13,6 +12,7 @@ wwwroot\images\Pet\70dc9edd80994360ab06ddb858d99b5f.jpg
 wwwroot\images\Pet\86adf6b8367f4783b3d0a2fbb613f3a8.jpg
 wwwroot\images\Pet\cho-corgi.jpg
 wwwroot\images\Pet\e472f8c97d92417f9d1e81c400388dd2.jpg
+wwwroot\images\Pet\eb2b73155ef44ee6a09511fccbac1968.jpg
 wwwroot\images\Pet\meo.jpg
 wwwroot\images\Pet\poodle.jpg
 wwwroot\images\posts\46ea1dee66fe4b1cad41029df2c628a7.jpg
@@ -76,3 +76,4 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\css\site.css

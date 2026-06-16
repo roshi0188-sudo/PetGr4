@@ -1,0 +1,57 @@
+<header class="app-header">
+    <div class="app-header-left">
+        <button type="button"
+                class="app-menu-toggle"
+                data-sidebar-toggle
+                aria-label="Ẩn hoặc hiện danh mục">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <a class="app-header-brand"
+           asp-area=""
+           asp-controller="Post"
+           asp-action="Community">
+            <span class="app-header-logo">
+                <img src="~/images/logo.jpg" alt="PetSocial" />
+            </span>
+            <strong>PetGr4</strong>
+        </a>
+    </div>
+
+    <div class="app-header-right">
+        @if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a class="app-header-account"
+               asp-area=""
+               asp-controller="Profile"
+               asp-action="Index">
+                <span class="app-header-avatar">
+                    <i class="fa fa-user"></i>
+                </span>
+                <span>
+                    <small>Tài khoản</small>
+                    <strong>@User.Identity.Name</strong>
+                </span>
+            </a>
+
+            <form asp-area=""
+                  asp-controller="Account"
+                  asp-action="Logout"
+                  method="post"
+                  class="app-header-logout-form">
+                <button type="submit" class="app-header-logout" title="Đăng xuất" aria-label="Đăng xuất">
+                    <i class="fa fa-sign-out"></i>
+                </button>
+            </form>
+        }
+        else
+        {
+            <a class="app-header-login"
+               asp-area=""
+               asp-controller="Account"
+               asp-action="Login">
+                Đăng nhập
+            </a>
+        }
+    </div>
+</header>

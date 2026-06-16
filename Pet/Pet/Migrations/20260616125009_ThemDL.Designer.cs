@@ -12,8 +12,8 @@ using PetSocial.Data;
 namespace PetSocial.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260615102648_KhoiTao")]
-    partial class KhoiTao
+    [Migration("20260616125009_ThemDL")]
+    partial class ThemDL
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

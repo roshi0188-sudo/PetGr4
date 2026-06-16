@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using PetSocial.Data;
@@ -29,6 +30,7 @@ namespace PetSocial.Controllers
         public IActionResult Suggest(int id)
         {
             var pet = _context.Pets.FirstOrDefault(x => x.Id == id);
+            if (pet == null) return NotFound();
 
             ViewBag.PetName = pet.Name;
 
@@ -42,12 +44,10 @@ namespace PetSocial.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SendMatch(int receiverPetId)
         {
-            var currentUserId =
-                User.FindFirst(
-                    System.Security.Claims.ClaimTypes.NameIdentifier
-                )?.Value;
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (currentUserId == null)
                 return RedirectToAction("Login", "Account");
@@ -56,13 +56,16 @@ namespace PetSocial.Controllers
                 .FirstOrDefault(x => x.UserId == currentUserId);
 
             if (senderPet == null)
-                return RedirectToAction("Index", "Pet");
+                return RedirectToAction("MyPets", "Pet");
 
             var receiverPet = _context.Pets
                 .FirstOrDefault(x => x.Id == receiverPetId);
 
             if (receiverPet == null)
                 return NotFound();
+
+            if (receiverPet.UserId == currentUserId)
+                return RedirectToAction("MyPets", "Pet");
 
             bool existed = _context.PetMatches.Any(x =>
                 x.SenderPetId == senderPet.Id &&
@@ -79,13 +82,11 @@ namespace PetSocial.Controllers
 
                 _context.PetMatches.Add(match);
 
-                // Notification
                 var notification = new Notification
                 {
                     UserId = receiverPet.UserId,
                     Title = "Lời mời kết nối mới",
-                    Content =
-                        $"{senderPet.Name} muốn kết nối với thú cưng của bạn",
+                    Content = $"{senderPet.Name} muốn kết nối với thú cưng của bạn",
                     IsRead = false,
                     CreatedAt = DateTime.Now
                 };
@@ -94,7 +95,6 @@ namespace PetSocial.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Realtime Notification
                 await _hubContext
                     .Clients
                     .User(receiverPet.UserId)
@@ -110,10 +110,7 @@ namespace PetSocial.Controllers
 
         public IActionResult Requests()
         {
-            var currentUserId =
-                User.FindFirst(
-                    System.Security.Claims.ClaimTypes.NameIdentifier
-                )?.Value;
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var myPet = _context.Pets
                 .FirstOrDefault(x => x.UserId == currentUserId);
@@ -133,8 +130,7 @@ namespace PetSocial.Controllers
 
         public async Task<IActionResult> Accept(int id)
         {
-            var match =
-                _context.PetMatches
+            var match = _context.PetMatches
                 .Include(x => x.SenderPet)
                 .Include(x => x.ReceiverPet)
                 .FirstOrDefault(x => x.Id == id);
@@ -149,8 +145,7 @@ namespace PetSocial.Controllers
                 {
                     UserId = match.SenderPet.UserId,
                     Title = "Lời mời được chấp nhận",
-                    Content =
-                        $"{match.ReceiverPet.Name} đã chấp nhận kết nối",
+                    Content = $"{match.ReceiverPet.Name} đã chấp nhận kết nối",
                     CreatedAt = DateTime.Now
                 });
 
@@ -170,11 +165,13 @@ namespace PetSocial.Controllers
 
         public IActionResult Matches()
         {
-            var currentUserId = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var myPet = _context.Pets
                 .FirstOrDefault(x => x.UserId == currentUserId);
+
+            if (myPet == null)
+                return RedirectToAction("MyPets", "Pet");
 
             ViewBag.CurrentUserId = currentUserId;
 

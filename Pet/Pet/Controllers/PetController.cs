@@ -8,6 +8,7 @@ using System.Globalization;
 
 namespace PetSocial.Controllers
 {
+    [Authorize]
     public class PetController : Controller
     {
         private const int PageSize = 12;
@@ -25,7 +26,6 @@ namespace PetSocial.Controllers
             _environment = environment;
         }
 
-        [Authorize]
         public async Task<IActionResult> Index(
             string? searchString,
             string? ageRange,
@@ -34,19 +34,8 @@ namespace PetSocial.Controllers
             string? breed,
             int page = 1)
         {
-            // 1. Khởi tạo câu truy vấn gốc
             var query = _context.Pets.AsNoTracking().Include(p => p.User).AsQueryable();
 
-            if (!User.IsInRole("Admin"))
-            {
-                var userId = _userManager.GetUserId(User);
-                if (string.IsNullOrEmpty(userId)) return Challenge();
-
-                query = query.Where(p => p.UserId == userId);
-            }
-            // ========================================================
-
-            // 2. Các bộ lọc tìm kiếm (Giữ nguyên logic cũ của nhóm)
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 query = query.Where(p =>
@@ -72,7 +61,6 @@ namespace PetSocial.Controllers
             if (!string.IsNullOrWhiteSpace(breed))
                 query = query.Where(p => p.Breed != null && p.Breed.Contains(breed));
 
-            // Phân trang
             var totalPets = await query.CountAsync();
             var totalPages = Math.Max(1, (int)Math.Ceiling(totalPets / (double)PageSize));
             page = Math.Clamp(page, 1, totalPages);
@@ -83,7 +71,6 @@ namespace PetSocial.Controllers
                 .Take(PageSize)
                 .ToListAsync();
 
-            // Truyền dữ liệu bổ trợ sang View để xử lý ẩn hiện nút bấm
             ViewBag.SearchString = searchString;
             ViewBag.AgeRange = ageRange;
             ViewBag.Gender = gender;
@@ -92,27 +79,100 @@ namespace PetSocial.Controllers
             ViewBag.TotalPetCount = totalPets;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
-
-            // Gửi thêm ID người dùng hiện tại và trạng thái Admin để View check quyền
+            ViewBag.IsMyPets = false;
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
-            ViewBag.IsAdmin = User.IsInRole("Admin");
+            ViewBag.CanManageAllPets = User.IsInRole("Admin");
 
             return View(pets);
+        }
+
+        public IActionResult Community(
+            string? searchString,
+            string? ageRange,
+            string? gender,
+            string? personality,
+            string? breed,
+            int page = 1)
+        {
+            return RedirectToAction(nameof(Index), new { searchString, ageRange, gender, personality, breed, page });
+        }
+
+        public async Task<IActionResult> MyPets(
+            string? searchString,
+            string? ageRange,
+            string? gender,
+            string? personality,
+            string? breed,
+            int page = 1)
+        {
+            var query = _context.Pets.AsNoTracking().Include(p => p.User).AsQueryable();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrWhiteSpace(userId)) return Challenge();
+
+            query = query.Where(p => p.UserId == userId);
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(searchString) ||
+                    p.Species.Contains(searchString) ||
+                    (p.Breed != null && p.Breed.Contains(searchString)));
+            }
+
+            query = ageRange switch
+            {
+                "under1" => query.Where(p => p.Age < 1),
+                "1to3" => query.Where(p => p.Age >= 1 && p.Age <= 3),
+                "over3" => query.Where(p => p.Age > 3),
+                _ => query
+            };
+
+            if (!string.IsNullOrWhiteSpace(gender))
+                query = query.Where(p => p.Gender == gender);
+
+            if (!string.IsNullOrWhiteSpace(personality))
+                query = query.Where(p => p.Personality != null && p.Personality.Contains(personality));
+
+            if (!string.IsNullOrWhiteSpace(breed))
+                query = query.Where(p => p.Breed != null && p.Breed.Contains(breed));
+
+            var totalPets = await query.CountAsync();
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalPets / (double)PageSize));
+            page = Math.Clamp(page, 1, totalPages);
+
+            var pets = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * PageSize)
+                .Take(PageSize)
+                .ToListAsync();
+
+            ViewBag.SearchString = searchString;
+            ViewBag.AgeRange = ageRange;
+            ViewBag.Gender = gender;
+            ViewBag.Personality = personality;
+            ViewBag.Breed = breed;
+            ViewBag.TotalPetCount = totalPets;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.IsMyPets = true;
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ViewBag.CanManageAllPets = User.IsInRole("Admin");
+
+            return View(nameof(Index), pets);
         }
 
         public async Task<IActionResult> Details(int id)
         {
             var pet = await _context.Pets.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (pet == null) return NotFound();
+            ViewBag.CanManagePet = await CanManagePetAsync(pet);
 
             return View(pet);
         }
 
-        [Authorize]
         public IActionResult Create() => View(new PetModule());
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PetModule pet, IFormFile? imageFile)
         {
@@ -134,7 +194,6 @@ namespace PetSocial.Controllers
             return RedirectToAction(nameof(Details), new { id = pet.Id });
         }
 
-        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             var pet = await _context.Pets.FindAsync(id);
@@ -145,7 +204,6 @@ namespace PetSocial.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PetModule formPet, IFormFile? imageFile)
         {
@@ -190,7 +248,6 @@ namespace PetSocial.Controllers
             return RedirectToAction(nameof(Details), new { id = pet.Id });
         }
 
-        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var pet = await _context.Pets.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
@@ -201,7 +258,6 @@ namespace PetSocial.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -213,7 +269,7 @@ namespace PetSocial.Controllers
             _context.Pets.Remove(pet);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyPets));
         }
 
         private async Task<bool> CanManagePetAsync(PetModule pet)

@@ -1,249 +1,264 @@
-﻿@model PetSocial.ViewModels.ProfileDetails
+@model PetSocial.ViewModels.ProfileDetails
+
 @{
     ViewData["Title"] = $"Hồ sơ của {Model.User.FullName}";
-    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-    bool isAdmin = User.IsInRole("Admin");
+    ViewData["FullWidth"] = true;
+    ViewData["ActiveMenu"] = Model.IsOwnProfile ? "Profile" : null;
+
+    var isAdmin = User.IsInRole("Admin");
+    var avatarUrl = string.IsNullOrWhiteSpace(Model.User.AvatarUrl) ? null : Url.Content(Model.User.AvatarUrl);
+    var displayName = string.IsNullOrWhiteSpace(Model.User.FullName) ? Model.User.UserName ?? "Người dùng PetSocial" : Model.User.FullName;
+    var email = string.IsNullOrWhiteSpace(Model.User.Email) ? "Chưa cập nhật email" : Model.User.Email;
+    var phone = string.IsNullOrWhiteSpace(Model.User.PhoneNumber) ? "Chưa cập nhật số điện thoại" : Model.User.PhoneNumber;
 }
-
-<!-- Đồng bộ font chữ hệ thống Plus Jakarta Sans -->
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-<script>
-    tailwind.config = {
-    darkMode: "class",
-    theme: {
-    extend: {
-    colors: {
-    'pet-primary': '#FF6B00',         /* Màu cam thương hiệu đã đồng bộ */
-    'pet-primary-hover': '#E55A00',
-    'pet-primary-fixed': '#FFF0E5',
-    'pet-dark': '#151C27',
-    'pet-background': '#F8FAFC'
-    }
-    }
-    }
-    }
-</script>
-
-<style>
-    body {
-    background-color: #F8FAFC;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .ambient-shadow {
-    box-shadow: 0 10px 30px rgba(21, 28, 39, 0.03);
-    }
-</style>
 
 @if (User.Identity?.IsAuthenticated == true)
 {
     @Html.AntiForgeryToken()
 }
 
-<main class="max-w-2xl mx-auto px-4 py-8">
+<section class="profile-page">
+    <div class="profile-main">
+        <div class="profile-topbar">
+            <a asp-controller="Post" asp-action="Index" class="profile-back-button" aria-label="Quay lại bảng tin">
+                <i class="fa fa-arrow-left"></i>
+            </a>
+            <div>
+                <h1>@(Model.IsOwnProfile ? "Trang cá nhân" : "Hồ sơ người dùng")</h1>
+                <p>@(Model.IsOwnProfile ? "Bài viết và thông tin tài khoản của bạn." : "Xem bài viết và trao đổi với người đăng.")</p>
+            </div>
+        </div>
 
-    <!-- Thanh đầu trang -->
-    <div class="flex items-center gap-3 mb-6">
-        <a asp-controller="Post" asp-action="Index" class="hover:bg-gray-100 p-2 rounded-full active:scale-95 duration-150 flex items-center justify-center transition-all" title="Quay lại trang chủ">
-            <span class="material-symbols-outlined text-gray-700 text-xl font-bold">arrow_back</span>
-        </a>
-        <h2 class="text-xl font-extrabold text-gray-900 tracking-tight">Hồ sơ người dùng</h2>
-    </div>
+        <section class="profile-hero">
+            <div class="profile-cover"></div>
 
-    <!-- Thẻ thông tin cá nhân lớn -->
-    <div class="bg-white rounded-[24px] border border-gray-100 ambient-shadow p-6 mb-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                @if (!string.IsNullOrWhiteSpace(Model.User.AvatarUrl))
-                {
-                    <div class="w-20 h-20 rounded-full ring-4 ring-pet-primary-fixed overflow-hidden bg-gray-50 flex items-center justify-center shrink-0">
-                        <img src="@Model.User.AvatarUrl" alt="Avatar" class="w-20 h-20 object-cover" />
-                    </div>
-                }
-                else
-                {
-                    <div class="w-20 h-20 rounded-full ring-4 ring-pet-primary-fixed overflow-hidden bg-gray-100 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-gray-400 text-4xl">person</span>
-                    </div>
-                }
+            <div class="profile-identity">
+                <div class="profile-avatar">
+                    @if (!string.IsNullOrWhiteSpace(avatarUrl))
+                    {
+                        <img src="@avatarUrl" alt="Ảnh đại diện của @displayName" />
+                    }
+                    else
+                    {
+                        <span>@displayName.Substring(0, 1).ToUpper()</span>
+                    }
+                </div>
 
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-lg font-extrabold text-gray-900">@Model.User.FullName</h3>
-                        <!-- Nhãn Role nếu người dùng này là Admin -->
+                <div class="profile-title-block">
+                    <div class="profile-name-line">
+                        <h2>@displayName</h2>
                         @if (Model.User.Email == "admin@petsocial.com")
                         {
-                            <span class="bg-slate-900 text-warning text-[10px] font-bold px-2 py-0.5 rounded-md">ADMIN</span>
+                            <span class="profile-admin-badge"><i class="fa fa-shield"></i> Admin</span>
                         }
                     </div>
-                    <p class="text-xs text-gray-400 mt-0.5">Thành viên từ @Model.User.CreatedAt.ToString("dd/MM/yyyy")</p>
+                    <p><i class="fa fa-calendar"></i> Thành viên từ @Model.User.CreatedAt.ToString("dd/MM/yyyy")</p>
                 </div>
-            </div>
 
-            <!-- Cụm nút hành động + Phân quyền Admin -->
-            <div class="flex items-center gap-2 self-end sm:self-center">
-                @if (Model.IsOwnProfile)
-                {
-                    <a asp-controller="Profile" asp-action="Edit" class="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs px-4 py-2.5 rounded-full transition-all">
-                        <span class="material-symbols-outlined text-sm">edit</span> Chỉnh sửa hồ sơ
-                    </a>
-                }
-                else if (User.Identity?.IsAuthenticated == true)
-                {
-                    <!-- Nút theo dõi cơ bản cho User -->
-                    <button type="button"
-                            id="profileFollowBtn"
-                            data-user-id="@Model.User.Id"
-                            class="follow-btn-profile text-xs font-bold px-5 py-2.5 rounded-full transition-all @(Model.IsFollowing ? "bg-gray-100 text-gray-600 hover:bg-gray-200" : "bg-pet-primary text-white hover:bg-pet-primary-hover shadow-sm")">
-                        @(Model.IsFollowing ? "Đang theo dõi" : "Theo dõi")
-                    </button>
-
-                    <!-- ĐẶC QUYỀN ADMIN: Quyền Khóa / Ban tài khoản vi phạm trực tiếp ngay tại hồ sơ -->
-                    @if (isAdmin)
+                <div class="profile-actions">
+                    @if (Model.IsOwnProfile)
                     {
-                        <form asp-area="Admin" asp-controller="User" asp-action="ToggleBlock" asp-route-id="@Model.User.Id" method="post" class="inline m-0">
-                            <button type="submit" class="inline-flex items-center justify-center p-2.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-full transition-colors" title="Khóa/Mở khóa tài khoản này">
-                                <span class="material-symbols-outlined text-sm font-bold">block</span>
-                            </button>
-                        </form>
+                        <a asp-controller="Pet" asp-action="MyPets" class="profile-primary-action">
+                            <i class="fa fa-paw"></i>
+                            Xem thú cưng của tôi
+                        </a>
+                        <a asp-controller="Match" asp-action="Matches" class="profile-connect-list-action">
+                            <i class="fa fa-users"></i>
+                            Danh sách kết nối
+                        </a>
+                        <a asp-controller="Profile" asp-action="Edit" class="profile-secondary-action">
+                            <i class="fa fa-pencil"></i>
+                            Chỉnh sửa
+                        </a>
                     }
-                }
-                else
-                {
-                    <a asp-controller="Account" asp-action="Login" class="inline-flex items-center gap-1.5 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-xs px-5 py-2.5 rounded-full transition-all shadow-sm">
-                        Theo dõi
-                    </a>
-                }
-            </div>
-        </div>
+                    else if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a asp-controller="Chat" asp-action="Index" asp-route-userId="@Model.User.Id" class="profile-primary-action">
+                            <i class="fa fa-comments"></i>
+                            Nhắn tin
+                        </a>
+                        <button type="button"
+                                id="profileFollowBtn"
+                                data-user-id="@Model.User.Id"
+                                class="profile-follow-button @(Model.IsFollowing ? "is-following" : "")">
+                            @(Model.IsFollowing ? "Đang theo dõi" : "Theo dõi")
+                        </button>
 
-        <!-- Chỉ số tương tác MXH -->
-        <div class="flex gap-8 mt-6 pt-5 border-t border-gray-100">
-            <div class="text-left">
-                <p class="text-xl font-black text-gray-900">@Model.PostCount</p>
-                <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Bài viết</p>
-            </div>
-            <a asp-action="Followers" asp-route-id="@Model.User.Id" class="text-left hover:opacity-70 transition-opacity">
-                <p class="text-xl font-black text-gray-900" id="followerCountLabel">@Model.FollowerCount</p>
-                <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Người theo dõi</p>
-            </a>
-            <a asp-action="FollowingList" asp-route-id="@Model.User.Id" class="text-left hover:opacity-70 transition-opacity">
-                <p class="text-xl font-black text-gray-900">@Model.FollowingCount</p>
-                <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">Đang theo dõi</p>
-            </a>
-        </div>
-    </div>
-
-    <!-- Phân vùng danh sách bài đăng -->
-    <h3 class="text-xs font-extrabold text-gray-500 uppercase tracking-wider mb-4 px-1">Bài viết đã đăng</h3>
-
-    <div class="flex flex-col gap-4">
-        @if (!Model.Posts.Any())
-        {
-            <div class="bg-white rounded-[24px] p-12 text-center border border-gray-100 ambient-shadow">
-                <div class="w-16 h-16 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span class="material-symbols-outlined text-3xl">auto_stories</span>
-                </div>
-                <p class="text-gray-500 font-bold text-sm">Chưa có bài viết nào</p>
-                <p class="text-xs text-gray-400 mt-1">Người dùng chưa chia sẻ khoảnh khắc nào lên mạng xã hội.</p>
-            </div>
-        }
-        else
-        {
-            @foreach (var post in Model.Posts)
-            {
-                int totalLikesCount = post.Likes?.Count ?? 0;
-
-                <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden ambient-shadow transition-transform duration-200 hover:-translate-y-0.5">
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-[11px] text-gray-400 font-bold">@post.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-
-                            <!-- ĐẶC QUYỀN ADMIN: Nút xóa bài viết trực tiếp nếu phát hiện nội dung độc hại -->
-                            @if (isAdmin)
-                            {
-                                <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết vi phạm này không?');" class="m-0">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="text-gray-400 hover:text-rose-600 transition-colors p-1 rounded-full hover:bg-rose-50 flex items-center justify-center" title="Xóa bài viết vi phạm">
-                                        <span class="material-symbols-outlined text-lg">delete</span>
-                                    </button>
-                                </form>
-                            }
-                        </div>
-
-                        <p class="text-sm text-gray-800 font-medium leading-relaxed mb-4 whitespace-pre-line">@post.Content</p>
-
-                        @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
+                        @if (isAdmin)
                         {
-                            <div class="rounded-2xl overflow-hidden max-h-[380px] bg-gray-50 border border-gray-50 mb-4">
-                                <img src="@post.ImageUrl" alt="Hình ảnh bài đăng" class="w-full h-full object-cover" />
-                            </div>
+                            <form asp-area="Admin" asp-controller="User" asp-action="ToggleBlock" asp-route-id="@Model.User.Id" method="post" class="profile-admin-form">
+                                <button type="submit" class="profile-danger-action" title="Khóa/Mở khóa tài khoản">
+                                    <i class="fa fa-ban"></i>
+                                </button>
+                            </form>
                         }
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="profile-primary-action">
+                            <i class="fa fa-user-plus"></i>
+                            Theo dõi
+                        </a>
+                    }
+                </div>
+            </div>
 
-                        <!-- Thanh tương tác -->
-                        <div class="flex items-center gap-6 pt-3 border-t border-gray-50 text-gray-500">
-                            <button type="button" class="flex items-center gap-2 text-rose-500 font-bold transition-transform active:scale-90">
-                                <span class="material-symbols-outlined text-xl font-bold fill-rose-500">favorite</span>
-                                <span class="text-xs">@totalLikesCount Lượt thích</span>
-                            </button>
+            <div class="profile-meta-grid">
+                <div class="profile-meta-item">
+                    <i class="fa fa-envelope"></i>
+                    <span>Email</span>
+                    <strong>@email</strong>
+                </div>
+                <div class="profile-meta-item">
+                    <i class="fa fa-phone"></i>
+                    <span>Điện thoại</span>
+                    <strong>@phone</strong>
+                </div>
+                <div class="profile-meta-item">
+                    <i class="fa fa-paw"></i>
+                    <span>Thú cưng</span>
+                    @if (Model.IsOwnProfile)
+                    {
+                        <a asp-controller="Pet" asp-action="MyPets">@Model.Pets.Count hồ sơ</a>
+                    }
+                    else
+                    {
+                        <strong>@Model.Pets.Count hồ sơ</strong>
+                    }
+                </div>
+            </div>
 
-                            <a asp-controller="Post" asp-action="Details" asp-route-id="@post.Id" class="flex items-center gap-2 hover:text-pet-primary font-bold transition-colors">
-                                <span class="material-symbols-outlined text-xl">chat_bubble</span>
-                                <span class="text-xs">@(post.Comments?.Count ?? 0) bình luận</span>
-                            </a>
-                        </div>
-                    </div>
-                </article>
+            <div class="profile-stats">
+                <div>
+                    <strong>@Model.PostCount</strong>
+                    <span>Bài viết</span>
+                </div>
+                <a asp-action="Followers" asp-route-id="@Model.User.Id">
+                    <strong id="followerCountLabel">@Model.FollowerCount</strong>
+                    <span>Người theo dõi</span>
+                </a>
+                <a asp-action="FollowingList" asp-route-id="@Model.User.Id">
+                    <strong>@Model.FollowingCount</strong>
+                    <span>Đang theo dõi</span>
+                </a>
+            </div>
+        </section>
+
+        <section class="profile-feed">
+            <div class="profile-section-heading">
+                <div>
+                    <h2>Bài viết đã đăng</h2>
+                    <p>Những chia sẻ gần đây của @displayName.</p>
+                </div>
+                <span>@Model.PostCount bài viết</span>
+            </div>
+
+            @if (!Model.Posts.Any())
+            {
+                <div class="profile-empty-posts">
+                    <div><i class="fa fa-file-text-o"></i></div>
+                    <h3>Chưa có bài viết nào</h3>
+                    <p>Tài khoản này chưa chia sẻ bài viết lên PetSocial.</p>
+                </div>
             }
-        }
+            else
+            {
+                <div class="profile-post-list">
+                    @foreach (var post in Model.Posts)
+                    {
+                        var totalLikesCount = post.Likes?.Count ?? 0;
+                        var totalCommentsCount = post.Comments?.Count ?? 0;
+
+                        <article class="profile-post-card">
+                            <div class="profile-post-header">
+                                <div class="profile-post-author">
+                                    <div class="profile-post-avatar">
+                                        @if (!string.IsNullOrWhiteSpace(avatarUrl))
+                                        {
+                                            <img src="@avatarUrl" alt="Ảnh đại diện của @displayName" />
+                                        }
+                                        else
+                                        {
+                                            <span>@displayName.Substring(0, 1).ToUpper()</span>
+                                        }
+                                    </div>
+                                    <div>
+                                        <strong>@displayName</strong>
+                                        <span>@post.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                                    </div>
+                                </div>
+
+                                @if (isAdmin)
+                                {
+                                    <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="profile-post-delete" title="Xóa bài viết">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+
+                            <p class="profile-post-content">@post.Content</p>
+
+                            @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
+                            {
+                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.Id" class="profile-post-image">
+                                    <img src="@post.ImageUrl" alt="Hình ảnh bài đăng" loading="lazy" />
+                                </a>
+                            }
+
+                            <div class="profile-post-footer">
+                                <span><i class="fa fa-heart"></i> @totalLikesCount lượt thích</span>
+                                <a asp-controller="Post" asp-action="Details" asp-route-id="@post.Id">
+                                    <i class="fa fa-comment"></i> @totalCommentsCount bình luận
+                                </a>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
     </div>
-</main>
+</section>
 
-<!-- Mã Ajax xử lý Theo dõi giữ nguyên hoạt động mượt mà của bạn -->
-<script>
-    var profileFollowBtn = document.getElementById('profileFollowBtn');
-    if (profileFollowBtn) {
-    profileFollowBtn.addEventListener('click', function () {
-    var targetUserId = profileFollowBtn.getAttribute('data-user-id');
-    var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-    var token = tokenInput ? tokenInput.value : '';
+@section Scripts {
+    <script>
+        (() => {
+            const profileFollowBtn = document.getElementById('profileFollowBtn');
+            if (!profileFollowBtn) return;
 
-    const form = new URLSearchParams();
-    form.append('targetUserId', targetUserId);
+            profileFollowBtn.addEventListener('click', function () {
+                const targetUserId = profileFollowBtn.getAttribute('data-user-id');
+                const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                const token = tokenInput ? tokenInput.value : '';
+                const form = new URLSearchParams();
+                form.append('targetUserId', targetUserId);
 
-    fetch('/Post/ToggleFollow', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    'RequestVerificationToken': token
-    },
-    body: form.toString()
-    })
-    .then(r => r.json())
-    .then(data => {
-    if (data && data.success) {
-    if (data.isFollowing) {
-    profileFollowBtn.innerText = 'Đang theo dõi';
-    profileFollowBtn.classList.remove('bg-pet-primary', 'text-white', 'hover:bg-pet-primary-hover');
-    profileFollowBtn.classList.add('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
-    } else {
-    profileFollowBtn.innerText = 'Theo dõi';
-    profileFollowBtn.classList.remove('bg-gray-100', 'text-gray-600', 'hover:bg-gray-200');
-    profileFollowBtn.classList.add('bg-pet-primary', 'text-white', 'hover:bg-pet-primary-hover');
-    }
+                fetch('/Post/ToggleFollow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: form.toString()
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data && data.success) {
+                            profileFollowBtn.innerText = data.isFollowing ? 'Đang theo dõi' : 'Theo dõi';
+                            profileFollowBtn.classList.toggle('is-following', data.isFollowing);
 
-    var followerCountLabel = document.getElementById('followerCountLabel');
-    if (followerCountLabel && data.followerCount !== undefined) {
-    followerCountLabel.innerText = data.followerCount;
-    }
-    } else if (data && data.message) {
-    alert(data.message);
-    }
-    })
-    .catch(err => console.error('Follow error', err));
-    });
-    }
-</script>
+                            const followerCountLabel = document.getElementById('followerCountLabel');
+                            if (followerCountLabel && data.followerCount !== undefined) {
+                                followerCountLabel.innerText = data.followerCount;
+                            }
+                        } else if (data && data.message) {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(err => console.error('Follow error', err));
+            });
+        })();
+    </script>
+}

@@ -1,99 +1,88 @@
 @{
     var activeMenu = ViewData["ActiveMenu"] as string;
 }
-<aside class="pet-sidebar">
 
+<aside class="pet-sidebar">
     <a class="pet-sidebar-brand"
        asp-area=""
        asp-controller="Post"
        asp-action="Community">
         <span class="pet-sidebar-logo">
-            <img src="~/images/logo.jpg"
-                 alt="PetSocial" />
+            <img src="~/images/logo.jpg" alt="PetSocial" />
         </span>
-
         <strong>PetGr4</strong>
-
     </a>
 
     <nav class="pet-menu">
-
         <a asp-area=""
            asp-controller="Post"
            asp-action="Index"
            class="@(activeMenu == "Home" ? "active" : "")">
-
             <i class="fa fa-home"></i>
             <span>Trang chủ</span>
         </a>
 
         <a asp-area=""
-           asp-controller="Pet"
+           asp-controller="Profile"
            asp-action="Index"
-           class="@(activeMenu == "Pet" ? "active" : "")">
-
-            <i class="fa fa-paw"></i>
-            <span>Thú cưng</span>
-
+           class="@(activeMenu == "Profile" ? "active" : "")">
+            <i class="fa fa-user-circle"></i>
+            <span>Trang cá nhân</span>
         </a>
 
+        <a asp-area=""
+           asp-controller="Pet"
+           asp-action="Index"
+           class="@(activeMenu == "PetDirectory" ? "active" : "")">
+            <i class="fa fa-paw"></i>
+            <span>Cộng đồng thú cưng</span>
+        </a>
+
+        
         <a asp-area=""
            asp-controller="Match"
            asp-action="Index"
            class="@(activeMenu == "Dating" ? "active" : "")">
-
             <i class="fa fa-heart"></i>
             <span>Pet Dating</span>
-
         </a>
 
         <a asp-area=""
            asp-controller="Match"
            asp-action="Matches"
            class="@(activeMenu == "Matches" ? "active" : "")">
-
             <i class="fa fa-users"></i>
             <span>Kết nối</span>
-
         </a>
 
         <a asp-area=""
            asp-controller="Post"
-           asp-action="MyPosts" class="@(activeMenu == "MyPost" ? "active" : "")">
-
+           asp-action="MyPosts"
+           class="@(activeMenu == "MyPost" ? "active" : "")">
             <i class="fa fa-pencil-square-o"></i>
             <span>Bài viết của tôi</span>
-
         </a>
 
         <a asp-area=""
            asp-controller="Chat"
            asp-action="Index"
            class="@(activeMenu == "Message" ? "active" : "")">
-
             <i class="fa fa-comments"></i>
             <span>Tin nhắn</span>
-
         </a>
 
         <a asp-area=""
            asp-controller="Notification"
            asp-action="Index"
            class="@(activeMenu == "Notification" ? "active" : "")">
-
             <i class="fa fa-bell"></i>
-
             <span>
                 Thông báo
-
                 @if (ViewBag.UnreadCount != null && (int)ViewBag.UnreadCount > 0)
                 {
-                    <span class="badge bg-danger">
-                        @ViewBag.UnreadCount
-                    </span>
+                    <span class="badge bg-danger">@ViewBag.UnreadCount</span>
                 }
             </span>
-
         </a>
 
         @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
@@ -106,44 +95,32 @@
                 <span style="color: #ff7e21;">Quản trị hệ thống</span>
             </a>
         }
-
     </nav>
 
     <div class="pet-sidebar-bottom">
-
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             <a class="pet-sidebar-user"
                asp-area=""
                asp-controller="Profile"
                asp-action="Index">
-
                 <span class="pet-sidebar-avatar">
                     <i class="fa fa-user"></i>
                 </span>
-
                 <span>
                     <small>Tài khoản cá nhân</small>
-                    <strong>
-                        @User.Identity.Name
-                    </strong>
+                    <strong>@User.Identity.Name</strong>
                 </span>
-
             </a>
 
             <form asp-area=""
                   asp-controller="Account"
                   asp-action="Logout"
                   method="post">
-
-                <button type="submit"
-                        class="pet-sidebar-logout">
-
+                <button type="submit" class="pet-sidebar-logout">
                     <i class="fa fa-sign-out"></i>
                     Đăng xuất
-
                 </button>
-
             </form>
         }
         else
@@ -162,6 +139,5 @@
                 Đăng ký
             </a>
         }
-
     </div>
 </aside>

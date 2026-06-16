@@ -28,7 +28,7 @@ namespace PetSocial.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
-            return View(user);
+            return RedirectToAction(nameof(Details), new { id = user.Id });
         }
 
         // GET: /Profile/Details/{id} - Xem hồ sơ người dùng khác kèm Follow/Followers/Following
@@ -45,6 +45,11 @@ namespace PetSocial.Controllers
             var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == id);
             var followingCount = await _context.Follows.CountAsync(f => f.FollowerId == id);
             var postCount = await _context.Posts.CountAsync(p => p.UserId == id);
+            var pets = await _context.Pets
+                .Include(p => p.User)
+                .Where(p => p.UserId == id)
+                .OrderByDescending(p => p.Id)
+                .ToListAsync();
 
             bool isFollowing = !string.IsNullOrEmpty(currentUserId) &&
                 await _context.Follows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == id);
@@ -65,7 +70,8 @@ namespace PetSocial.Controllers
                 PostCount = postCount,
                 IsOwnProfile = !string.IsNullOrEmpty(currentUserId) && currentUserId == id,
                 IsFollowing = isFollowing,
-                Posts = posts
+                Posts = posts,
+                Pets = pets
             };
 
             return View(model);
