@@ -555,7 +555,6 @@ D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.Development.json
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.json
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.runtime.json
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.deps.json
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.runtimeconfig.json
 D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.dll
@@ -679,4 +678,5 @@ D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.deps.json
 D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.runtimeconfig.json
 D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.dll
 D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.pdb
+D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
 D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

@@ -20,9 +20,7 @@
 <section class="profile-page">
     <div class="profile-main">
         <div class="profile-topbar">
-            <a asp-controller="Post" asp-action="Index" class="profile-back-button" aria-label="Quay lại bảng tin">
-                <i class="fa fa-arrow-left"></i>
-            </a>
+            
             <div>
                 <h1>@(Model.IsOwnProfile ? "Trang cá nhân" : "Hồ sơ người dùng")</h1>
                 <p>@(Model.IsOwnProfile ? "Bài viết và thông tin tài khoản của bạn." : "Xem bài viết và trao đổi với người đăng.")</p>

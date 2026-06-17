@@ -53,6 +53,10 @@
                                     <p class="text-muted small mb-3 mb-sm-0">
                                         Muốn gửi tín hiệu kết nối đến bé <strong class="text-dark">@item.ReceiverPet.Name</strong> của bạn!
                                     </p>
+                                    <p class="text-muted small mb-0 mt-2">
+                                        <i class="bi bi-clock me-1 text-orange"></i>
+                                        Gửi lúc @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
+                                    </p>
                                 </div>
 
                                 <div class="request-actions d-flex flex-sm-column gap-2 w-100 w-sm-auto justify-content-center">
@@ -63,12 +67,14 @@
                                         <i class="bi bi-check-lg me-1"></i> Đồng ý
                                     </a>
 
-                                    <a asp-action="Decline"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-decline rounded-pill px-4 py-2 text-nowrap"
-                                       onclick="return confirm('Bạn có chắc chắn muốn bỏ qua lời mời này không?')">
-                                        Bỏ qua
-                                    </a>
+                                    <form asp-action="Cancel" method="post" class="m-0">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit"
+                                                class="btn btn-decline rounded-pill px-4 py-2 text-nowrap"
+                                                onclick="return confirm('Bạn có chắc chắn muốn hủy lời mời này không?')">
+                                            Hủy lời mời
+                                        </button>
+                                    </form>
 
                                 </div>
 

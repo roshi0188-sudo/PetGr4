@@ -81,24 +81,252 @@ img {
 
 .app-shell {
     display: grid;
-    grid-template-columns: 270px minmax(0, 1fr);
+    grid-template-columns: 300px minmax(0, 1fr);
+    grid-template-rows: 82px minmax(0, 1fr);
     min-height: 100vh;
-    background: #fff;
+    background:
+        radial-gradient(circle at 8% 18%, rgba(255, 126, 33, 0.07) 0 82px, transparent 83px),
+        linear-gradient(180deg, #fff8f2 0%, #fbfaf9 42%, #fff 100%);
+    transition: grid-template-columns 0.22s ease;
 }
 
 .app-shell-content {
+    grid-column: 2;
+    grid-row: 2;
     min-width: 0;
+}
+
+.app-header {
+    position: relative;
+    z-index: 100;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 82px;
+    padding: 0 26px;
+    border-bottom: 1px solid #f0e7de;
+    background:
+        radial-gradient(circle at 18% 24%, rgba(255, 126, 33, 0.12) 0 42px, transparent 43px),
+        radial-gradient(circle at 72% 18%, rgba(255, 177, 93, 0.16) 0 58px, transparent 59px),
+        radial-gradient(circle at 42% 120%, rgba(255, 126, 33, 0.08) 0 72px, transparent 73px),
+        linear-gradient(90deg, rgba(255, 248, 242, 0.96) 0%, rgba(255, 255, 255, 0.98) 44%, rgba(255, 248, 242, 0.9) 100%);
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.04);
+    overflow: hidden;
+}
+
+.app-header::after {
+    content: "";
+    position: absolute;
+    inset: auto 28px 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, rgba(255, 126, 33, 0.34), transparent);
+    pointer-events: none;
+}
+
+.app-header-left,
+.app-header-right,
+.app-header-brand,
+.app-header-account {
+    display: flex;
+    align-items: center;
+}
+
+.app-header-left {
+    gap: 16px;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.app-header-right {
+    gap: 14px;
+    margin-left: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.app-header-toggle,
+.app-header-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: 0;
+    font-size: 1.05rem;
+    font-weight: 900;
+    transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.app-header-toggle {
+    background: transparent;
+    color: var(--pet-orange);
+    border-radius: 12px;
+}
+
+.app-header-toggle:hover {
+    background: #fff1e7;
+    color: var(--pet-orange-dark);
+    transform: translateY(-1px);
+}
+
+.app-header-brand {
+    gap: 13px;
+    min-width: 0;
+    color: #12213a;
+    font-weight: 900;
+}
+
+.app-header-brand:hover {
+    color: var(--pet-orange);
+}
+
+.app-header-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fff3e8, #fffaf6);
+    padding: 7px;
+    box-shadow: 0 14px 28px rgba(255, 126, 33, 0.18);
+}
+
+.app-header-logo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.app-header-brand strong,
+.app-header-brand small,
+.app-header-account strong,
+.app-header-account small {
+    display: block;
+    line-height: 1.1;
+}
+
+.app-header-brand strong {
+    font-size: 1.04rem;
+    letter-spacing: 0.01em;
+}
+
+.app-header-brand small,
+.app-header-account small {
+    color: var(--pet-muted);
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.app-header-account {
+    gap: 11px;
+    min-height: 42px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #12213a;
+    font-weight: 900;
+    box-shadow: none;
+    transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.app-header-account:hover {
+    background: transparent;
+    color: var(--pet-orange);
+    transform: none;
+    box-shadow: none;
+}
+
+.app-header-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff4ec;
+    color: var(--pet-orange);
+}
+
+.app-header-logout-form {
+    margin: 0;
+}
+
+.app-header-logout {
+    background: #fff1f2;
+    color: #e42424;
+    border-radius: 14px;
+}
+
+.app-header-logout:hover {
+    background: #ffe4e6;
+    color: #be123c;
+    transform: translateY(-1px);
+}
+
+.app-header-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: 12px;
+    background: var(--pet-orange);
+    color: #fff;
+    font-weight: 900;
+    box-shadow: 0 14px 26px rgba(255, 126, 33, 0.18);
+}
+
+.app-header-login:hover {
+    background: var(--pet-orange-dark);
+    color: #fff;
+}
+
+.app-shell.sidebar-collapsed {
+    grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.app-shell.sidebar-collapsed .pet-sidebar {
+    width: 0;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.app-shell.sidebar-collapsed .app-shell-content {
+    grid-column: 1 / -1;
 }
 
 .pet-sidebar {
     position: sticky;
-    top: 0;
+    top: 18px;
+    grid-column: 1;
+    grid-row: 2;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding: 24px 18px;
-    border-right: 1px solid var(--pet-line);
-    background: #fff;
+    height: calc(100vh - 36px);
+    margin: 18px 0 18px 18px;
+    padding: 22px 16px;
+    border: 1px solid #f1e7de;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 46px rgba(31, 41, 55, 0.08);
+    transition: opacity 0.18s ease, padding 0.22s ease, width 0.22s ease, margin 0.22s ease;
 }
 
 .pet-sidebar-brand,
@@ -160,7 +388,12 @@ img {
 
 .pet-menu a .fa {
     width: 20px;
+    flex: 0 0 20px;
     text-align: center;
+}
+
+.pet-menu a span {
+    white-space: nowrap;
 }
 
 .pet-menu a:hover {
@@ -181,7 +414,7 @@ img {
 }
 
 .pet-sidebar-bottom {
-    display: grid;
+    display: none;
     gap: 12px;
     margin-top: auto;
     padding-top: 18px;
@@ -1253,6 +1486,12 @@ img {
     margin-left: auto;
 }
 
+.pet-card-actions-view .pet-connect-button {
+    width: auto;
+    min-width: 132px;
+    background: #ef4444;
+}
+
 .pet-card-actions-manage .pet-view-button {
     min-width: 0;
     width: 100%;
@@ -1337,6 +1576,635 @@ img {
 .pet-card-actions .pet-icon-danger:hover {
     background: #ffe4e6;
     color: #be123c;
+}
+
+.dating-page {
+    min-height: calc(100vh - 82px);
+    padding: 30px 38px 42px;
+}
+
+.dating-main {
+    display: grid;
+    gap: 28px;
+    max-width: 1540px;
+    margin: 0 auto;
+}
+
+.dating-heading,
+.dating-suggestions-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.dating-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--pet-orange);
+    font-weight: 900;
+}
+
+.dating-heading h1,
+.dating-suggestions-head h2 {
+    margin: 0;
+    color: #12213a;
+    font-weight: 900;
+    letter-spacing: 0;
+}
+
+.dating-heading h1 {
+    font-size: clamp(2.2rem, 4vw, 3.65rem);
+}
+
+.dating-heading p,
+.dating-suggestions-head p {
+    margin: 6px 0 0;
+    color: #667085;
+    font-weight: 700;
+}
+
+.dating-heading-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.dating-soft-button,
+.dating-connect-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 46px;
+    border: 0;
+    border-radius: 13px;
+    font-weight: 900;
+}
+
+.dating-soft-button {
+    padding: 0 18px;
+    background: #fff4ec;
+    color: var(--pet-orange);
+}
+
+.dating-soft-button:hover {
+    background: #ffe8d5;
+    color: var(--pet-orange-dark);
+}
+
+.dating-blue-button {
+    background: #eef4ff;
+    color: #1355d8;
+}
+
+.dating-blue-button:hover {
+    background: #dfeaff;
+    color: #0f46b6;
+}
+
+.dating-pet-strip {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) 1fr;
+    align-items: center;
+    gap: 22px;
+    min-height: 112px;
+    padding: 20px 30px;
+    border-radius: 36px;
+    background:
+        radial-gradient(circle at 22% 10%, rgba(255, 255, 255, 0.28) 0 48px, transparent 49px),
+        linear-gradient(135deg, #ff7e21, #ff9951);
+    box-shadow: 0 18px 42px rgba(255, 126, 33, 0.2);
+}
+
+.dating-strip-title {
+    color: #fff;
+}
+
+.dating-strip-title strong,
+.dating-strip-title span {
+    display: block;
+}
+
+.dating-strip-title strong {
+    font-size: 1.25rem;
+    line-height: 1.2;
+}
+
+.dating-strip-title span {
+    margin-top: 5px;
+    font-weight: 800;
+    opacity: 0.86;
+}
+
+.dating-my-pets {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
+    min-width: 0;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: thin;
+}
+
+.dating-my-pets::-webkit-scrollbar {
+    height: 8px;
+}
+
+.dating-my-pets::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.dating-my-pet,
+.dating-add-pet {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    flex: 0 0 76px;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--pet-orange);
+    box-shadow: 0 14px 30px rgba(92, 44, 8, 0.16);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dating-my-pet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dating-my-pet:hover,
+.dating-add-pet:hover,
+.dating-my-pet.active {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 34px rgba(92, 44, 8, 0.22);
+}
+
+.dating-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) 180px minmax(240px, 1fr);
+    align-items: center;
+    gap: 28px;
+    min-height: 430px;
+    padding: 36px;
+    border: 1px solid #f1e7de;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 22px 56px rgba(31, 41, 55, 0.07);
+    overflow: hidden;
+}
+
+.dating-profile {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 22px;
+    text-align: center;
+}
+
+.dating-heart-rain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.dating-heart-rain span {
+    position: absolute;
+    top: -34px;
+    left: calc(8% + (var(--i) * 11%));
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    transform: rotate(45deg);
+    background: rgba(244, 63, 94, 0.2);
+    animation: dating-heart-fall 8s linear infinite;
+    animation-delay: calc(var(--i) * -1.1s);
+}
+
+.dating-heart-rain span::before,
+.dating-heart-rain span::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: inherit;
+}
+
+.dating-heart-rain span::before {
+    left: -9px;
+}
+
+.dating-heart-rain span::after {
+    top: -9px;
+}
+
+.dating-photo-ring {
+    width: clamp(178px, 18vw, 250px);
+    height: clamp(178px, 18vw, 250px);
+    overflow: hidden;
+    border: 10px solid #ff8b43;
+    border-radius: 50%;
+    background: #fff4ec;
+    box-shadow: 0 20px 44px rgba(255, 126, 33, 0.16);
+}
+
+.dating-photo-ring img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dating-empty-ring {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-style: dashed;
+    background: #fff8f2;
+    color: var(--pet-orange);
+    font-size: 3rem;
+}
+
+.dating-empty-ring:hover {
+    background: #fff0e6;
+    color: var(--pet-orange-dark);
+}
+
+.dating-empty-ring.is-disabled {
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+.dating-info span {
+    color: var(--pet-orange);
+    font-weight: 900;
+}
+
+.dating-info h2 {
+    margin: 6px 0;
+    color: #12213a;
+    font-size: 1.8rem;
+    font-weight: 900;
+}
+
+.dating-info p {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    color: #53627a;
+    font-weight: 800;
+}
+
+.dating-info .fa {
+    color: var(--pet-orange);
+}
+
+.dating-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.dating-tags span {
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #fff4ec;
+    color: var(--pet-orange);
+    font-size: 0.86rem;
+    font-weight: 900;
+}
+
+.dating-heart-panel {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+}
+
+.dating-heart-form {
+    margin: 0;
+}
+
+.dating-heart {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    border: 0;
+    background: linear-gradient(135deg, #ff4b5f, #de2441);
+    color: #fff;
+    font-size: 3.45rem;
+    cursor: pointer;
+    box-shadow:
+        0 22px 44px rgba(222, 36, 65, 0.24),
+        0 0 0 0 rgba(244, 63, 94, 0.28);
+    animation: dating-heartbeat 1.28s ease-in-out infinite;
+}
+
+.dating-heart:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #ff3854, #c91532);
+}
+
+.dating-heart-disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+    filter: grayscale(0.18);
+}
+
+.dating-heart::before,
+.dating-heart::after {
+    content: "";
+    position: absolute;
+    inset: -14px;
+    border: 2px solid rgba(244, 63, 94, 0.25);
+    border-radius: 50%;
+    animation: dating-heart-pulse 1.9s ease-out infinite;
+}
+
+.dating-heart::after {
+    animation-delay: 0.45s;
+}
+
+.dating-heart .fa {
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 8px 12px rgba(140, 18, 36, 0.2));
+}
+
+.dating-heart-spark {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-radius: 2px;
+    background: #ff8aa0;
+    opacity: 0.82;
+    animation: dating-heart-spark 1.8s ease-in-out infinite;
+}
+
+.dating-heart-spark::before,
+.dating-heart-spark::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: inherit;
+}
+
+.dating-heart-spark::before {
+    left: -6px;
+}
+
+.dating-heart-spark::after {
+    top: -6px;
+}
+
+.dating-heart-spark-one {
+    top: 8px;
+    right: 12px;
+}
+
+.dating-heart-spark-two {
+    left: 2px;
+    bottom: 22px;
+    animation-delay: 0.4s;
+}
+
+.dating-heart-spark-three {
+    right: 24px;
+    bottom: 0;
+    animation-delay: 0.85s;
+}
+
+.dating-connect-button {
+    padding: 0 24px;
+    background: var(--pet-orange);
+    color: #fff;
+    box-shadow: 0 16px 30px rgba(255, 126, 33, 0.22);
+}
+
+.dating-connect-button:hover {
+    background: var(--pet-orange-dark);
+}
+
+.dating-selected-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px 24px;
+    border: 1px solid #ffe0c6;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+    box-shadow: 0 18px 38px rgba(31, 41, 55, 0.06);
+}
+
+.dating-selected-panel span,
+.dating-selected-panel strong,
+.dating-selected-panel p {
+    display: block;
+}
+
+.dating-selected-panel span {
+    color: var(--pet-orange);
+    font-weight: 900;
+}
+
+.dating-selected-panel strong {
+    margin-top: 4px;
+    color: #12213a;
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+.dating-selected-panel p {
+    margin: 5px 0 0;
+    color: #667085;
+    font-weight: 700;
+}
+
+.dating-selected-panel form {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.dating-note-panel {
+    background: #fff;
+}
+
+.dating-suggestion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.dating-suggestion-card {
+    display: grid;
+    grid-template-columns: 76px 1fr 44px;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #f1e7de;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 16px 34px rgba(31, 41, 55, 0.05);
+}
+
+.dating-suggestion-card img {
+    width: 76px;
+    height: 76px;
+    border-radius: 16px;
+    object-fit: cover;
+}
+
+.dating-suggestion-card h3 {
+    margin: 0;
+    color: #12213a;
+    font-size: 1.08rem;
+    font-weight: 900;
+}
+
+.dating-suggestion-card p {
+    margin: 5px 0;
+    color: #667085;
+    font-weight: 800;
+}
+
+.dating-suggestion-card p .fa {
+    color: var(--pet-orange);
+}
+
+.dating-suggestion-card span {
+    color: var(--pet-orange);
+    font-weight: 900;
+}
+
+.dating-suggestion-card a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #fff1f2;
+    color: #e42424;
+}
+
+.dating-suggestion-card a:hover {
+    background: #ffe4e6;
+    color: #be123c;
+}
+
+.dating-empty-suggestions {
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 34px 20px;
+    border: 1px dashed #ffd3ad;
+    border-radius: 18px;
+    background: #fff8f2;
+    text-align: center;
+}
+
+.dating-empty-suggestions .fa {
+    color: var(--pet-orange);
+    font-size: 2rem;
+}
+
+.dating-empty-suggestions strong {
+    color: #12213a;
+    font-size: 1.15rem;
+    font-weight: 900;
+}
+
+.dating-empty-suggestions span {
+    color: #667085;
+    font-weight: 700;
+}
+
+@keyframes dating-heartbeat {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    18% {
+        transform: scale(1.12);
+    }
+
+    34% {
+        transform: scale(0.96);
+    }
+
+    52% {
+        transform: scale(1.08);
+    }
+}
+
+@keyframes dating-heart-pulse {
+    0% {
+        opacity: 0.42;
+        transform: scale(0.76);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.35);
+    }
+}
+
+@keyframes dating-heart-spark {
+    0%,
+    100% {
+        opacity: 0;
+        transform: translateY(8px) rotate(45deg) scale(0.65);
+    }
+
+    45% {
+        opacity: 0.9;
+        transform: translateY(-8px) rotate(45deg) scale(1);
+    }
+}
+
+@keyframes dating-heart-fall {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -30px, 0) rotate(45deg) scale(0.68);
+    }
+
+    12% {
+        opacity: 0.68;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(calc((var(--i) - 3) * 14px), 520px, 0) rotate(225deg) scale(1.05);
+    }
 }
 
 .pet-icon-button,
@@ -1930,6 +2798,21 @@ img {
 }
 
 @media (max-width: 1100px) {
+    .dating-stage {
+        grid-template-columns: minmax(220px, 1fr) 130px minmax(220px, 1fr);
+        padding: 28px;
+    }
+
+    .dating-heart {
+        width: 96px;
+        height: 96px;
+        font-size: 2.8rem;
+    }
+
+    .dating-suggestion-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .pet-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -1944,6 +2827,58 @@ img {
 }
 
 @media (max-width: 860px) {
+    .dating-page {
+        padding: 22px 16px 34px;
+    }
+
+    .dating-heading,
+    .dating-suggestions-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dating-pet-strip {
+        grid-template-columns: 1fr;
+        border-radius: 24px;
+    }
+
+    .dating-my-pets {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .dating-stage {
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .dating-heart-panel {
+        order: 2;
+    }
+
+    .dating-profile-left {
+        order: 1;
+    }
+
+    .dating-profile-right {
+        order: 3;
+    }
+
+    .dating-suggestion-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dating-selected-panel {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dating-selected-panel .dating-connect-button,
+    .dating-selected-panel form {
+        width: 100%;
+    }
+
     .pet-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -1957,9 +2892,40 @@ img {
         grid-template-columns: 1fr;
     }
 
+    .app-shell {
+        grid-template-rows: 82px auto minmax(0, 1fr);
+    }
+
+    .app-header {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .app-shell-content {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
     .pet-sidebar {
+        grid-column: 1;
+        grid-row: 2;
         position: static;
         height: auto;
+        margin: 16px;
+    }
+
+    .app-shell.sidebar-collapsed {
+        grid-template-columns: 1fr;
+        grid-template-rows: 82px minmax(0, 1fr);
+    }
+
+    .app-shell.sidebar-collapsed .pet-sidebar {
+        display: none;
+    }
+
+    .app-shell.sidebar-collapsed .app-shell-content {
+        grid-column: 1;
+        grid-row: 2;
     }
 
     .pet-directory-header,
@@ -2001,6 +2967,45 @@ img {
 }
 
 @media (max-width: 620px) {
+    .dating-heading h1 {
+        font-size: 2.15rem;
+    }
+
+    .dating-heading-actions,
+    .dating-heading-actions a,
+    .dating-suggestions-head a {
+        width: 100%;
+    }
+
+    .dating-pet-strip {
+        padding: 18px;
+    }
+
+    .dating-my-pet,
+    .dating-add-pet {
+        width: 66px;
+        height: 66px;
+        flex-basis: 66px;
+    }
+
+    .dating-stage {
+        padding: 22px 16px;
+    }
+
+    .dating-photo-ring {
+        width: 174px;
+        height: 174px;
+    }
+
+    .dating-suggestion-card {
+        grid-template-columns: 62px 1fr 40px;
+    }
+
+    .dating-suggestion-card img {
+        width: 62px;
+        height: 62px;
+    }
+
     .pet-grid {
         grid-template-columns: 1fr;
     }
@@ -2070,6 +3075,27 @@ img {
     .profile-section-heading {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .app-header {
+        padding: 0 12px;
+        gap: 10px;
+    }
+
+    .app-header-brand small,
+    .app-header-account small {
+        display: none;
+    }
+
+    .app-header-account {
+        max-width: 150px;
+        padding-right: 10px;
+    }
+
+    .app-header-account strong {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .notification-list {

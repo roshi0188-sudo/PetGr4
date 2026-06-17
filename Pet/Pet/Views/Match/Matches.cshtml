@@ -66,6 +66,10 @@
                                 <small class="text-muted">
                                     <i class="bi bi-tag-fill me-1 text-orange"></i> @item.SenderPet.Breed <span class="mx-2">|</span> <i class="bi bi-tag-fill me-1 text-orange"></i> @item.ReceiverPet.Breed
                                 </small>
+                                <div class="mt-2 text-muted small">
+                                    <i class="bi bi-clock-heart me-1 text-orange"></i>
+                                    Kết nối lúc @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
+                                </div>
                             </div>
 
                             <div class="d-grid gap-2 col-8 mx-auto">
@@ -75,6 +79,15 @@
                                    class="btn btn-match-chat rounded-pill py-2 shadow-sm fw-bold">
                                     <i class="bi bi-chat-heart-fill me-2"></i> Trò chuyện ngay
                                 </a>
+
+                                <form asp-action="Cancel" method="post" class="m-0">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button type="submit"
+                                            class="btn btn-outline-danger rounded-pill py-2 fw-bold w-100"
+                                            onclick="return confirm('Bạn có chắc chắn muốn hủy kết nối này không?')">
+                                        <i class="bi bi-heartbreak-fill me-2"></i> Hủy kết nối
+                                    </button>
+                                </form>
                             </div>
 
                         </div>

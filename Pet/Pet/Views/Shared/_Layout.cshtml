@@ -25,7 +25,9 @@
 
     @if (isFullWidth)
     {
-        <div class="app-shell">
+        <div class="app-shell" id="appShell">
+
+            <partial name="_Header" />
 
             <!-- Sidebar -->
             <partial name="_Sidebar" />
@@ -172,6 +174,28 @@
                 console.error(err);
             });
 
+    </script>
+
+    <script>
+        (() => {
+            const appShell = document.getElementById('appShell');
+            const toggleButton = document.querySelector('[data-sidebar-toggle]');
+            if (!appShell || !toggleButton) return;
+
+            const storageKey = 'petsocial.sidebar.collapsed';
+            const setCollapsed = (collapsed) => {
+                appShell.classList.toggle('sidebar-collapsed', collapsed);
+                toggleButton.setAttribute('aria-expanded', (!collapsed).toString());
+            };
+
+            setCollapsed(localStorage.getItem(storageKey) === 'true');
+
+            toggleButton.addEventListener('click', () => {
+                const collapsed = !appShell.classList.contains('sidebar-collapsed');
+                setCollapsed(collapsed);
+                localStorage.setItem(storageKey, collapsed.toString());
+            });
+        })();
     </script>
 
     @await RenderSectionAsync(
