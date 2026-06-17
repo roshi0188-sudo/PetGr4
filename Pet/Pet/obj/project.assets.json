@@ -4293,23 +4293,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\NGOC\\.nuget\\packages\\": {},
+    "C:\\Users\\Ngoc Nhu\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
+      "projectUniqueName": "D:\\LapTrinhWeb\\DoAn\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
       "projectName": "PetSocial",
-      "projectPath": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
-      "packagesPath": "C:\\Users\\NGOC\\.nuget\\packages\\",
-      "outputPath": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\obj\\",
+      "projectPath": "D:\\LapTrinhWeb\\DoAn\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
+      "packagesPath": "C:\\Users\\Ngoc Nhu\\.nuget\\packages\\",
+      "outputPath": "D:\\LapTrinhWeb\\DoAn\\PetGr4\\Pet\\Pet\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\NGOC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Ngoc Nhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4318,7 +4318,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4381,6 +4380,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.28, 8.0.28]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.28, 8.0.28]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.28, 8.0.28]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.28, 8.0.28]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -4389,7 +4406,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

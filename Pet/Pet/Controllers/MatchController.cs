@@ -25,22 +25,6 @@ namespace PetSocial.Controllers
             EnsurePetMatchesTable();
 
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var senderPetIds = _context.PetMatches
-                .AsNoTracking()
-                .Where(x => x.Status == "Pending" || x.Status == "Accepted")
-                .Select(x => x.SenderPetId)
-                .ToList();
-
-            var receiverPetIds = _context.PetMatches
-                .AsNoTracking()
-                .Where(x => x.Status == "Pending" || x.Status == "Accepted")
-                .Select(x => x.ReceiverPetId)
-                .ToList();
-
-            var connectedPetIds = senderPetIds
-                .Concat(receiverPetIds)
-                .Distinct()
-                .ToList();
 
             var communityPet = communityPetId.HasValue
                 ? _context.Pets
@@ -53,12 +37,8 @@ namespace PetSocial.Controllers
             if (!string.IsNullOrEmpty(currentUserId))
             {
                 var myPetsQuery = _context.Pets
-                    .AsNoTracking()
-                    .Where(x => x.UserId == currentUserId)
-                    .Where(x => !connectedPetIds.Contains(x.Id));
-
-                if (communityPet != null)
-                    myPetsQuery = myPetsQuery.Where(x => x.Species == communityPet.Species);
+                .AsNoTracking()
+                .Where(x => x.UserId == currentUserId);
 
                 myPets = myPetsQuery
                     .OrderBy(x => x.Name)
@@ -79,7 +59,6 @@ namespace PetSocial.Controllers
                     .AsNoTracking()
                     .Where(x => x.UserId != currentUserId)
                     .Where(x => x.Species == selectedMyPet.Species)
-                    .Where(x => !connectedPetIds.Contains(x.Id))
                     .OrderByDescending(x => x.Id)
                     .ToList();
             }
@@ -89,6 +68,61 @@ namespace PetSocial.Controllers
             ViewBag.SelectedCommunityPet = communityPet;
             ViewBag.ShowSuggestions = showSuggestions;
             ViewBag.TotalSuggestions = pets.Count;
+
+            // Đếm lời mời đang chờ
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                var myPetIds = _context.Pets
+                    .Where(x => x.UserId == currentUserId)
+                    .Select(x => x.Id)
+                    .ToList();
+
+                ViewBag.PendingCount = _context.PetMatches
+                    .Count(x =>
+                        myPetIds.Contains(x.ReceiverPetId)
+                        && x.Status == "Pending");
+            }
+            else
+            {
+                ViewBag.PendingCount = 0;
+            }
+
+            // Trạng thái giữa 2 pet đã chọn
+            ViewBag.MatchStatus = null;
+            ViewBag.CanSendRequest = true;
+
+            if (selectedMyPet != null && communityPet != null)
+            {
+                var existingMatch = _context.PetMatches
+                    .FirstOrDefault(x =>
+                        (x.SenderPetId == selectedMyPet.Id &&
+                         x.ReceiverPetId == communityPet.Id)
+                        ||
+                        (x.SenderPetId == communityPet.Id &&
+                         x.ReceiverPetId == selectedMyPet.Id));
+
+                if (existingMatch != null)
+                {
+                    ViewBag.CanSendRequest = false;
+
+                    if (existingMatch.Status == "Pending")
+                    {
+                        ViewBag.MatchStatus =
+                            "Đã tồn tại lời mời kết nối đang chờ duyệt.";
+                    }
+                    else if (existingMatch.Status == "Accepted")
+                    {
+                        ViewBag.MatchStatus =
+                            "Hai thú cưng này đã kết nối thành công.";
+                    }
+                }
+                else if (!SameSpecies(selectedMyPet.Species, communityPet.Species))
+                {
+                    ViewBag.CanSendRequest = false;
+                    ViewBag.MatchStatus =
+                        "Hai thú cưng đang khác loài nên chưa thể gửi lời mời kết nối.";
+                }
+            }
 
             return View(pets);
         }
@@ -113,6 +147,7 @@ namespace PetSocial.Controllers
 
         [HttpPost]
         [Authorize]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendMatch(int receiverPetId, int? senderPetId)
         {
             EnsurePetMatchesTable();
@@ -139,22 +174,19 @@ namespace PetSocial.Controllers
             if (receiverPet.UserId == currentUserId)
                 return RedirectToAction("MyPets", "Pet");
 
-            if (receiverPet.Species != senderPet.Species)
-                return RedirectToAction("Index", new { communityPetId = receiverPetId });
+            if (!SameSpecies(receiverPet.Species, senderPet.Species))
+            {
+                TempData["Error"] =
+                    "Hai thú cưng đang khác loài nên chưa thể gửi lời mời kết nối.";
 
-            bool pairUnavailable = _context.PetMatches.Any(x =>
-                (x.Status == "Pending" || x.Status == "Accepted") &&
-                (x.SenderPetId == senderPet.Id ||
-                 x.ReceiverPetId == senderPet.Id ||
-                 x.SenderPetId == receiverPet.Id ||
-                 x.ReceiverPetId == receiverPet.Id));
+                return RedirectToAction(nameof(Index), new { communityPetId = receiverPetId, myPetId = senderPet.Id });
+            }
 
-            if (pairUnavailable)
-                return RedirectToAction("Index", new { communityPetId = receiverPetId });
-
+            // Kiểm tra tồn tại cả hai chiều cho trạng thái Pending
             bool existed = _context.PetMatches.Any(x =>
-                (x.SenderPetId == senderPet.Id && x.ReceiverPetId == receiverPetId) ||
-                (x.SenderPetId == receiverPetId && x.ReceiverPetId == senderPet.Id));
+                ((x.SenderPetId == senderPet.Id && x.ReceiverPetId == receiverPetId) ||
+                 (x.SenderPetId == receiverPetId && x.ReceiverPetId == senderPet.Id))
+                && (x.Status == "Pending" || x.Status == "Accepted"));
 
             if (!existed)
             {
@@ -162,7 +194,7 @@ namespace PetSocial.Controllers
                 {
                     SenderPetId = senderPet.Id,
                     ReceiverPetId = receiverPetId,
-                    Status = "Accepted",
+                    Status = "Pending",
                     CreatedAt = DateTime.Now
                 };
 
@@ -171,8 +203,8 @@ namespace PetSocial.Controllers
                 var notification = new Notification
                 {
                     UserId = receiverPet.UserId,
-                    Title = "Kết nối thú cưng mới",
-                    Content = $"{senderPet.Name} đã ghép đôi với {receiverPet.Name}",
+                    Title = "Lời mời kết nối",
+                    Content = $"{senderPet.Name} muốn kết nối với {receiverPet.Name}",
                     IsRead = false,
                     CreatedAt = DateTime.Now
                 };
@@ -181,17 +213,24 @@ namespace PetSocial.Controllers
 
                 await _context.SaveChangesAsync();
 
-                await _hubContext
-                    .Clients
-                    .User(receiverPet.UserId)
+                await _hubContext.Clients.User(receiverPet.UserId)
                     .SendAsync(
                         "ReceiveNotification",
                         notification.Title,
                         notification.Content,
                         notification.CreatedAt.ToString("HH:mm"));
+
+                TempData["Success"] =
+                    "Đã gửi lời mời kết nối.";
+            }
+            else
+            {
+                TempData["Error"] =
+                    "Lời mời đã tồn tại.";
             }
 
-            return RedirectToAction("Matches");
+            // Redirect về Index và giữ chọn pet để UI hiển thị đúng
+            return RedirectToAction(nameof(Index), new { communityPetId = receiverPetId, myPetId = senderPet.Id });
         }
 
         [HttpPost]
@@ -247,9 +286,10 @@ namespace PetSocial.Controllers
             return View(requests);
         }
 
+        [Authorize]
         public async Task<IActionResult> Accept(int id)
         {
-            EnsurePetMatchesTable();
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var match = _context.PetMatches
                 .Include(x => x.SenderPet)
@@ -259,30 +299,39 @@ namespace PetSocial.Controllers
             if (match == null)
                 return NotFound();
 
-            match.Status = "Accepted";
-            match.CreatedAt = DateTime.Now;
+            if (match.ReceiverPet.UserId != currentUserId)
+                return Forbid();
 
-            _context.Notifications.Add(
-                new Notification
-                {
-                    UserId = match.SenderPet.UserId,
-                    Title = "Lời mời được chấp nhận",
-                    Content = $"{match.ReceiverPet.Name} đã chấp nhận kết nối",
-                    CreatedAt = DateTime.Now
-                });
+            if (match.Status != "Pending")
+                return RedirectToAction(nameof(Requests));
+
+            match.Status = "Accepted";
+
+            var notification = new Notification
+            {
+                UserId = match.SenderPet.UserId,
+                Title = "Ghép đôi thành công",
+                Content =
+                    $"{match.ReceiverPet.Name} đã chấp nhận lời mời kết nối",
+                IsRead = false,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Notifications.Add(notification);
 
             await _context.SaveChangesAsync();
 
-            await _hubContext
-                .Clients
-                .User(match.SenderPet.UserId)
+            await _hubContext.Clients.User(match.SenderPet.UserId)
                 .SendAsync(
                     "ReceiveNotification",
-                    "Lời mời được chấp nhận",
-                    $"{match.ReceiverPet.Name} đã chấp nhận kết nối",
+                    notification.Title,
+                    notification.Content,
                     DateTime.Now.ToString("HH:mm"));
 
-            return RedirectToAction("Requests");
+            TempData["Success"] =
+                "Đã chấp nhận lời mời kết nối.";
+
+            return RedirectToAction(nameof(Requests));
         }
 
         public IActionResult Matches()
@@ -318,39 +367,47 @@ namespace PetSocial.Controllers
         private void EnsurePetMatchesTable()
         {
             _context.Database.ExecuteSqlRaw(@"
-IF OBJECT_ID(N'[dbo].[PetMatches]', N'U') IS NULL
-BEGIN
-    CREATE TABLE [dbo].[PetMatches]
-    (
-        [Id] int IDENTITY(1,1) NOT NULL CONSTRAINT [PK_PetMatches] PRIMARY KEY,
-        [SenderPetId] int NOT NULL,
-        [ReceiverPetId] int NOT NULL,
-        [Status] nvarchar(max) NOT NULL,
-        [CreatedAt] datetime2 NOT NULL,
-        CONSTRAINT [FK_PetMatches_Pets_SenderPetId]
-            FOREIGN KEY ([SenderPetId]) REFERENCES [dbo].[Pets]([Id]) ON DELETE NO ACTION,
-        CONSTRAINT [FK_PetMatches_Pets_ReceiverPetId]
-            FOREIGN KEY ([ReceiverPetId]) REFERENCES [dbo].[Pets]([Id]) ON DELETE NO ACTION
-    );
+            IF OBJECT_ID(N'[dbo].[PetMatches]', N'U') IS NULL
+            BEGIN
+                CREATE TABLE [dbo].[PetMatches]
+                (
+                    [Id] int IDENTITY(1,1) NOT NULL CONSTRAINT [PK_PetMatches] PRIMARY KEY,
+                    [SenderPetId] int NOT NULL,
+                    [ReceiverPetId] int NOT NULL,
+                    [Status] nvarchar(max) NOT NULL,
+                    [CreatedAt] datetime2 NOT NULL,
+                    CONSTRAINT [FK_PetMatches_Pets_SenderPetId]
+                        FOREIGN KEY ([SenderPetId]) REFERENCES [dbo].[Pets]([Id]) ON DELETE NO ACTION,
+                    CONSTRAINT [FK_PetMatches_Pets_ReceiverPetId]
+                        FOREIGN KEY ([ReceiverPetId]) REFERENCES [dbo].[Pets]([Id]) ON DELETE NO ACTION
+                );
 
-    CREATE INDEX [IX_PetMatches_SenderPetId]
-        ON [dbo].[PetMatches]([SenderPetId]);
+                CREATE INDEX [IX_PetMatches_SenderPetId]
+                    ON [dbo].[PetMatches]([SenderPetId]);
 
-    CREATE INDEX [IX_PetMatches_ReceiverPetId]
-        ON [dbo].[PetMatches]([ReceiverPetId]);
-END;
+                CREATE INDEX [IX_PetMatches_ReceiverPetId]
+                    ON [dbo].[PetMatches]([ReceiverPetId]);
+            END;
 
-IF OBJECT_ID(N'[dbo].[__EFMigrationsHistory]', N'U') IS NOT NULL
-   AND NOT EXISTS (
-        SELECT 1
-        FROM [dbo].[__EFMigrationsHistory]
-        WHERE [MigrationId] = N'20260617120000_AddPetMatches'
-   )
-BEGIN
-    INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260617120000_AddPetMatches', N'8.0.0');
-END;
-");
+            IF OBJECT_ID(N'[dbo].[__EFMigrationsHistory]', N'U') IS NOT NULL
+               AND NOT EXISTS (
+                    SELECT 1
+                    FROM [dbo].[__EFMigrationsHistory]
+                    WHERE [MigrationId] = N'20260617120000_AddPetMatches'
+               )
+            BEGIN
+                INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+                VALUES (N'20260617120000_AddPetMatches', N'8.0.0');
+            END;
+            ");
+        }
+
+        private static bool SameSpecies(string? left, string? right)
+        {
+            return string.Equals(
+                left?.Trim(),
+                right?.Trim(),
+                StringComparison.OrdinalIgnoreCase);
         }
     }
 }

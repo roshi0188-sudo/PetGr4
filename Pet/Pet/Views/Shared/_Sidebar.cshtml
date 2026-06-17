@@ -49,6 +49,14 @@
 
         <a asp-area=""
            asp-controller="Match"
+           asp-action="Requests"
+           class="@(activeMenu == "Requests" ? "active" : "")">
+            <i class="fa fa-envelope"></i>
+            <span>Lời mời</span>
+        </a>
+
+        <a asp-area=""
+           asp-controller="Match"
            asp-action="Matches"
            class="@(activeMenu == "Matches" ? "active" : "")">
             <i class="fa fa-users"></i>

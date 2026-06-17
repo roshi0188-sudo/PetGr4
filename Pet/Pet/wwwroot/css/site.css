@@ -3665,6 +3665,16 @@ img {
             color: #4a4a4a;
         }
 
+    .dating-badge {
+        background: #ff4d6d;
+        color: white;
+        border-radius: 20px;
+        padding: 2px 8px;
+        margin-left: 6px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
     @media (max-width: 575.98px) {
         .request-actions {
             margin-top: 15px;
@@ -3762,4 +3772,6 @@ img {
         border-radius: 50%;
         box-shadow: 0 0 6px rgba(255, 122, 51, 0.6);
     }
+
+
 }

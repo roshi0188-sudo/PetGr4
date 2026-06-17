@@ -1,0 +1,247 @@
+.matches-page {
+    min-height: calc(100vh - 72px);
+    padding: 34px clamp(18px, 4vw, 54px) 56px;
+    background: linear-gradient(180deg, #fff8f1 0%, #fffaf5 48%, #ffffff 100%);
+}
+
+.matches-header {
+    max-width: 1120px;
+    margin: 0 auto 28px;
+}
+
+.matches-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #f97316;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+.text-match-title {
+    margin: 8px 0;
+    color: #17233c;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.05;
+    font-weight: 900;
+}
+
+.matches-header p {
+    margin: 0;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.matches-grid {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.match-card {
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.08);
+}
+
+.match-pets {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+}
+
+.match-pet {
+    min-width: 0;
+    text-align: center;
+    color: #17233c;
+    text-decoration: none;
+    font-weight: 900;
+}
+
+.match-pet-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    border: 4px solid #ffb36b;
+    background: #ffedd5;
+    transition: transform 0.2s ease;
+}
+
+.match-pet:hover .match-pet-img {
+    transform: scale(1.03);
+}
+
+.match-pet span {
+    display: inline-flex;
+    max-width: 100%;
+    margin-top: 10px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: #ffbf47;
+    color: #3b2600;
+    font-size: 13px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.match-heart {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff1f2;
+    color: #fb3f5f;
+    font-size: 28px;
+    box-shadow: 0 10px 24px rgba(244, 63, 94, 0.14);
+}
+
+.match-info {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #fed7aa;
+    text-align: center;
+}
+
+.match-info h2 {
+    margin: 0 0 10px;
+    color: #17233c;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+}
+
+.match-info h2 span {
+    color: #fb3f5f;
+}
+
+.match-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.match-info time {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: #7c8796;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.match-actions {
+    margin-top: 20px;
+    display: grid;
+    gap: 10px;
+}
+
+.match-actions form {
+    margin: 0;
+}
+
+.match-chat,
+.match-cancel {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.match-chat {
+    border: 1px solid #fb923c;
+    background: #fb923c;
+    color: #ffffff;
+}
+
+.match-chat:hover {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.match-cancel {
+    border: 1px solid #fb7185;
+    background: #ffffff;
+    color: #e11d48;
+}
+
+.match-cancel:hover {
+    background: #fff1f2;
+}
+
+.matches-empty {
+    grid-column: 1 / -1;
+    padding: 58px 24px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px dashed #fdba74;
+    border-radius: 8px;
+    color: #6b7280;
+}
+
+.matches-empty i {
+    color: #fb923c;
+    font-size: 44px;
+}
+
+.matches-empty h2 {
+    margin: 14px 0 8px;
+    color: #17233c;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.matches-empty p {
+    margin: 0;
+    font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+    .matches-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .matches-page {
+        padding: 24px 14px 42px;
+    }
+
+    .match-card {
+        padding: 16px;
+    }
+
+    .match-pets {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .match-heart {
+        justify-self: center;
+        transform: rotate(90deg);
+    }
+}

@@ -1,0 +1,243 @@
+.request-page {
+    min-height: calc(100vh - 72px);
+    padding: 34px clamp(18px, 4vw, 54px) 56px;
+    background:
+        linear-gradient(180deg, #fff8f1 0%, #fffaf5 48%, #ffffff 100%);
+}
+
+.request-header {
+    max-width: 1120px;
+    margin: 0 auto 28px;
+}
+
+.request-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #f97316;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0;
+}
+
+.text-request-title {
+    margin: 8px 0 8px;
+    color: #17233c;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1.05;
+    font-weight: 900;
+}
+
+.request-header p {
+    margin: 0;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.request-grid {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.request-card {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    min-height: 260px;
+    background: #ffffff;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.08);
+}
+
+.request-pet-photo {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 260px;
+    background: #ffedd5;
+    overflow: hidden;
+}
+
+.request-pet-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.request-pet-photo:hover img {
+    transform: scale(1.04);
+}
+
+.request-new-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #fb3f5f;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.request-card-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.request-pet-name {
+    color: #17233c;
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.request-pet-name:hover,
+.request-card-body p a:hover {
+    color: #f97316;
+}
+
+.request-breed {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #ffbf47;
+    color: #3b2600;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.request-card-body p {
+    margin: 16px 0 10px;
+    color: #5f6b7a;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.request-card-body p a {
+    color: #17233c;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.request-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #7c8796;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.request-actions {
+    margin-top: auto;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.request-actions form {
+    margin: 0;
+}
+
+.request-accept,
+.request-decline {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.request-accept {
+    border: 1px solid #fb923c;
+    background: #fb923c;
+    color: #ffffff;
+}
+
+.request-accept:hover {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.request-decline {
+    border: 1px solid #fb7185;
+    background: #ffffff;
+    color: #e11d48;
+}
+
+.request-decline:hover {
+    background: #fff1f2;
+}
+
+.empty-request-box {
+    grid-column: 1 / -1;
+    padding: 58px 24px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px dashed #fdba74;
+    border-radius: 8px;
+    color: #6b7280;
+}
+
+.empty-request-box i {
+    color: #fb923c;
+    font-size: 44px;
+}
+
+.empty-request-box h2 {
+    margin: 14px 0 8px;
+    color: #17233c;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.empty-request-box p {
+    margin: 0;
+    font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+    .request-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .request-page {
+        padding: 24px 14px 42px;
+    }
+
+    .request-card {
+        grid-template-columns: 1fr;
+    }
+
+    .request-pet-photo {
+        aspect-ratio: 16 / 11;
+        min-height: 0;
+    }
+}
+
+@media (max-width: 430px) {
+    .request-actions {
+        grid-template-columns: 1fr;
+    }
+}
