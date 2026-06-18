@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PetSocial")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+50a0c67479dddbb77060f6039921934cfec096d9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1ead62b19e05bb977db5365b875f38b4f879c558")]
 [assembly: System.Reflection.AssemblyProductAttribute("PetSocial")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PetSocial")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
