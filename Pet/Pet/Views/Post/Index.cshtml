@@ -1,58 +1,46 @@
 ﻿@model IEnumerable<PetSocial.Models.Post>
 
 @{
-    ViewData["Title"] = "Bài viết của tôi - PetSocial";
-    // Đảm bảo lấy đúng thông tin ID người dùng hiện tại từ ViewBag để đối chiếu
+    ViewData["Title"] = (ViewBag.PageTitle ?? "Bảng tin") + " - PetSocial";
+    ViewData["FullWidth"] = true;
     var currentUserId = ViewBag.CurrentUserId as string;
     bool isAdmin = ViewBag.IsAdmin as bool? ?? false;
+    var currentUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
 <script>
     tailwind.config = {
-    darkMode: "class",
     theme: {
     extend: {
     colors: {
-    'pet-primary': '#FF6B00',         /* Sắc cam MXH đồng bộ */
+    'pet-primary': '#FF6B00',
     'pet-primary-hover': '#E55A00',
     'pet-primary-fixed': '#FFF0E5',
-    'pet-secondary': '#356668',
-    'pet-secondary-container': '#b9ecee',
-    'pet-background': '#F8FAFC'
+    'pet-secondary': '#356668'
     }
     }
     }
     }
 </script>
 
-<style>
-    body {
-    background-color: #F8FAFC;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    .ambient-shadow {
-    box-shadow: 0 10px 30px rgba(21, 28, 39, 0.02);
-    }
-</style>
-
-<main class="max-w-2xl mx-auto px-4 py-8" style="margin-left: 280px;">
+<div class="app-shell-content-container w-full max-w-3xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
     @Html.AntiForgeryToken()
 
-    <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center gap-5">
-            
-            <span class="text-sm font-black text-gray-900 border-b-2 border-pet-primary pb-1.5 tracking-tight">Bài viết của tôi</span>
+    <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
+        <div class="flex items-center gap-3">
+            <div class="w-2 h-6 bg-pet-primary rounded-full"></div>
+            <h1 class="text-xl font-extrabold text-gray-900 tracking-tight">@(ViewBag.PageTitle ?? "Bài viết mới nhất")</h1>
         </div>
 
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <a asp-action="Create" class="inline-flex items-center gap-1.5 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-xs px-5 py-2.5 rounded-full transition-all shadow-sm active:scale-95">
-                <span class="material-symbols-outlined text-sm font-bold">add</span> Đăng bài mới
+            <a asp-action="Create" asp-route-returnUrl="@currentUrl" class="inline-flex items-center gap-2 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-sm px-5 py-2.5 rounded-full transition-all active:scale-95">
+                <span class="material-symbols-outlined text-lg font-bold">add</span>
+                <span>Đăng bài mới</span>
             </a>
         }
     </div>
@@ -60,15 +48,8 @@
     <div class="flex flex-col gap-6">
         @if (!Model.Any())
         {
-            <div class="bg-white rounded-[24px] p-12 text-center border border-gray-100 ambient-shadow">
-                <div class="w-16 h-16 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <span class="material-symbols-outlined text-3xl">auto_stories</span>
-                </div>
-                <p class="text-gray-500 font-bold text-sm">Nhật ký của bạn đang trống</p>
-                <p class="text-xs text-gray-400 mt-1 mb-4">Hãy chia sẻ câu chuyện đáng yêu đầu tiên về thú cưng của bạn nào!</p>
-                <a asp-action="Create" class="inline-flex items-center gap-1.5 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-xs px-5 py-2.5 rounded-full transition-colors">
-                    Viết bài ngay
-                </a>
+            <div class="bg-white rounded-[24px] p-16 text-center border border-gray-100 shadow-sm">
+                <p class="text-sm text-gray-400">Không tìm thấy bài viết hiển thị tại mục này.</p>
             </div>
         }
         else
@@ -77,98 +58,200 @@
             {
                 bool isLikedByMe = !string.IsNullOrEmpty(currentUserId) && post.Likes != null && post.Likes.Any(l => l.UserId == currentUserId);
                 int totalLikesCount = post.Likes?.Count ?? 0;
-
-                // KIỂM TRA NGHIỆP VỤ BẢO MẬT: Phải là chủ bài đăng hoặc Admin mới hiện nút sửa/xóa
                 bool canManagePost = isAdmin || (post.UserId == currentUserId);
 
-                <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden ambient-shadow transition-all duration-200">
+                <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden shadow-sm">
                     <div class="p-5 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            @if (!string.IsNullOrWhiteSpace(post.User?.AvatarUrl))
-                            {
-                                <img src="@post.User.AvatarUrl" alt="Avatar" class="w-11 h-11 rounded-full object-cover ring-2 ring-pet-primary-fixed" />
-                            }
-                            else
-                            {
-                                <div class="w-11 h-11 rounded-full bg-orange-100 text-pet-primary flex items-center justify-center font-bold text-sm">
-                                    @(string.IsNullOrEmpty(post.User?.FullName) ? "U" : post.User.FullName.Substring(0, 1).ToUpper())
-                                </div>
-                            }
+                            <div class="w-11 h-11 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                                @if (!string.IsNullOrWhiteSpace(post.User?.AvatarUrl))
+                                {
+                                    <img src="@post.User.AvatarUrl" class="w-full h-full object-cover" alt="avatar" />
+                                }
+                                else
+                                {
+                                    <img src="/images/default-avatar.png" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=@(post.UserId)'" alt="default avatar" />
+                                }
+                            </div>
                             <div>
-                                <h3 class="text-sm font-extrabold text-gray-900 leading-tight">@(post.User?.FullName ?? "Người dùng")</h3>
-                                <p class="text-[11px] text-gray-400 font-medium mt-0.5">@post.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                                <h3 class="text-sm font-extrabold text-gray-900">@(post.User?.FullName ?? "Người dùng")</h3>
+                                <p class="text-[11px] text-gray-400">@post.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-1">
-                            <a asp-action="Details" asp-route-id="@post.Id" class="text-xs font-bold text-gray-500 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-full transition-colors me-1">Chi tiết</a>
+                        <div class="flex items-center gap-1 bg-gray-50 p-1 rounded-full">
+                            <a asp-action="Details" asp-route-id="@post.Id" class="text-xs font-bold text-gray-600 hover:text-gray-900 hover:bg-white px-3 py-1.5 rounded-full transition-all">Chi tiết</a>
 
                             @if (canManagePost)
                             {
-                                <a asp-action="Edit" asp-route-id="@post.Id" class="text-gray-400 hover:text-amber-500 p-2 rounded-full hover:bg-amber-50 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-lg">edit</span></a>
-                                <a asp-action="Delete" asp-route-id="@post.Id" class="text-gray-400 hover:text-rose-600 p-2 rounded-full hover:bg-rose-50 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-lg">delete</span></a>
+                                <a asp-action="Edit" asp-route-id="@post.Id" asp-route-returnUrl="@currentUrl" class="text-gray-400 hover:text-amber-600 p-1.5 rounded-full hover:bg-white flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-lg">edit</span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@post.Id" asp-route-returnUrl="@currentUrl" class="text-gray-400 hover:text-rose-600 p-1.5 rounded-full hover:bg-white flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                </a>
                             }
                         </div>
                     </div>
 
                     <div class="px-5 pb-4">
-                        <p class="text-sm text-gray-800 font-medium leading-relaxed mb-3 whitespace-pre-line">@post.Content</p>
+                        <p class="text-sm text-gray-800 mb-4 whitespace-pre-line">@post.Content</p>
                         @if (!string.IsNullOrWhiteSpace(post.ImageUrl))
                         {
-                            <div class="rounded-2xl overflow-hidden max-h-[380px] bg-gray-50 border border-gray-50">
-                                <img src="@post.ImageUrl" alt="Hình ảnh đính kèm" class="w-full h-full object-cover" />
+                            <div class="rounded-2xl overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center">
+                                <img src="@post.ImageUrl"
+                                     alt="Hình ảnh bài viết"
+                                     class="w-full h-auto max-h-[500px] object-contain"
+                                     style="display: block;" />
                             </div>
                         }
                     </div>
 
-                    <div class="px-5 py-3.5 border-t border-gray-50 bg-gray-50/30 flex items-center justify-between">
-                        <div class="flex gap-6">
-                            <button type="button" onclick="toggleLike(this)" data-post-id="@post.Id" class="flex items-center gap-1.5 transition-colors group @(isLikedByMe ? "text-rose-500 font-bold" : "text-gray-500 hover:text-rose-500")">
-                                <span class="material-symbols-outlined text-xl transition-transform group-active:scale-125" style="@(isLikedByMe ? "font-variation-settings: 'FILL' 1" : "font-variation-settings: 'FILL' 0")">favorite</span>
-                                <span class="text-xs">@(isLikedByMe ? "Đã thích" : "Yêu thích")</span>
-                                <span class="like-count text-xs font-bold bg-gray-100 group-hover:bg-rose-50 px-1.5 py-0.5 rounded-md">@totalLikesCount</span>
+                    <div class="px-5 py-3.5 border-t border-gray-50 bg-white flex items-center justify-between">
+                        <div class="flex gap-8">
+                            <button type="button" onclick="toggleLike(this)" data-post-id="@post.Id" class="flex items-center gap-2 transition-all @(isLikedByMe ? "text-rose-500 font-bold" : "text-gray-500")">
+                                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' @(isLikedByMe ? "1" : "0")">favorite</span>
+                                <span class="text-xs"><span class="like-count">@totalLikesCount</span> lượt thích</span>
                             </button>
-                            <a asp-action="Details" asp-route-id="@post.Id" class="flex items-center gap-1.5 text-gray-500 hover:text-pet-primary transition-colors font-medium">
+                            <button type="button" onclick="toggleCommentsSection(@post.Id)" class="flex items-center gap-2 text-gray-500 font-medium hover:text-blue-600 transition-colors">
                                 <span class="material-symbols-outlined text-xl">chat_bubble</span>
-                                <span class="text-xs">@(post.Comments?.Count ?? 0) bình luận</span>
-                            </a>
+                                <span class="text-xs"><span id="comment-count-@post.Id">@(post.Comments?.Count ?? 0)</span> bình luận</span>
+                            </button>
                         </div>
+                    </div>
+
+                    <div id="comments-section-@post.Id" class="hidden border-t border-gray-50 bg-gray-50/50 p-5 space-y-4">
+                        <div id="comments-list-@post.Id" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                            @if (post.Comments != null && post.Comments.Any())
+                            {
+                                foreach (var comment in post.Comments.OrderBy(c => c.CreatedAt))
+                                {
+                                    <div class="flex items-start gap-2.5 text-xs">
+                                        <div class="w-7 h-7 rounded-full overflow-hidden border bg-gray-100 flex-shrink-0">
+                                            @if (!string.IsNullOrWhiteSpace(comment.User?.AvatarUrl))
+                                            {
+                                                <img src="@comment.User.AvatarUrl" class="w-full h-full object-cover" />
+                                            }
+                                            else
+                                            {
+                                                <img src="/images/default-avatar.png" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=@(comment.UserId)'" />
+                                            }
+                                        </div>
+                                        <div class="bg-white border rounded-xl px-3 py-2 flex-1 shadow-2v">
+                                            <div class="flex items-center justify-between mb-0.5">
+                                                <span class="font-bold text-gray-900">@(comment.User?.FullName ?? "Thành viên")</span>
+                                                <span class="text-[10px] text-gray-400">@comment.CreatedAt.ToString("dd/MM HH:mm")</span>
+                                            </div>
+                                            <p class="text-gray-700 leading-relaxed">@comment.Content</p>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p id="no-comment-msg-@post.Id" class="text-[11px] text-gray-400 text-center py-2 italic">Chưa có bình luận nào. Hãy trở thành người đầu tiên!</p>
+                            }
+                        </div>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="flex gap-2 pt-2 border-t border-gray-100">
+                                <input type="text" id="comment-input-@post.Id" placeholder="Viết bình luận của bạn..." class="w-full bg-white border border-gray-200 text-xs px-4 py-2 rounded-full focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all" onkeypress="if(event.key === 'Enter') submitCommentAjax(@post.Id)" />
+                                <button type="button" onclick="submitCommentAjax(@post.Id)" class="bg-pet-primary hover:bg-pet-primary-hover text-white text-xs font-bold px-4 py-2 rounded-full transition-all active:scale-95 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">send</span>
+                                </button>
+                            </div>
+                        }
                     </div>
                 </article>
             }
         }
     </div>
-</main>
+</div>
 
 <script>
     function toggleLike(button) {
     const postId = button.getAttribute('data-post-id');
-    if (!postId) return;
     const icon = button.querySelector('.material-symbols-outlined');
-    const text = button.querySelector('span:not(.material-symbols-outlined)');
     const countSpan = button.querySelector('.like-count');
     const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
 
-    fetch(`/Post/ToggleLike?postId=${postId}`, {
-    method: 'POST',
-    headers: { 'RequestVerificationToken': token }
-    })
-    .then(response => response.json())
-    .then(data => {
+    fetch(`/Post/ToggleLike?postId=${postId}`, { method: 'POST', headers: { 'RequestVerificationToken': token } })
+    .then(r => r.json()).then(data => {
     if (data && data.success) {
     if (data.isLiked) {
     icon.style.fontVariationSettings = "'FILL' 1";
     button.classList.add('text-rose-500', 'font-bold');
-    button.classList.remove('text-gray-500');
-    if (text) text.innerText = "Đã thích";
     } else {
     icon.style.fontVariationSettings = "'FILL' 0";
     button.classList.remove('text-rose-500', 'font-bold');
-    button.classList.add('text-gray-500');
-    if (text) text.innerText = "Yêu thích";
     }
     if (countSpan) countSpan.innerText = data.count;
     }
-    }).catch(err => console.error('Lỗi Like:', err));
+    });
+    }
+
+    // Hàm ẩn/hiện khu vực bình luận
+    function toggleCommentsSection(postId) {
+    const section = document.getElementById(`comments-section-${postId}`);
+    if(section) {
+    section.classList.toggle('hidden');
+    }
+    }
+
+    // Hàm gửi bình luận Ajax
+    function submitCommentAjax(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    if (!input || !input.value.trim()) return;
+
+    const content = input.value.trim();
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+
+    const formData = new FormData();
+    formData.append('postId', postId);
+    formData.append('commentContent', content);
+
+    fetch('/Post/AddCommentAjax', {
+    method: 'POST',
+    headers: { 'RequestVerificationToken': token },
+    body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+    if (data && data.success) {
+    input.value = ''; // Xóa sạch ô nhập
+
+    // Ẩn dòng thông báo trống
+    const msg = document.getElementById(`no-comment-msg-${postId}`);
+    if(msg) msg.remove();
+
+    // Tạo giao diện bình luận mới chèn vào danh sách công khai công khai
+    const list = document.getElementById(`comments-list-${postId}`);
+    const avatar = data.avatarUrl ? data.avatarUrl : '/images/default-avatar.png';
+                
+    const newCommentHtml = `
+    <div class="flex items-start gap-2.5 text-xs animate-[fadeIn_0.3s_ease]">
+    <div class="w-7 h-7 rounded-full overflow-hidden border bg-gray-100 flex-shrink-0">
+    <img src="${avatar}" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=' + Math.random()" />
+    </div>
+    <div class="bg-white border rounded-xl px-3 py-2 flex-1 shadow-2v">
+    <div class="flex items-center justify-between mb-0.5">
+    <span class="font-bold text-gray-900">${data.authorName}</span>
+    <span class="text-[10px] text-gray-400">${data.createdAt}</span>
+    </div>
+    <p class="text-gray-700 leading-relaxed">${data.content}</p>
+    </div>
+    </div>
+    `;
+    list.insertAdjacentHTML('beforeend', newCommentHtml);
+    list.scrollTop = list.scrollHeight; // Tự động cuộn xuống cuối
+
+    // Cập nhật bộ đếm bình luận hiển thị trên thanh điều hướng
+    const countSpan = document.getElementById(`comment-count-${postId}`);
+    if(countSpan) {
+    countSpan.innerText = parseInt(countSpan.innerText || '0') + 1;
+    }
+    }
+    });
     }
 </script>

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace PetSocial.Migrations
 {
     /// <inheritdoc />
-    public partial class ThemDL : Migration
+    public partial class ThemDuLieu : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -215,6 +216,29 @@ namespace PetSocial.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Pets",
                 columns: table => new
                 {
@@ -265,6 +289,34 @@ namespace PetSocial.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PetMatches",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SenderPetId = table.Column<int>(type: "int", nullable: false),
+                    ReceiverPetId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PetMatches", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PetMatches_Pets_ReceiverPetId",
+                        column: x => x.ReceiverPetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PetMatches_Pets_SenderPetId",
+                        column: x => x.SenderPetId,
+                        principalTable: "Pets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -384,6 +436,21 @@ namespace PetSocial.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PetMatches_ReceiverPetId",
+                table: "PetMatches",
+                column: "ReceiverPetId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PetMatches_SenderPetId",
+                table: "PetMatches",
+                column: "SenderPetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Pets_UserId",
                 table: "Pets",
                 column: "UserId");
@@ -411,191 +478,13 @@ namespace PetSocial.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-
-            // 1. Tạo GUID cố định để dễ dàng mapping khóa ngoại giữa các bảng
-            var roleAdminId = "11111111-1111-1111-1111-111111111111";
-            var roleUserId = "22222222-2222-2222-2222-222222222222";
-
-            var adminId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
-            var lamId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
-            var ngocId = "cccccccc-cccc-cccc-cccc-cccccccccccc";
-            var anhId = "dddddddd-dddd-dddd-dddd-dddddddddddd";
-            var nhuId = "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee";
-
-            // Băm mật khẩu chung "123456" cho tất cả tài khoản mẫu
-            var defaultPassword = BCrypt.Net.BCrypt.HashPassword("123456");
-            var now = DateTime.Now;
-
-            // 2. Insert Roles (Bảng Roles đã được đổi tên trong DbContext)
-            migrationBuilder.InsertData(
-                table: "Roles",
-                columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
-                values: new object[,]
-                {
-        { roleAdminId, "Admin", "ADMIN", Guid.NewGuid().ToString() },
-        { roleUserId, "User", "USER", Guid.NewGuid().ToString() }
-                });
-
-            // 3. Insert Users (Bảng Users)
-            // 3. Insert Users (Bảng Users)
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[]
-                {
-        "Id", "FullName", "UserName", "NormalizedUserName", "Email", "NormalizedEmail",
-        "EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp",
-        "PhoneNumber", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnabled", "AccessFailedCount", "CreatedAt"
-                },
-                values: new object[,]
-                {
-        { adminId, "Quản trị viên", "admin@petsocial.com", "ADMIN@PETSOCIAL.COM", "admin@petsocial.com", "ADMIN@PETSOCIAL.COM", true, defaultPassword, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0900000000", false, false, false, 0, now },
-        { lamId, "Hồng Lam", "lam@petsocial.com", "LAM@PETSOCIAL.COM", "lam@petsocial.com", "LAM@PETSOCIAL.COM", true, defaultPassword, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0901111111", false, false, false, 0, now },
-        { ngocId, "Kim Ngọc", "ngoc@petsocial.com", "NGOC@PETSOCIAL.COM", "ngoc@petsocial.com", "NGOC@PETSOCIAL.COM", true, defaultPassword, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0902222222", false, false, false, 0, now },
-        { anhId, "Chúc Anh", "anh@petsocial.com", "ANH@PETSOCIAL.COM", "anh@petsocial.com", "ANH@PETSOCIAL.COM", true, defaultPassword, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0903333333", false, false, false, 0, now },
-        { nhuId, "Ngọc Như", "nhu@petsocial.com", "NHU@PETSOCIAL.COM", "nhu@petsocial.com", "NHU@PETSOCIAL.COM", true, defaultPassword, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), "0904444444", false, false, false, 0, now }
-                });
-
-            // 4. Cấp quyền (Bảng trung gian mặc định của Identity)
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "UserId", "RoleId" },
-                values: new object[,]
-                {
-        { adminId, roleAdminId },
-        { lamId, roleUserId },
-        { ngocId, roleUserId },
-        { anhId, roleUserId },
-        { nhuId, roleUserId }
-                });
-
-            // 5. Insert Pets (Dữ liệu test cho module của Ngọc)
-            migrationBuilder.InsertData(
-                table: "Pets",
-                columns: new[] { "Id", "Name", "Species", "Age", "UserId" },
-                values: new object[,]
-                {
-        { 1, "Milu", "Chó Corgi", 2, lamId },
-        { 2, "Mimi", "Mèo Anh Lông Ngắn", 1, ngocId }
-                });
-
-            // 6. Insert Posts (Dữ liệu test cho module của Anh)
-            migrationBuilder.InsertData(
-                table: "Posts",
-                columns: new[] { "Id", "Content", "CreatedAt", "UserId" },
-                values: new object[,]
-                {
-        { 1, "Hôm nay dẫn Milu đi dạo công viên vui quá!", now, lamId },
-        { 2, "Mimi mới mua đồ chơi mới nè mọi người.", now.AddMinutes(30), ngocId },
-        { 3, "Chia sẻ kinh nghiệm chăm sóc chó cảnh mùa nóng.", now.AddHours(1), anhId }
-                });
-
-            // 7. Insert Comments
-            migrationBuilder.InsertData(
-                table: "Comments",
-                columns: new[] { "Id", "Content", "CreatedAt", "PostId", "UserId" },
-                values: new object[,]
-                {
-        { 1, "Milu đáng yêu quá!", now.AddMinutes(10), 1, ngocId },
-        { 2, "Bài viết rất hữu ích, cảm ơn bạn.", now.AddHours(2), 3, nhuId }
-                });
-
-            // 8. Insert Likes
-            migrationBuilder.InsertData(
-                table: "Likes",
-                columns: new[] { "Id", "CreatedAt", "PostId", "UserId" },
-                values: new object[,]
-                {
-        { 1, now.AddMinutes(5), 1, anhId },
-        { 2, now.AddMinutes(35), 2, lamId }
-                });
-
-            // 9. Insert Follows
-            migrationBuilder.InsertData(
-                table: "Follows",
-                columns: new[] { "Id", "FollowerId", "FollowingId", "CreatedAt" },
-                values: new object[,]
-                {
-        { 1, lamId, ngocId, now },
-        { 2, ngocId, lamId, now },
-        { 3, nhuId, anhId, now }
-                });
-
-            // 10. Insert Messages (Dữ liệu test cho module Chat của Như)
-            migrationBuilder.InsertData(
-                table: "Messages",
-                columns: new[] { "Id", "Content", "CreatedAt", "IsRead", "SenderId", "ReceiverId" },
-                values: new object[,]
-                {
-        { 1, "Chào Ngọc, dạo này Mimi khỏe không?", now, true, lamId, ngocId },
-        { 2, "Mimi khỏe nha, ăn ngoan lắm!", now.AddMinutes(2), false, ngocId, lamId }
-                });
-
-
-
-            // 5. Insert Pets
-            migrationBuilder.InsertData(
-                table: "Pets",
-                columns: new[]
-                {
-        "Name", "Species", "Breed", "Age", "Gender", "FurColor", "Weight",
-        "Personality", "Hobbies", "Location", "Description", "AvatarUrl", "UserId"
-                },
-                values: new object[,]
-                {
-        {
-            "Milu",
-            "Chó",
-            "Corgi",
-            2,
-            "Đực",
-            "Vàng trắng",
-            9.80m,
-            "Năng động",
-            "Chạy nhảy, ăn snack, đi dạo công viên",
-            "TP.HCM",
-            "Milu là bé Corgi vui vẻ, thân thiện và rất thích chơi cùng mọi người.",
-            "/images/Pet/cho-corgi.jpg",
-            lamId
-        },
-        {
-            "Mimi",
-            "Mèo",
-            "Mèo Anh Lông Ngắn",
-            1,
-            "Cái",
-            "Xám trắng",
-            3.20m,
-            "Dễ thương",
-            "Ngủ nắng, chơi len, leo trèo",
-            "Hà Nội",
-            "Mimi hiền, quấn chủ, thích nằm cạnh cửa sổ và được vuốt ve.",
-            "/images/Pet/meo.jpg",
-            ngocId
-        },
-        {
-            "Poodle Trắng",
-            "Chó",
-            "Poodle",
-            2,
-            "Cái",
-            "Trắng",
-            4.50m,
-            "Thân thiện",
-            "Đi dạo, chơi bóng, được ôm",
-            "Đà Nẵng",
-            "Bé Poodle nhỏ nhắn, sạch sẽ, ngoan ngoãn và phù hợp với gia đình yêu thú cưng.",
-            "/images/Pet/poodle.jpg",
-            nhuId
-        }
-                });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-               name: "AspNetRoleClaims");
+                name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
                 name: "AspNetUserClaims");
@@ -622,7 +511,10 @@ namespace PetSocial.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Pets");
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PetMatches");
 
             migrationBuilder.DropTable(
                 name: "Roles");
@@ -631,8 +523,10 @@ namespace PetSocial.Migrations
                 name: "Posts");
 
             migrationBuilder.DropTable(
+                name: "Pets");
+
+            migrationBuilder.DropTable(
                 name: "Users");
         }
-    
     }
 }

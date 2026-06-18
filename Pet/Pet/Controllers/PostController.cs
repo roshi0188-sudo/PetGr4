@@ -30,7 +30,7 @@ namespace PetSocial.Controllers
         {
             var posts = await _context.Posts
                 .Include(p => p.User)
-                .Include(p => p.Comments)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
                 .Include(p => p.Likes)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -38,23 +38,24 @@ namespace PetSocial.Controllers
             await LoadFollowingIdsAsync();
 
             ViewData["ActiveMenu"] = "Home";
+            ViewBag.PageTitle = "Bài viết mới nhất";
+
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
             return View(posts);
         }
 
-        // ====== THÊM MỚI NGHIỆP VỤ SIDEBAR: BÀI VIẾT CỦA TÔI ======
+        // ====== BÀI VIẾT CỦA TÔI ======
         [Authorize]
         public async Task<IActionResult> MyPosts()
         {
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId)) return Challenge();
 
-            // Lọc chính xác các bài viết do tài khoản đang đăng nhập tạo ra
             var myPosts = await _context.Posts
                 .Include(p => p.User)
-                .Include(p => p.Comments)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
                 .Include(p => p.Likes)
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
@@ -62,67 +63,18 @@ namespace PetSocial.Controllers
 
             await LoadFollowingIdsAsync();
 
-            // Đánh dấu menu kích hoạt trên Sidebar gốc
             ViewData["ActiveMenu"] = "MyPost";
+            ViewBag.PageTitle = "Bài viết của tôi";
+
             ViewBag.CurrentUserId = userId;
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
-            // Tái sử dụng lại giao diện Index của Post để không cần viết lại giao diện mới
             return View("Index", myPosts);
         }
-        // =========================================================
 
-        // 1B. NEWS FEED - CHỈ HIỂN THỊ BÀI VIẾT CỦA NHỮNG NGƯỜI MÌNH ĐANG THEO DÕI
+        // 2. HIỂN THỊ FORM TẠO BÀI VIẾT MỚI (GET)
         [Authorize]
-        public async Task<IActionResult> Feed()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
-
-            var followingIds = await _context.Follows
-                .Where(f => f.FollowerId == user.Id)
-                .Select(f => f.FollowingId)
-                .ToListAsync();
-
-            followingIds.Add(user.Id);
-
-            var posts = await _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.Comments)
-                .Include(p => p.Likes)
-                .Where(p => followingIds.Contains(p.UserId))
-                .OrderByDescending(p => p.CreatedAt)
-                .ToListAsync();
-
-            await LoadFollowingIdsAsync();
-
-            ViewData["IsFeed"] = true;
-            ViewBag.CurrentUserId = user.Id;
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            return View("Index", posts);
-        }
-
-        // 2. HIỂN THỊ CHI TIẾT BÀI VIẾT
-        public async Task<IActionResult> Details(int id)
-        {
-            var post = await _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.Comments).ThenInclude(c => c.User)
-                .Include(p => p.Likes)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (post == null) return NotFound();
-
-            ViewBag.CurrentUserId = _userManager.GetUserId(User);
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            return View(post);
-        }
-
-        // 3. HIỂN THỊ FORM TẠO BÀI VIẾT MỚI
-        [Authorize]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string? returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             var model = new Post();
@@ -131,14 +83,15 @@ namespace PetSocial.Controllers
                 model.User = user;
                 model.UserId = user.Id;
             }
+            ViewBag.ReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
             return View(model);
         }
 
-        // 4. XỬ LÝ TẠO BÀI VIẾT MỚI
+        // 3. XỬ LÝ TẠO BÀI VIẾT MỚI (POST)
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Post model, IFormFile? imageFile)
+        public async Task<IActionResult> Create(Post model, IFormFile? imageFile, string? returnUrl)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
@@ -153,6 +106,7 @@ namespace PetSocial.Controllers
             if (!ModelState.IsValid)
             {
                 model.User = user;
+                ViewBag.ReturnUrl = returnUrl;
                 return View(model);
             }
 
@@ -168,26 +122,30 @@ namespace PetSocial.Controllers
             _context.Posts.Add(model);
             await _context.SaveChangesAsync();
 
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        // 5. HIỂN THỊ FORM CẬP NHẬT BÀI VIẾT
+        // 4. HIỂN THỊ FORM CẬP NHẬT BÀI VIẾT (GET)
         [Authorize]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string? returnUrl)
         {
             var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null) return NotFound();
-
             if (!await CanManagePostAsync(post)) return Forbid();
 
+            ViewBag.ReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
             return View(post);
         }
 
-        // 6. XỬ LÝ CẬP NHẬT BÀI VIẾT
+        // 5. XỬ LÝ CẬP NHẬT BÀI VIẾT (POST)
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Post formModel, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, Post formModel, IFormFile? imageFile, string? returnUrl)
         {
             if (id != formModel.Id) return BadRequest();
 
@@ -201,6 +159,7 @@ namespace PetSocial.Controllers
 
             if (!ModelState.IsValid)
             {
+                ViewBag.ReturnUrl = returnUrl;
                 return View(formModel);
             }
 
@@ -219,25 +178,30 @@ namespace PetSocial.Controllers
             _context.Update(post);
             await _context.SaveChangesAsync();
 
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        // 7. HIỂN THỊ FORM XÁC NHẬN XÓA BÀI VIẾT
+        // 6. HIỂN THỊ FORM XÁC NHẬN XÓA BÀI VIẾT (GET)
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, string? returnUrl)
         {
             var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
+            ViewBag.ReturnUrl = returnUrl ?? Request.Headers["Referer"].ToString();
             return View(post);
         }
 
-        // 8. XỬ LÝ XOÁ BÀI VIẾT
+        // 7. XỬ LÝ XOÁ BÀI VIẾT (POST)
         [HttpPost, ActionName("Delete")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? returnUrl)
         {
             var post = await _context.Posts.FindAsync(id);
             if (post == null) return NotFound();
@@ -248,28 +212,42 @@ namespace PetSocial.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        // PHÂN QUYỀN TRUY CẬP: Chỉ chủ sở hữu bài viết hoặc Admin mới được phép can thiệp sâu
+        // 8. CHI TIẾT BÀI VIẾT (GET)
+        public async Task<IActionResult> Details(int id)
+        {
+            var post = await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
+                .Include(p => p.Likes)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (post == null) return NotFound();
+
+            ViewBag.CurrentUserId = _userManager.GetUserId(User);
+            ViewBag.IsAdmin = User.IsInRole("Admin");
+
+            return View(post);
+        }
+
         private async Task<bool> CanManagePostAsync(Post post)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return false;
-
             return post.UserId == user.Id || User.IsInRole("Admin");
         }
 
         private async Task<string?> SavePostImageAsync(IFormFile? imageFile)
         {
             if (imageFile == null || imageFile.Length == 0) return null;
-            if (string.IsNullOrWhiteSpace(imageFile.ContentType) || !imageFile.ContentType.StartsWith("image/"))
-                return null;
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "posts");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
             var extension = Path.GetExtension(imageFile.FileName);
             var fileName = $"{Guid.NewGuid():N}{extension}";
@@ -283,17 +261,11 @@ namespace PetSocial.Controllers
 
         private void DeleteLocalImage(string? imageUrl)
         {
-            if (string.IsNullOrWhiteSpace(imageUrl) || !imageUrl.StartsWith("/images/posts/", StringComparison.OrdinalIgnoreCase))
-                return;
-
-            var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
-            var fullPath = Path.Combine(_environment.WebRootPath, relativePath);
-
-            if (System.IO.File.Exists(fullPath))
-                System.IO.File.Delete(fullPath);
+            if (string.IsNullOrWhiteSpace(imageUrl) || !imageUrl.StartsWith("/images/posts/")) return;
+            var fullPath = Path.Combine(_environment.WebRootPath, imageUrl.TrimStart('/'));
+            if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
         }
 
-        // 9. THẢ TIM BÀI VIẾT (XỬ LÝ AJAX)
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ToggleLike(int postId)
@@ -301,72 +273,46 @@ namespace PetSocial.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            var existingLike = await _context.Likes
-                .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == user.Id);
-
+            var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == user.Id);
             bool isLikedNow = false;
 
-            if (existingLike != null)
-            {
-                _context.Likes.Remove(existingLike);
-                isLikedNow = false;
-            }
-            else
-            {
-                var newLike = new Like { PostId = postId, UserId = user.Id };
-                _context.Likes.Add(newLike);
-                isLikedNow = true;
-            }
+            if (existingLike != null) _context.Likes.Remove(existingLike);
+            else { _context.Likes.Add(new Like { PostId = postId, UserId = user.Id }); isLikedNow = true; }
 
             await _context.SaveChangesAsync();
-
             var totalLikes = await _context.Likes.CountAsync(l => l.PostId == postId);
-
             return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
         }
 
-        // 10. BÌNH LUẬN
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int postId, string commentContent)
+        public async Task<IActionResult> AddCommentAjax(int postId, string commentContent)
         {
-            if (string.IsNullOrWhiteSpace(commentContent))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
+            if (string.IsNullOrWhiteSpace(commentContent)) return Json(new { success = false });
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
+            if (user == null) return Json(new { success = false });
 
-            var newComment = new Comment
-            {
-                PostId = postId,
-                UserId = user.Id,
-                Content = commentContent,
-                CreatedAt = DateTime.Now
-            };
-
+            var newComment = new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now };
             _context.Comments.Add(newComment);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return Json(new
+            {
+                success = true,
+                id = newComment.Id,
+                content = newComment.Content,
+                createdAt = newComment.CreatedAt.ToString("dd/MM HH:mm"),
+                authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName,
+                avatarUrl = user.AvatarUrl ?? ""
+            });
         }
 
         private async Task LoadFollowingIdsAsync()
         {
             var currentUserId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                ViewData["FollowingIds"] = new HashSet<string>();
-                return;
-            }
-
-            var followingIds = await _context.Follows
-                .Where(f => f.FollowerId == currentUserId)
-                .Select(f => f.FollowingId)
-                .ToListAsync();
-
+            if (string.IsNullOrEmpty(currentUserId)) { ViewData["FollowingIds"] = new HashSet<string>(); return; }
+            var followingIds = await _context.Follows.Where(f => f.FollowerId == currentUserId).Select(f => f.FollowingId).ToListAsync();
             ViewData["FollowingIds"] = new HashSet<string>(followingIds);
         }
     }

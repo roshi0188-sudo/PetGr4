@@ -1,151 +1,108 @@
 ﻿@model PetSocial.Models.Post
 
 @{
-    ViewData["Title"] = "Chi tiết bài viết | PawPals";
+    ViewData["Title"] = "Chi tiết bài viết";
     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var hasLiked = Model.Likes.Any(l => l.UserId == currentUserId);
 }
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-<style>
-    body {
-    background-color: #FFFFF;
+<script>
+    tailwind.config = {
+    theme: {
+    extend: {
+    colors: {
+    'pet-primary': '#FF6B00',
+    'pet-primary-hover': '#E55A00',
+    'pet-primary-fixed': '#FFF0E5'
     }
-
-    .custom-shadow {
-    box-shadow: 0 12px 20px rgba(45, 52, 54, 0.04);
     }
-</style>
+    }
+    }
+</script>
 
-<div class="max-w-3xl mx-auto px-4 py-8 font-['Nunito_Sans'] text-[#161d1f]">
+<div class="max-w-3xl mx-auto px-4 py-8 text-[#161d1f]">
+    @Html.AntiForgeryToken()
+
     <div class="mb-6">
-        <a asp-action="Index" class="inline-flex items-center gap-2 text-sm text-[#544437] hover:text-[#8f4e00] font-semibold transition-colors">
-            <span class="material-symbols-outlined text-base">arrow_back</span> Quay lại bảng tin
+        <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-pet-primary transition-colors bg-gray-50 hover:bg-orange-50 px-4 py-2 rounded-full border border-gray-100">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            <span>Quay lại danh sách</span>
         </a>
     </div>
 
-    <article class="bg-white rounded-[24px] custom-shadow border border-[#e8eff1] overflow-hidden mb-8">
-        <div class="p-6 flex items-center justify-between border-b border-[#e8eff1]">
-            <div class="flex items-center gap-4">
-                <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="w-12 h-12 rounded-full bg-[#ffdcc2] overflow-hidden flex items-center justify-center border border-orange-100">
-                    @if (!string.IsNullOrWhiteSpace(Model.User?.AvatarUrl))
-                    {
-                        <img src="@Model.User.AvatarUrl" class="w-full h-full object-cover" alt="avatar" />
-                    }
-                    else
-                    {
-                        <span class="material-symbols-outlined text-2xl text-[#8f4e00]">account_circle</span>
-                    }
-                </a>
-                <div>
-                    <h3 class="font-bold text-base text-[#161d1f]">
-                        <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="hover:text-pet-primary transition-colors">
-                            @(Model.User?.FullName ?? "Thành viên ẩn danh")
-                        </a>
-                    </h3>
-                    <p class="text-xs text-[#544437] flex items-center gap-1 mt-0.5">
-                        <span class="material-symbols-outlined text-xs">schedule</span>
-                        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-                    </p>
-                </div>
-            </div>
-
-            <span class="px-3 py-1 rounded-full bg-[#6dfad2]/40 text-[#005140] text-xs font-bold">
-                Cộng đồng
-            </span>
-        </div>
-
-        <div class="p-6 space-y-6">
-            <p class="text-lg leading-relaxed whitespace-pre-line text-[#161d1f]">
-                @Model.Content
-            </p>
-
-            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-            {
-                <div class="rounded-2xl overflow-hidden shadow-sm border border-gray-100 max-h-[500px] bg-gray-50 flex justify-center items-center">
-                    <img src="@Model.ImageUrl" class="w-full h-full object-cover max-h-[500px]" alt="Hình ảnh minh họa" />
-                </div>
-            }
-        </div>
-
-        <div class="px-6 py-4 bg-[#f4fafd] flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-[#e8eff1]">
-            <form asp-action="ToggleLike" method="post" class="inline-block">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2 rounded-full border @(hasLiked ? "bg-red-50 border-red-200 text-red-600" : "bg-white border-[#dac2b1] text-gray-600 hover:bg-gray-50") text-sm font-semibold transition-all">
-                    <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' @(hasLiked ? "1" : "0")">favorite</span>
-                    Thích (@Model.Likes.Count)
-                </button>
-            </form>
-
-            <div class="flex items-center gap-2">
-                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || currentUserId == Model.UserId))
+    <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden p-6 space-y-5 shadow-sm">
+        <header class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                @if (!string.IsNullOrWhiteSpace(Model.User?.AvatarUrl))
                 {
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="inline-flex items-center gap-1 px-4 py-2 rounded-full border border-[#006b55] text-[#006b55] font-semibold text-xs hover:bg-[#6dfad2]/20 transition-all">
-                        <span class="material-symbols-outlined text-sm">edit</span> Sửa
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@Model.Id" class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-[#ba1a1a] text-white font-semibold text-xs hover:bg-red-700 transition-all">
-                        <span class="material-symbols-outlined text-sm">delete</span> Xóa
-                    </a>
+                    <img src="@Model.User.AvatarUrl" class="w-full h-full object-cover" alt="avatar" />
+                }
+                else
+                {
+                    <img src="/images/default-avatar.png" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=@(Model.UserId)'" alt="default avatar" />
                 }
             </div>
-        </div>
+            <div>
+                <h2 class="text-sm font-extrabold text-gray-900">@(Model.User?.FullName ?? "Thành viên cộng đồng")</h2>
+                <p class="text-[11px] text-gray-400">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+        </header>
+
+        <section class="space-y-4">
+            <p class="text-sm md:text-base text-gray-800 leading-relaxed whitespace-pre-line">@Model.Content</p>
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <div class="rounded-2xl overflow-hidden border border-gray-100 bg-gray-50">
+                    <img src="@Model.ImageUrl" alt="Post Image" class="w-full h-full object-contain mx-auto" />
+                </div>
+            }
+        </section>
+
+        <footer class="pt-4 border-t border-gray-50 flex items-center gap-6 text-xs font-bold text-gray-500">
+            <button type="button" onclick="toggleLike(this)" data-post-id="@Model.Id" class="flex items-center gap-1.5 transition-all @(hasLiked ? "text-rose-500 font-bold" : "text-gray-500")">
+                <span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' @(hasLiked ? "1" : "0")">favorite</span>
+                <span><span id="details-like-count">@(Model.Likes?.Count ?? 0)</span> Lượt thích</span>
+            </button>
+            <div class="flex items-center gap-1.5 text-pet-primary">
+                <span class="material-symbols-outlined text-xl">chat_bubble</span>
+                <span><span id="details-comment-count">@(Model.Comments?.Count ?? 0)</span> Bình luận</span>
+            </div>
+        </footer>
     </article>
 
-    <section class="bg-white rounded-[24px] custom-shadow border border-[#e8eff1] p-6 space-y-6">
-        <h3 class="text-xl font-bold text-[#161d1f] font-['Quicksand'] flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#8f4e00]">chat_bubble</span>
-            Bình luận (@Model.Comments.Count)
+    <section class="mt-6 bg-white rounded-[24px] border border-gray-100 p-6 space-y-6 shadow-sm">
+        <h3 class="text-xs font-extrabold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-lg text-pet-primary">forum</span>
+            <span>Ý kiến đóng góp công khai</span>
         </h3>
 
-        @if (User.Identity?.IsAuthenticated == true)
-        {
-            <form asp-action="AddComment" method="post" class="space-y-3">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="postId" value="@Model.Id" />
-                <div class="border border-[#dac2b1] rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#8f4e00] transition-all bg-white">
-                    <textarea name="commentContent" rows="3" class="w-full px-4 py-3 border-none focus:ring-0 outline-none text-[#161d1f] text-sm resize-none" placeholder="Chia sẻ suy nghĩ của bạn về bài viết này..." required></textarea>
-                </div>
-                <div class="text-right">
-                    <button type="submit" class="px-6 py-2 rounded-full bg-[#8f4e00] text-white font-semibold text-sm shadow-sm hover:scale-[1.02] active:scale-95 transition-all">
-                        Gửi bình luận
-                    </button>
-                </div>
-            </form>
-        }
-        else
-        {
-            <div class="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 text-center text-sm text-gray-500">
-                Vui lòng đăng nhập để tham gia bình luận bài viết này.
-            </div>
-        }
-
-        <div class="space-y-4 pt-4 border-t border-gray-100">
-            @if (!Model.Comments.Any())
+        <div id="details-comments-list" class="space-y-4 max-h-96 overflow-y-auto pr-2">
+            @if (Model.Comments == null || !Model.Comments.Any())
             {
-                <p class="text-center text-sm text-gray-400 py-4">Chưa có bình luận nào. Hãy là người đầu tiên!</p>
+                <p id="details-no-comment-msg" class="text-xs text-gray-400 text-center py-6 border border-dashed rounded-xl">Chưa có bình luận nào cho bài viết này.</p>
             }
             else
             {
                 @foreach (var comment in Model.Comments.OrderBy(c => c.CreatedAt))
                 {
                     <div class="flex items-start gap-3 text-sm">
-                        <div class="w-8 h-8 rounded-full bg-orange-100 overflow-hidden flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div class="w-8 h-8 rounded-full overflow-hidden border bg-gray-100 flex-shrink-0 mt-0.5">
                             @if (!string.IsNullOrWhiteSpace(comment.User?.AvatarUrl))
                             {
                                 <img src="@comment.User.AvatarUrl" class="w-full h-full object-cover" alt="avatar" />
                             }
                             else
                             {
-                                <span class="material-symbols-outlined text-lg text-[#8f4e00]">account_circle</span>
+                                <img src="/images/default-avatar.png" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=@(comment.UserId)'" alt="avatar" />
                             }
                         </div>
                         <div class="bg-gray-50 rounded-2xl px-4 py-2.5 max-w-[85%] flex-1">
                             <div class="flex items-center justify-between gap-4 mb-1">
-                                <span class="font-bold text-[#161d1f]">@(comment.User?.FullName ?? "Thành viên ẩn danh")</span>
+                                <span class="font-bold text-gray-900">@(comment.User?.FullName ?? "Thành viên ẩn danh")</span>
                                 <span class="text-[10px] text-gray-400">@comment.CreatedAt.ToString("dd/MM HH:mm")</span>
                             </div>
                             <p class="text-gray-700 leading-relaxed whitespace-pre-line">@comment.Content</p>
@@ -154,5 +111,98 @@
                 }
             }
         </div>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="flex gap-3 pt-4 border-t border-gray-100">
+                <input type="text" id="details-comment-input" placeholder="Viết bình luận của bạn..."
+                       class="w-full bg-white border border-gray-200 text-sm px-4 py-2.5 rounded-full focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all"
+                       onkeypress="if(event.key === 'Enter') submitDetailsComment()" />
+                
+                <button type="button" onclick="submitDetailsComment()"
+                        class="bg-pet-primary hover:bg-pet-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all active:scale-95 flex items-center gap-1 shadow-sm">
+                    <span class="material-symbols-outlined text-sm">send</span>
+                    <span>Gửi</span>
+                </button>
+            </div>
+        }
     </section>
 </div>
+
+<script>
+    function toggleLike(button) {
+    const postId = @Model.Id;
+    const icon = button.querySelector('.material-symbols-outlined');
+    const countSpan = document.getElementById('details-like-count');
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+
+    fetch(`/Post/ToggleLike?postId=${postId}`, { method: 'POST', headers: { 'RequestVerificationToken': token } })
+    .then(r => r.json()).then(data => {
+    if (data && data.success) {
+    if (data.isLiked) {
+    icon.style.fontVariationSettings = "'FILL' 1";
+    button.classList.add('text-rose-500', 'font-bold');
+    } else {
+    icon.style.fontVariationSettings = "'FILL' 0";
+    button.classList.remove('text-rose-500', 'font-bold');
+    }
+    if (countSpan) countSpan.innerText = data.count;
+    }
+    });
+    }
+
+    function submitDetailsComment() {
+    const input = document.getElementById('details-comment-input');
+    if (!input || !input.value.trim()) return;
+
+    const content = input.value.trim();
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+
+    const formData = new FormData();
+    formData.append('postId', @Model.Id);
+    formData.append('commentContent', content);
+
+    fetch('/Post/AddCommentAjax', {
+    method: 'POST',
+    headers: { 'RequestVerificationToken': token },
+    body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+    if (data && data.success) {
+    input.value = ''; // Xóa dữ liệu cũ trong ô nhập
+
+    // Ẩn thông báo "Chưa có bình luận"
+    const msg = document.getElementById('details-no-comment-msg');
+    if(msg) msg.remove();
+
+    // Chèn mã HTML bình luận mới vào cuối danh sách
+    const list = document.getElementById('details-comments-list');
+    const avatar = data.avatarUrl ? data.avatarUrl : '/images/default-avatar.png';
+                
+    const newCommentHtml = `
+    <div class="flex items-start gap-3 text-sm animate-[fadeIn_0.3s_ease]">
+    <div class="w-8 h-8 rounded-full overflow-hidden border bg-gray-100 flex-shrink-0 mt-0.5">
+    <img src="${avatar}" class="w-full h-full object-cover" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=' + Math.random()" />
+    </div>
+    <div class="bg-gray-50 rounded-2xl px-4 py-2.5 max-w-[85%] flex-1">
+    <div class="flex items-center justify-between gap-4 mb-1">
+    <span class="font-bold text-gray-900">${data.authorName}</span>
+    <span class="text-[10px] text-gray-400">${data.createdAt}</span>
+    </div>
+    <p class="text-gray-700 leading-relaxed whitespace-pre-line">${data.content}</p>
+    </div>
+    </div>
+    `;
+    list.insertAdjacentHTML('beforeend', newCommentHtml);
+    list.scrollTop = list.scrollHeight; // Cuộn mượt xuống phía dưới
+
+    // Tăng bộ đếm bình luận
+    const countSpan = document.getElementById('details-comment-count');
+    if(countSpan) {
+    countSpan.innerText = parseInt(countSpan.innerText || '0') + 1;
+    }
+    }
+    });
+    }
+</script>

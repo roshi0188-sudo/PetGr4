@@ -1461,9 +1461,11 @@ img {
 }
 
 .pet-card-actions-view {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     width: 100%;
-    justify-content: flex-end;
+    margin-top: auto;
 }
 
 .pet-card-connect-form,
@@ -1472,14 +1474,16 @@ img {
 }
 
 .pet-card-actions .pet-view-button {
-    min-width: 180px;
-    min-height: 42px;
-    padding: 0 18px;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 8px;
     border-radius: 12px;
     background: #ff7e21;
     color: #fff;
-    font-size: 0.92rem;
+    font-size: 0.85rem;
     font-weight: 900;
+    white-space: nowrap;
 }
 
 .pet-card-actions-view .pet-view-button {
@@ -1487,10 +1491,15 @@ img {
 }
 
 .pet-card-actions-view .pet-connect-button {
-    width: auto;
-    min-width: 132px;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 8px;
     background: #ef4444;
+    font-size: 0.85rem;
+    white-space: nowrap;
 }
+
 
 .pet-card-actions-manage .pet-view-button {
     min-width: 0;
@@ -3761,5 +3770,11 @@ img {
         background-color: #ff7a33;
         border-radius: 50%;
         box-shadow: 0 0 6px rgba(255, 122, 51, 0.6);
+    }
+}
+
+@media(max-width:1200px) {
+    .pet-card-actions-view {
+        grid-template-columns: 1fr;
     }
 }

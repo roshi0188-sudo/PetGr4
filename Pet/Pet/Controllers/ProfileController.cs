@@ -54,9 +54,11 @@ namespace PetSocial.Controllers
             bool isFollowing = !string.IsNullOrEmpty(currentUserId) &&
                 await _context.Follows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == id);
 
+            // ĐÃ SỬA: Thêm .ThenInclude(c => c.User) để nạp thông tin tài khoản của người bình luận
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.User) // BẮT BUỘC PHẢI CÓ DÒNG NÀY để hiển thị tên thật thay vì "Thành viên"
                 .Include(p => p.Likes)
                 .Where(p => p.UserId == id)
                 .OrderByDescending(p => p.CreatedAt)

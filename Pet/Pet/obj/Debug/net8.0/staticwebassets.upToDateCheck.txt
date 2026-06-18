@@ -2,7 +2,11 @@ wwwroot\css\chat.css
 wwwroot\css\site.css
 wwwroot\css\splash.css
 wwwroot\favicon.ico
+wwwroot\images\avatars\0888b4e6-40da-4f1f-ac40-61f19239bebd_heart.png
+wwwroot\images\avatars\0a190643-67fe-45fe-8703-3d927f60bc7a_fee56c7d7b7e66fc71ac8a0af024463d.jpg
+wwwroot\images\avatars\31c46647-d59b-49a4-a4aa-33a6f2bfad7a_1.jpg
 wwwroot\images\avatars\416bd138-5ebc-4c53-bfbb-f3c3ef93a500_ChatGPT_Image_12_23_27_16_thg_12__2025-removebg-preview.png
+wwwroot\images\avatars\604060d8-909b-481d-9500-67483a693ff9_dc985b911cf559b0f0617e83f447ce14.jpg
 wwwroot\images\avatars\90a46d44-45ea-4f81-89d1-9a214546554c_1.jpg
 wwwroot\images\avatars\abe07a82-6d8d-40af-9a80-a7195a497a88_a725a435-6c02-4acc-977c-8d16e0541047_avatar.jpg
 wwwroot\images\google.jpg
@@ -10,6 +14,8 @@ wwwroot\images\heart.png
 wwwroot\images\ins.jpg
 wwwroot\images\login.jpg
 wwwroot\images\logo.jpg
+wwwroot\images\Pet\3a1a9e59c86b46469734830f07babb5e.jpg
+wwwroot\images\Pet\5a738862cfb247e8b989a82215a0a37e.jpg
 wwwroot\images\Pet\70dc9edd80994360ab06ddb858d99b5f.jpg
 wwwroot\images\Pet\86adf6b8367f4783b3d0a2fbb613f3a8.jpg
 wwwroot\images\Pet\8bfdd95ca20f446d853b42d9fd8a1890.jpg
@@ -19,6 +25,8 @@ wwwroot\images\Pet\eb2b73155ef44ee6a09511fccbac1968.jpg
 wwwroot\images\Pet\meo.jpg
 wwwroot\images\Pet\poodle.jpg
 wwwroot\images\posts\46ea1dee66fe4b1cad41029df2c628a7.jpg
+wwwroot\images\posts\c5f47964bd30420091e7324a2431cdbd.jpg
+wwwroot\images\posts\c6d490277f1d4cffaa2d6b93fea12437.jpg
 wwwroot\images\posts\fd4be11bd2274eac8a7caf593ae81012.png
 wwwroot\js\site.js
 wwwroot\js\splash.js
