@@ -40,6 +40,13 @@ namespace PetSocial.Controllers
                 .AsNoTracking()
                 .Where(x => x.UserId == currentUserId);
 
+                if (communityPet != null)
+                {
+                    var communitySpecies = NormalizeSpecies(communityPet.Species);
+                    myPetsQuery = myPetsQuery
+                        .Where(x => x.Species.Trim().ToLower() == communitySpecies);
+                }
+
                 myPets = myPetsQuery
                     .OrderBy(x => x.Name)
                     .ToList();
@@ -55,10 +62,12 @@ namespace PetSocial.Controllers
 
             if (showSuggestions && selectedMyPet != null && communityPet == null)
             {
+                var selectedSpecies = NormalizeSpecies(selectedMyPet.Species);
+
                 pets = _context.Pets
                     .AsNoTracking()
                     .Where(x => x.UserId != currentUserId)
-                    .Where(x => x.Species == selectedMyPet.Species)
+                    .Where(x => x.Species.Trim().ToLower() == selectedSpecies)
                     .OrderByDescending(x => x.Id)
                     .ToList();
             }
@@ -136,8 +145,11 @@ namespace PetSocial.Controllers
 
             ViewBag.PetName = pet.Name;
 
+            var petSpecies = NormalizeSpecies(pet.Species);
+
             var suggestions = _context.Pets
                 .Where(x => x.Id != pet.Id)
+                .Where(x => x.Species.Trim().ToLower() == petSpecies)
                 .ToList();
 
             ViewBag.Count = suggestions.Count;
@@ -408,6 +420,11 @@ namespace PetSocial.Controllers
                 left?.Trim(),
                 right?.Trim(),
                 StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeSpecies(string? species)
+        {
+            return species?.Trim().ToLowerInvariant() ?? string.Empty;
         }
     }
 }

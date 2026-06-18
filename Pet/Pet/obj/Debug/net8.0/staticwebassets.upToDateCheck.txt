@@ -4,7 +4,9 @@ wwwroot\css\match.css
 wwwroot\css\site.css
 wwwroot\css\splash.css
 wwwroot\favicon.ico
+wwwroot\images\avatars\06a12dc6-b2f6-48d5-a077-3fefe66b9957_fee56c7d7b7e66fc71ac8a0af024463d.jpg
 wwwroot\images\avatars\0888b4e6-40da-4f1f-ac40-61f19239bebd_heart.png
+wwwroot\images\avatars\16590a95-daca-499a-af89-30d6f78db4e4_dc985b911cf559b0f0617e83f447ce14.jpg
 wwwroot\images\avatars\38b0cef7-4687-4bc1-88c8-dd6ea604d823_hinh-anh-anime-chibi.jpg
 wwwroot\images\avatars\416bd138-5ebc-4c53-bfbb-f3c3ef93a500_ChatGPT_Image_12_23_27_16_thg_12__2025-removebg-preview.png
 wwwroot\images\avatars\43e00838-7b19-4efe-a3c9-4ab1aa3eb561_abe07a82-6d8d-40af-9a80-a7195a497a88_a725a435-6c02-4acc-977c-8d16e0541047_avatar.jpg
@@ -16,6 +18,7 @@ wwwroot\images\heart.png
 wwwroot\images\ins.jpg
 wwwroot\images\login.jpg
 wwwroot\images\logo.jpg
+wwwroot\images\Pet\050d4f9cef2c4554b9c6249df2ad5650.jpg
 wwwroot\images\Pet\168e5c2fcf74479dbc8d132885548756.jpg
 wwwroot\images\Pet\33e18fadb1af4c24a57a12622149cd76.jpg
 wwwroot\images\Pet\3b9f57bac63d412caddf90be63514e61.jpg
@@ -23,6 +26,9 @@ wwwroot\images\Pet\70dc9edd80994360ab06ddb858d99b5f.jpg
 wwwroot\images\Pet\8138c820e0e1407587bab16d058e0d64.jpg
 wwwroot\images\Pet\86adf6b8367f4783b3d0a2fbb613f3a8.jpg
 wwwroot\images\Pet\8bfdd95ca20f446d853b42d9fd8a1890.jpg
+wwwroot\images\Pet\9758fd1f9b964492bb447af0d0f8209f.jpg
+wwwroot\images\Pet\9d81a60974c145ff9fe727fd04493e2b.jpg
+wwwroot\images\Pet\bb23bee6fa9247c0afc7508389488fc8.jpg
 wwwroot\images\Pet\cho-corgi.jpg
 wwwroot\images\Pet\e472f8c97d92417f9d1e81c400388dd2.jpg
 wwwroot\images\Pet\eb2b73155ef44ee6a09511fccbac1968.jpg

@@ -182,10 +182,13 @@
                                         <i class="fa fa-eye"></i>
                                         Xem chi tiết
                                     </a>
-                                    <a asp-controller="Match" asp-action="Index" asp-route-communityPetId="@pet.Id" class="pet-connect-button">
-                                        <i class="fa fa-heart"></i>
-                                        Kết nối
-                                    </a>
+                                    @if (pet.UserId != currentUserId)
+                                    {
+                                        <a asp-controller="Match" asp-action="Index" asp-route-communityPetId="@pet.Id" class="pet-connect-button">
+                                            <i class="fa fa-heart"></i>
+                                            Kết nối
+                                        </a>
+                                    }
                                 }
                             </div>
                         </div>

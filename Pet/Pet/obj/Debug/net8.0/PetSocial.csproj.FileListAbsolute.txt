@@ -1,833 +1,148 @@
-<<<<<<< Updated upstream
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.Development.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.runtime.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.endpoints.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.deps.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.runtimeconfig.json
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.pdb
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Core.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Identity.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\BCrypt-Net-Next.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Humanizer.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\Mono.TextTemplating.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.CodeDom.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.AttributedModel.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Convention.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Hosting.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Runtime.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.TypedParts.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Drawing.Common.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Memory.Data.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Runtime.Caching.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Permissions.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Windows.Extensions.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.AssemblyReference.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.GeneratedMSBuildEditorConfig.editorconfig
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfoInputs.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfo.cs
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.CoreCompileInputs.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.MvcApplicationPartsAssemblyInfo.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cs
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.sourcelink.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\rjimswa.dswa.cache.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\bundle\PetSocial.styles.css
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\projectbundle\PetSocial.bundle.scp.css
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.development.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\swae.build.ex.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.Up2Date
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.dll
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\refint\PetSocial.dll
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.pdb
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.genruntimeconfig.cache
-D:\PetGr4\Pet\Pet\obj\Debug\net8.0\ref\PetSocial.dll
-=======
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.Development.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.runtime.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.endpoints.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.deps.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.runtimeconfig.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.pdb
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Core.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Identity.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\BCrypt-Net-Next.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Humanizer.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\Mono.TextTemplating.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.CodeDom.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.AttributedModel.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Convention.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Hosting.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Runtime.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.TypedParts.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Drawing.Common.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Memory.Data.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Runtime.Caching.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Permissions.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Windows.Extensions.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.AssemblyReference.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\rpswa.dswa.cache.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfoInputs.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfo.cs
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.CoreCompileInputs.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cs
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.sourcelink.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\rjimswa.dswa.cache.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\bundle\PetSocial.styles.css
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\projectbundle\PetSocial.bundle.scp.css
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.development.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.Up2Date
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\refint\PetSocial.dll
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.pdb
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.genruntimeconfig.cache
-C:\Users\Hong-Lam\OneDrive\Máy tính\Hutech\HK2N3\LTW\Do_An\PetGr4\Pet\Pet\obj\Debug\net8.0\ref\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\appsettings.Development.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\appsettings.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.staticwebassets.runtime.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.exe
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.deps.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.runtimeconfig.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Azure.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Azure.Identity.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\BCrypt-Net-Next.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Humanizer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Bcl.AsyncInterfaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.CodeAnalysis.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.CodeAnalysis.CSharp.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.CodeAnalysis.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.EntityFrameworkCore.Design.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.EntityFrameworkCore.Relational.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Caching.Memory.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.DependencyInjection.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.DependencyModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Identity.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Identity.Stores.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Logging.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Extensions.Options.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Identity.Client.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Identity.Client.Extensions.Msal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.Protocols.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.IdentityModel.Tokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.SqlServer.Server.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\Mono.TextTemplating.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.ClientModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.CodeDom.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Composition.AttributedModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Composition.Convention.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Composition.Hosting.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Composition.Runtime.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Composition.TypedParts.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Configuration.ConfigurationManager.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.IdentityModel.Tokens.Jwt.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Memory.Data.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Security.Permissions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\cs\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\de\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\es\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\fr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\it\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ja\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ko\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pl\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pt-BR\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ru\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\tr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-check\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.AssemblyReference.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\rpswa.dswa.cache.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.GeneratedMSBuildEditorConfig.editorconfig
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfoInputs.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfo.cs
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.CoreCompileInputs.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.MvcApplicationPartsAssemblyInfo.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cs
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.sourcelink.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\rjimswa.dswa.cache.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\bundle\PetSocial.styles.css
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\projectbundle\PetSocial.bundle.scp.css
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.development.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\swae.build.ex.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.Up2Date
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\refint\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.genruntimeconfig.cache
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\ref\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\appsettings.Development.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\appsettings.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.staticwebassets.runtime.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.exe
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.deps.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.runtimeconfig.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Azure.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Azure.Identity.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\BCrypt-Net-Next.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Humanizer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Bcl.AsyncInterfaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.CodeAnalysis.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.CodeAnalysis.CSharp.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.CodeAnalysis.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.EntityFrameworkCore.Design.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.EntityFrameworkCore.Relational.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Caching.Memory.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.DependencyInjection.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.DependencyModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Identity.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Identity.Stores.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Logging.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Extensions.Options.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Identity.Client.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Identity.Client.Extensions.Msal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.Protocols.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.IdentityModel.Tokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.SqlServer.Server.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\Mono.TextTemplating.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.ClientModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.CodeDom.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Composition.AttributedModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Composition.Convention.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Composition.Hosting.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Composition.Runtime.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Composition.TypedParts.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Configuration.ConfigurationManager.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.IdentityModel.Tokens.Jwt.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Memory.Data.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Security.Permissions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\cs\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\de\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\es\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\fr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\it\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ja\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ko\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pl\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pt-BR\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ru\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\tr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-final\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\appsettings.Development.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\appsettings.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.staticwebassets.runtime.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.exe
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.deps.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.runtimeconfig.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Azure.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Azure.Identity.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\BCrypt-Net-Next.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Humanizer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Bcl.AsyncInterfaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.CodeAnalysis.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.CodeAnalysis.CSharp.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.CodeAnalysis.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.EntityFrameworkCore.Design.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.EntityFrameworkCore.Relational.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Caching.Memory.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.DependencyInjection.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.DependencyModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Identity.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Identity.Stores.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Logging.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Extensions.Options.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Identity.Client.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Identity.Client.Extensions.Msal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.Protocols.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.IdentityModel.Tokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.SqlServer.Server.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\Mono.TextTemplating.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.ClientModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.CodeDom.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Composition.AttributedModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Composition.Convention.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Composition.Hosting.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Composition.Runtime.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Composition.TypedParts.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Configuration.ConfigurationManager.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.IdentityModel.Tokens.Jwt.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Memory.Data.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Security.Permissions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\cs\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\de\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\es\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\fr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\it\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ja\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ko\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pl\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pt-BR\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ru\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\tr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\codex-restore-after-migrations\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.Development.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.runtime.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.deps.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.runtimeconfig.json
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Identity.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\BCrypt-Net-Next.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Humanizer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\Mono.TextTemplating.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.CodeDom.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.AttributedModel.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Convention.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Hosting.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Runtime.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.TypedParts.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Memory.Data.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Permissions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-D:\LapTrinhWeb\PetGr4\tmp-build\appsettings.Development.json
-D:\LapTrinhWeb\PetGr4\tmp-build\appsettings.json
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.staticwebassets.runtime.json
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.staticwebassets.endpoints.json
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.deps.json
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.runtimeconfig.json
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.dll
-D:\LapTrinhWeb\PetGr4\tmp-build\PetSocial.pdb
-D:\LapTrinhWeb\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
-D:\LapTrinhWeb\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
->>>>>>> Stashed changes
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.Development.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\appsettings.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.runtime.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.staticwebassets.endpoints.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.exe
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.deps.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.runtimeconfig.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\PetSocial.pdb
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Core.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Azure.Identity.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\BCrypt-Net-Next.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Humanizer.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.CodeDom.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Convention.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Hosting.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.Runtime.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Composition.TypedParts.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Drawing.Common.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Memory.Data.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Runtime.Caching.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Security.Permissions.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\System.Windows.Extensions.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.AssemblyReference.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.GeneratedMSBuildEditorConfig.editorconfig
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfoInputs.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.AssemblyInfo.cs
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.CoreCompileInputs.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.MvcApplicationPartsAssemblyInfo.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.RazorAssemblyInfo.cs
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.sourcelink.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\rjimswa.dswa.cache.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\bundle\PetSocial.styles.css
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\scopedcss\projectbundle\PetSocial.bundle.scp.css
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.json.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.development.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\swae.build.ex.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.csproj.Up2Date
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\refint\PetSocial.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.pdb
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\PetSocial.genruntimeconfig.cache
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\ref\PetSocial.dll
+D:\LapTrinhWeb\DoAn\PetGr4\Pet\Pet\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
