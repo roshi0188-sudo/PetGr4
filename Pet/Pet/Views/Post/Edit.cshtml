@@ -1,101 +1,117 @@
 ﻿@model PetSocial.Models.Post
 
 @{
-    ViewData["Title"] = "Post Edit";
+    ViewData["Title"] = "Chỉnh sửa bài viết";
+    var returnUrl = ViewBag.ReturnUrl ?? Context.Request.Query["returnUrl"];
 }
 
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Nunito+Sans:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
-<style>
-    body {
-        background-color: #FFF9F1;
+<script>
+    tailwind.config = {
+    theme: {
+    extend: {
+    colors: {
+    'pet-primary': '#FF6B00',
+    'pet-primary-hover': '#E55A00',
+    'pet-primary-fixed': '#FFF0E5'
     }
-
-    .custom-shadow {
-        box-shadow: 0 12px 20px rgba(45, 52, 54, 0.08);
     }
-</style>
+    }
+    }
+</script>
 
 <div class="max-w-3xl mx-auto px-4 py-8 text-[#161d1f]">
-    <header class="mb-8">
-        <div class="flex items-center gap-2 text-[#8f4e00] mb-2">
-            <span class="material-symbols-outlined">edit_note</span>
-            <span class="text-sm font-semibold uppercase tracking-wider">Cập nhật nội dung</span>
-        </div>
-        <h1 class="text-4xl font-bold font-['Quicksand']">Chỉnh sửa bài viết</h1>
+    <header class="mb-6">
+        <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 md:text-3xl">Chỉnh sửa bài viết</h1>
     </header>
 
-    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="bg-white rounded-[24px] custom-shadow p-6 md:p-8 space-y-6 border border-[#e8eff1]">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="bg-white rounded-[24px] border border-gray-100 shadow-sm p-6 space-y-6">
+        @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+        <!-- Input ẩn giúp giữ hoặc xóa link ảnh cũ khi người dùng thao tác xóa trên giao diện -->
+        <input type="hidden" asp-for="ImageUrl" id="existingImageUrl" />
 
-        <!-- Lỗi validation -->
-        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm font-semibold"></div>
-
-        <!-- Ô nhập nội dung văn bản -->
+        <!-- NỘI DUNG BÀI VIẾT -->
         <div class="space-y-2">
-            <label asp-for="Content" class="block text-sm font-bold text-[#161d1f]">Nội dung văn bản</label>
-            <textarea asp-for="Content" class="w-full px-4 py-3 rounded-xl border border-[#dac2b1] focus:ring-2 focus:ring-[#8f4e00] focus:border-[#8f4e00] outline-none text-base resize-none transition-all" rows="6" placeholder="Viết nội dung bài viết thay thế tại đây..."></textarea>
-            <span asp-validation-for="Content" class="text-red-500 text-xs block"></span>
+            <label asp-for="Content" class="block text-xs font-extrabold text-gray-400 uppercase tracking-wider">Nội dung văn bản</label>
+            <textarea asp-for="Content" rows="5" class="w-full bg-white border border-gray-200 text-sm p-4 rounded-2xl focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all resize-none leading-relaxed"></textarea>
+            <span asp-validation-for="Content" class="text-rose-500 text-xs"></span>
         </div>
 
-        <!-- Khối hiển thị hình ảnh hiện tại nếu có -->
-        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-        {
-            <div class="space-y-2">
-                <label class="block text-sm font-bold text-gray-500">Hình ảnh hiện tại</label>
-                <div class="relative w-48 rounded-xl overflow-hidden border border-gray-200 shadow-sm bg-gray-50">
-                    <img src="@Model.ImageUrl" class="w-full h-32 object-cover" alt="Hình ảnh hiện tại" />
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <span class="text-white text-xs font-semibold">Ảnh đang hiển thị</span>
-                    </div>
-                </div>
-            </div>
-        }
-
-        <!-- Thay thế hình ảnh mới -->
+        <!-- KHUNG KÉO THẢ VÀ CẬP NHẬT ẢNH MINH HỌA -->
         <div class="space-y-2">
-            <label class="block text-sm font-bold text-[#161d1f]">Thay đổi hình ảnh mới (Nếu muốn)</label>
-            <div class="relative group cursor-pointer">
-                <input type="file" name="imageFile" id="imageFile" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewNewImage(event)" />
-                <div class="border-2 border-dashed border-[#dac2b1] rounded-xl p-6 flex flex-col items-center justify-center gap-2 bg-[#f4fafd] hover:bg-[#eef5f7] transition-colors group-hover:border-[#8f4e00]">
-                    <span class="material-symbols-outlined text-2xl text-[#8f4e00]">add_photo_alternate</span>
-                    <p class="text-sm font-semibold">Nhấn để chọn tập tin ảnh mới thay thế</p>
+            <label class="block text-xs font-extrabold text-gray-400 uppercase tracking-wider">Hình ảnh bài viết</label>
+            
+            <div id="dropzone" class="relative group border-2 border-dashed border-gray-200 hover:border-pet-primary bg-gray-50/50 hover:bg-orange-50/20 rounded-2xl p-6 transition-all text-center cursor-pointer">
+                <input type="file" name="imageFile" id="imageFile" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewImage(this)" />
+                
+                <!-- Giao diện nhắc nhở tải file lên (Ẩn đi nếu bài viết đã có sẵn ảnh) -->
+                <div id="upload-prompt" class="@(!string.IsNullOrWhiteSpace(Model.ImageUrl) ? "hidden" : "") space-y-2 z-0">
+                    <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-pet-primary transition-colors">cloud_upload</span>
+                    <p class="text-sm font-bold text-gray-700">Thêm ảnh vào đây hoặc click để thay đổi ảnh mới</p>
                 </div>
-            </div>
 
-            <!-- Vùng hiển thị ảnh mới chuẩn bị thay thế -->
-            <div id="new-preview-container" class="hidden mt-3">
-                <p class="text-xs text-green-600 font-semibold mb-1">Ảnh mới được chọn chuẩn bị thay đổi:</p>
-                <img id="new-image-preview" src="#" alt="New Preview" class="w-48 h-32 object-cover rounded-xl border" />
+                <!-- Khu vực chứa ảnh Preview (Hiện sẵn nếu bài viết gốc có ảnh) -->
+                <div id="preview-container" class="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "hidden" : "") relative inline-block mx-auto max-h-64 rounded-xl overflow-hidden border border-gray-100 mt-2">
+                    <img id="image-preview" src="@(string.IsNullOrWhiteSpace(Model.ImageUrl) ? "#" : Model.ImageUrl)" alt="Xem trước ảnh" class="object-cover max-h-60 rounded-xl" />
+                    <!-- Nút xóa ảnh nhanh -->
+                    <button type="button" onclick="removePreview(event)" class="absolute top-2 right-2 bg-black/60 hover:bg-rose-600 text-white p-1.5 rounded-full transition-all flex items-center justify-center z-20">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Thanh điều hướng nút lưu / hủy -->
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#e8eff1]">
-            <a asp-action="Index" class="px-6 py-2.5 rounded-full border-2 border-gray-300 text-gray-600 font-semibold text-sm hover:bg-gray-100 transition-all">
+        <!-- THANH ĐIỀU HƯỚNG NÚT BẤM -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+            <a href="@(string.IsNullOrEmpty(returnUrl) ? "javascript:history.back()" : returnUrl)" class="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full text-xs font-bold text-gray-500 transition-all">
                 Hủy bỏ
             </a>
-            <button type="submit" class="px-8 py-2.5 rounded-full bg-[#8f4e00] text-white font-semibold text-sm hover:brightness-110 shadow-md transition-all">
+            <button type="submit" class="px-6 py-2.5 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-xs rounded-full shadow-sm transition-all active:scale-95">
                 Lưu thay đổi
             </button>
         </div>
     </form>
 </div>
 
+<!-- JAVASCRIPT XỬ LÝ PREVIEW ẢNH ĐỘNG -->
 <script>
-    function previewNewImage(event) {
-        const input = event.target;
-        const container = document.getElementById('new-preview-container');
-        const img = document.getElementById('new-image-preview');
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                img.src = e.target.result;
-                container.classList.remove('hidden');
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
+    function previewImage(input) {
+    const prompt = document.getElementById('upload-prompt');
+    const container = document.getElementById('preview-container');
+    const preview = document.getElementById('image-preview');
+
+    if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+    preview.src = e.target.result;
+    prompt.classList.add('hidden');
+    container.classList.remove('hidden');
+    }
+    reader.readAsDataURL(input.files[0]);
+    }
+    }
+
+    function removePreview(event) {
+    event.preventDefault();
+    event.stopPropagation(); // Không cho kích hoạt ngược lại ô chọn tệp khi click nút đóng
+        
+    const input = document.getElementById('imageFile');
+    const prompt = document.getElementById('upload-prompt');
+    const container = document.getElementById('preview-container');
+    const preview = document.getElementById('image-preview');
+    const existingUrlInput = document.getElementById('existingImageUrl');
+
+    input.value = ''; // Reset file mới chọn
+    preview.src = '#';
+    if (existingUrlInput) {
+    existingUrlInput.value = ''; // Đặt chuỗi rỗng để Controller biết người dùng muốn gỡ ảnh cũ
+    }
+    container.classList.add('hidden');
+    prompt.classList.remove('hidden');
     }
 </script>

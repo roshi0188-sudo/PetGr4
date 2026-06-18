@@ -1,246 +1,365 @@
-﻿body {
-    /* Tổng quan layout chia tỉ lệ */
+.zalo-messenger-container {
+    display: flex;
+    height: calc(100vh - 86px);
+    min-height: 680px;
+    margin: 18px;
+    background: #fff8f1;
+    border: 1px solid #fed7aa;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 18px 42px rgba(249, 115, 22, 0.1);
+}
+
+.zalo-sidebar {
+    width: 350px;
+    background: #ffffff;
+    border-right: 1px solid #fed7aa;
+    display: flex;
+    flex-direction: column;
+}
+
+.zalo-sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #ffedd5;
+    background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+}
+
+.zalo-sidebar-header h5 {
+    color: #f97316;
+    font-size: 22px;
+}
+
+.zalo-sidebar-header .btn-light {
+    color: #f97316;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+}
+
+.zalo-sidebar .form-control {
+    height: 42px;
+    border-radius: 6px;
+    border: 1px solid #fed7aa;
+    color: #17233c;
+    font-weight: 600;
+}
+
+.zalo-sidebar .form-control:focus {
+    border-color: #fb923c;
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.16);
+}
+
+.zalo-chat-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.zalo-chat-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    min-height: 78px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #17233c;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.zalo-chat-item:hover {
+    background: #fff7ed;
+    color: #17233c;
+}
+
+.zalo-chat-item.active-chat {
+    background: #ffedd5;
+}
+
+.zalo-chat-item.has-unread .zalo-item-name {
+    font-weight: 900;
+}
+
+.zalo-chat-item.has-unread .zalo-item-lastmsg {
+    color: #17233c;
+    font-weight: 800;
+}
+
+.zalo-avatar,
+.zalo-avatar-letter {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    flex: 0 0 50px;
+}
+
+.zalo-avatar {
+    object-fit: cover;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.18);
+}
+
+.zalo-avatar-mini,
+.zalo-avatar-letter.mini {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+}
+
+.zalo-avatar-mini {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.zalo-avatar-letter {
+    background: linear-gradient(135deg, #fb923c, #f97316);
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zalo-avatar-letter.mini {
+    font-size: 13px;
+}
+
+.online-dot {
+    position: absolute;
+    bottom: 1px;
+    right: 1px;
+    width: 13px;
+    height: 13px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+}
+
+.zalo-item-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.zalo-item-top,
+.zalo-item-bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.zalo-item-top {
+    justify-content: space-between;
+}
+
+.zalo-item-name {
+    color: #17233c;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.zalo-item-time {
+    color: #9a6b45;
+    font-size: 12px;
+    font-weight: 700;
+    flex: 0 0 auto;
+}
+
+.zalo-item-lastmsg {
+    min-width: 0;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.zalo-unread-dot {
+    display: none;
+    width: 10px;
+    height: 10px;
+    margin-left: auto;
+    flex: 0 0 10px;
+    border-radius: 999px;
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.zalo-chat-item.has-unread .zalo-unread-dot {
+    display: inline-block;
+}
+
+.zalo-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #fffaf5;
+}
+
+.zalo-chat-header {
+    min-height: 72px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border-bottom: 1px solid #fed7aa;
+}
+
+.zalo-chat-header h6 {
+    color: #17233c;
+}
+
+.zalo-chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 26px;
+    background:
+        linear-gradient(180deg, rgba(255, 247, 237, 0.72) 0%, rgba(255, 250, 245, 0.92) 100%);
+}
+
+.zalo-msg-row {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.msg-mine {
+    justify-content: flex-end;
+}
+
+.msg-other {
+    justify-content: flex-start;
+    align-items: flex-end;
+}
+
+.zalo-msg-bubble {
+    max-width: min(620px, 68%);
+    padding: 11px 14px;
+    border-radius: 16px;
+    word-break: break-word;
+    box-shadow: 0 8px 24px rgba(23, 35, 60, 0.08);
+}
+
+.msg-mine .zalo-msg-bubble {
+    background: #fb923c;
+    color: #ffffff;
+    border-bottom-right-radius: 5px;
+}
+
+.msg-other .zalo-msg-bubble {
+    background: #ffffff;
+    color: #17233c;
+    border: 1px solid #ffedd5;
+    border-bottom-left-radius: 5px;
+}
+
+.msg-text {
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.msg-time {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+.zalo-chat-footer {
+    background: #ffffff;
+    padding: 14px;
+    border-top: 1px solid #fed7aa;
+}
+
+.zalo-chat-footer .input-group {
+    gap: 10px;
+}
+
+.zalo-chat-footer .form-control {
+    height: 46px;
+    border-radius: 999px !important;
+    border: 1px solid #fed7aa;
+    padding: 0 18px;
+    color: #17233c;
+    font-weight: 600;
+}
+
+.zalo-chat-footer .form-control:focus {
+    border-color: #fb923c;
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.16);
+}
+
+.zalo-chat-footer .btn {
+    width: 52px;
+    border-radius: 999px !important;
+    background: #fb923c;
+    border: none;
+    color: #ffffff;
+}
+
+.zalo-chat-footer .btn:hover {
+    background: #f97316;
+}
+
+.zalo-empty-chat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    text-align: center;
+    background: #fffaf5;
+}
+
+.zalo-empty-chat i {
+    color: #fb923c;
+}
+
+.zalo-empty-chat h3 {
+    color: #17233c;
+    font-weight: 900;
+}
+
+.zalo-chat-list::-webkit-scrollbar,
+.zalo-chat-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.zalo-chat-list::-webkit-scrollbar-thumb,
+.zalo-chat-body::-webkit-scrollbar-thumb {
+    background: #fdba74;
+    border-radius: 20px;
+}
+
+@media (max-width: 992px) {
     .zalo-messenger-container {
-        display: flex;
-        height: calc(100vh - 60px); /* Khớp với chiều cao còn lại sau khi trừ navbar chính */
-        background-color: #fcfbf7; /* Đổi sang màu nền trắng kem nhẹ giống hệ thống */
-        border-top: 1px solid #f2ece0;
+        margin: 12px;
     }
-    /* 1. Sidebar bên trái */
+
     .zalo-sidebar {
-        width: 30%;
-        min-width: 300px;
-        background-color: #ffffff;
-        border-right: 1px solid #f2ece0;
-        display: flex;
-        flex-direction: column;
+        width: 310px;
     }
-
-    .zalo-sidebar-header {
-        padding: 16px;
-        border-bottom: 1px solid #fcfbf7;
-    }
-        /* Nút thêm bạn/nút hành động phụ màu cam nhạt */
-        .zalo-sidebar-header .btn-light {
-            background-color: #fdf5e6;
-            color: #ff7a33;
-            border: none;
-        }
-
-            .zalo-sidebar-header .btn-light:hover {
-                background-color: #ff7a33;
-                color: #ffffff;
-            }
-    /* Ô tìm kiếm trong sidebar */
-    .zalo-sidebar .form-control {
-        background-color: #fdfbf7 !important;
-        border: 1px solid #ebdcc5 !important;
-    }
-
-        .zalo-sidebar .form-control:focus {
-            border-color: #ff7a33 !important;
-            box-shadow: 0 0 0 0.2rem rgba(255, 122, 51, 0.15) !important;
-        }
-
-    .zalo-chat-list {
-        overflow-y: auto;
-        flex-grow: 1;
-    }
-    /* Từng dòng cuộc trò chuyện */
-    .zalo-chat-item {
-        display: flex;
-        align-items: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        color: #4a4a4a;
-        border-bottom: 1px solid #fdfbf7;
-        transition: all 0.2s ease;
-    }
-
-        .zalo-chat-item:hover {
-            background-color: #fdf6ec; /* Màu cam kem rất nhạt khi hover */
-        }
-        /* Khi cuộc trò chuyện đang được chọn (Highlight màu cam thương hiệu) */
-        .zalo-chat-item.active-chat {
-            background-color: #ffeedb; /* Màu nền cam pastel */
-            border-left: 4px solid #ff7a33; /* Thanh chỉ thị màu cam đậm bên mép trái */
-        }
-
-            .zalo-chat-item.active-chat .zalo-item-name {
-                color: #ff7a33; /* Đổi chữ tên người dùng sang màu cam */
-            }
-    /* Avatar tròn chuẩn kèm viền cam mảnh */
-    .zalo-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 5px rgba(235, 220, 197, 0.5);
-    }
-
-    .zalo-avatar-mini {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .zalo-item-body {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .zalo-item-name {
-        font-weight: 600;
-        font-size: 14px;
-        color: #333333;
-    }
-
-    .zalo-item-time {
-        font-size: 11px;
-        color: #a69e91;
-    }
-
-    .zalo-item-lastmsg {
-        font-size: 13px;
-        color: #7a7368;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    /* Dot xanh báo online đổi sang cam hoặc giữ xanh (giữ xanh lá cây để chuẩn trạng thái hoạt động) */
-    .chat-online-dot {
-        width: 12px;
-        height: 12px;
-        background-color: #28a745 !important;
-    }
-    /* 2. Khung chat bên phải */
-    .zalo-content {
-        width: 70%;
-        display: flex;
-        flex-direction: column;
-        background-color: #f7f3eb; /* Màu xám kem nhạt đồng bộ với chân trang footer hệ thống */
-    }
-
-    .zalo-chat-header {
-        padding: 14px 20px;
-        background-color: #ffffff;
-        border-bottom: 1px solid #f2ece0;
-    }
-
-        .zalo-chat-header h6 {
-            color: #333333;
-        }
-
-    .text-success-status {
-        font-size: 12px;
-        color: #28a745 !important;
-    }
-    /* Vùng hiển thị nội dung tin nhắn */
-    .zalo-chat-body {
-        flex-grow: 1;
-        padding: 20px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-    }
-    /* Quy định bong bóng chat */
-    .zalo-msg-row {
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: 14px;
-        max-width: 75%;
-    }
-    /* Của đối phương (Nằm bên trái - Màu Trắng nguyên bản) */
-    .msg-other {
-        align-self: flex-start;
-    }
-
-        .msg-other .zalo-msg-bubble {
-            background-color: #ffffff;
-            border-radius: 12px 12px 12px 0px;
-            color: #4a4a4a;
-            border: 1px solid #ebdcc5;
-        }
-    /* Của chính mình (Nằm bên phải - Đổi sang màu Cam Hệ Thống) */
-    .msg-mine {
-        align-self: flex-end;
-        flex-direction: row-reverse;
-    }
-
-        .msg-mine .zalo-msg-bubble {
-            background-color: #ff7a33; /* Đổi thành màu cam thương hiệu giống nút "Áp dụng lọc" */
-            border-radius: 12px 12px 0px 12px;
-            color: #ffffff; /* Chữ trắng nổi bật trên nền cam */
-        }
-        /* Chỉnh lại màu chữ thời gian dưới bong bóng chat để dễ nhìn */
-        .msg-mine .zalo-msg-time {
-            color: #ffe6d7;
-        }
 
     .zalo-msg-bubble {
-        padding: 10px 16px;
-        font-size: 14.5px;
-        line-height: 1.4;
-        word-break: break-word;
+        max-width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .zalo-messenger-container {
+        flex-direction: column;
+        height: auto;
+        min-height: calc(100vh - 24px);
     }
 
-    .zalo-msg-time {
-        font-size: 10px;
-        margin-top: 4px;
-        color: #a69e91;
-    }
-    /* Khung nhập liệu dưới đáy */
-    .zalo-chat-footer {
-        background-color: #ffffff;
-        border-top: 1px solid #f2ece0;
+    .zalo-sidebar {
+        width: 100%;
+        height: 280px;
     }
 
-    .zalo-toolbar {
-        background-color: #faf8f5 !important;
-        border-bottom: 1px solid #f2ece0;
+    .zalo-content {
+        min-height: 560px;
     }
-
-        .zalo-toolbar i {
-            font-size: 1.2rem;
-            color: #7a7368;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-            .zalo-toolbar i:hover {
-                color: #ff7a33; /* Đổi sang tương tác cam khi hover vào công cụ */
-            }
-    /* Ô input nhập chữ tin nhắn */
-    .zalo-chat-footer .form-control {
-        background-color: #ffffff;
-        color: #333333;
-    }
-    /* Nút bấm gửi hình mũi tên máy bay */
-    .zalo-chat-footer .btn-link {
-        color: #ff7a33 !important; /* Mũi tên gửi màu cam */
-        transition: transform 0.2s;
-    }
-
-        .zalo-chat-footer .btn-link:hover {
-            transform: scale(1.1);
-        }
-
-    .no-focus-outline:focus {
-        box-shadow: none !important;
-        outline: none !important;
-    }
-    /* Giao diện trống khi chưa chọn hội thoại */
-    .zalo-empty-chat {
-        background-color: #f7f3eb !important;
-    }
-
-        .zalo-empty-chat i {
-            color: #ebdcc5 !important;
-        }
-
-        .zalo-empty-chat h4 {
-            color: #ff7a33;
-        }
 }

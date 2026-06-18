@@ -2,87 +2,146 @@
 
 @{
     ViewData["Title"] = "Lời mời kết nối";
+    ViewData["ActiveMenu"] = "Requests";
+    ViewData["FullWidth"] = true;
+
+    string PetImage(PetSocial.Models.PetModule pet)
+    {
+        return string.IsNullOrWhiteSpace(pet.AvatarUrl)
+            ? Url.Content("~/images/default-avatar.png")
+            : Url.Content(pet.AvatarUrl);
+    }
+
+    string PetBreed(PetSocial.Models.PetModule pet)
+    {
+        return string.IsNullOrWhiteSpace(pet.Breed)
+            ? pet.Species
+            : pet.Breed;
+    }
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="~/css/match-request.css" />
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<div class="container mt-4 mb-5">
+<link rel="stylesheet"
+      href="~/css/match-request.css" />
 
-    <div class="text-center mb-5">
-        <h2 class="fw-bold text-request-title">
-            <i class="bi bi-envelope-heart-fill me-2"></i>Lời mời kết nối
-        </h2>
-        <p class="text-muted">Danh sách các bé đang "thầm thương trộm nhớ" và gửi lời mời kết bạn đến thú cưng của bạn.</p>
+<section class="request-page">
+
+    <div class="request-header">
+
+        <span class="request-eyebrow">
+            <i class="bi bi-envelope-heart-fill"></i>
+            Pet Dating
+        </span>
+
+        <h1 class="text-request-title">
+            Lời mời kết nối
+        </h1>
+
+        <p>
+            Các thú cưng muốn làm quen với thú cưng của bạn.
+        </p>
+
     </div>
 
-    <div class="row">
+    <div class="request-grid">
+
         @if (Model == null || !Model.Any())
         {
-            <div class="col-12 text-center py-5">
-                <div class="empty-request-box p-5 bg-white rounded-3 border">
-                    <i class="bi bi-mailbox text-muted fs-1"></i>
-                    <p class="text-muted mt-3 mb-0">Hộp thư trống! Hiện tại chưa có lời mời kết nối mới nào.</p>
-                </div>
+            <div class="empty-request-box">
+
+                <i class="bi bi-mailbox"></i>
+
+                <h2>
+                    Chưa có lời mời nào
+                </h2>
+
+                <p>
+                    Khi có lời mời kết nối mới chúng sẽ xuất hiện tại đây.
+                </p>
             </div>
         }
         else
         {
             @foreach (var item in Model)
             {
-                <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="card request-card border-0 shadow-sm">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center flex-wrap flex-sm-nowrap">
+                <article class="request-card">
 
-                                <div class="request-avatar-wrapper position-relative mx-auto mx-sm-0 mb-3 mb-sm-0">
-                                    <img src="@(string.IsNullOrEmpty(item.SenderPet.AvatarUrl) ? "/images/default-avatar.png" : item.SenderPet.AvatarUrl)"
-                                         class="request-pet-img shadow-sm" alt="@item.SenderPet.Name" />
-                                    <span class="position-absolute top-0 start-0 badge rounded-pill bg-orange font-size-11">New</span>
-                                </div>
+                    <a asp-controller="Pet"
+                       asp-action="Details"
+                       asp-route-id="@item.SenderPetId"
+                       class="request-pet-photo"
+                       aria-label="Xem chi tiết @item.SenderPet.Name">
 
-                                <div class="request-info ms-sm-4 flex-grow-1 text-center text-sm-start">
-                                    <h5 class="fw-bold text-dark mb-1">
-                                        @item.SenderPet.Name
-                                    </h5>
-                                    <div class="mb-2">
-                                        <span class="badge bg-orange-light text-orange font-size-12">
-                                            <i class="bi bi-tag-fill me-1"></i>@item.SenderPet.Breed
-                                        </span>
-                                    </div>
-                                    <p class="text-muted small mb-3 mb-sm-0">
-                                        Muốn gửi tín hiệu kết nối đến bé <strong class="text-dark">@item.ReceiverPet.Name</strong> của bạn!
-                                    </p>
-                                    <p class="text-muted small mb-0 mt-2">
-                                        <i class="bi bi-clock me-1 text-orange"></i>
-                                        Gửi lúc @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
-                                    </p>
-                                </div>
+                        <img src="@PetImage(item.SenderPet)"
+                             alt="@item.SenderPet.Name" />
 
-                                <div class="request-actions d-flex flex-sm-column gap-2 w-100 w-sm-auto justify-content-center">
+                        @if ((DateTime.Now - item.CreatedAt).TotalHours < 24)
+                        {
+                            <span class="request-new-badge">
+                                NEW
+                            </span>
+                        }
+                    </a>
 
-                                    <a asp-action="Accept"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-accept rounded-pill px-4 py-2 fw-bold text-nowrap">
-                                        <i class="bi bi-check-lg me-1"></i> Đồng ý
-                                    </a>
+                    <div class="request-card-body">
 
-                                    <form asp-action="Cancel" method="post" class="m-0">
-                                        <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit"
-                                                class="btn btn-decline rounded-pill px-4 py-2 text-nowrap"
-                                                onclick="return confirm('Bạn có chắc chắn muốn hủy lời mời này không?')">
-                                            Hủy lời mời
-                                        </button>
-                                    </form>
+                        <a asp-controller="Pet"
+                           asp-action="Details"
+                           asp-route-id="@item.SenderPetId"
+                           class="request-pet-name">
+                            @item.SenderPet.Name
+                        </a>
 
-                                </div>
+                        <span class="request-breed">
+                            @PetBreed(item.SenderPet)
+                        </span>
 
-                            </div>
+                        <p>
+                            <strong>@item.SenderPet.Name</strong>
+                            muốn kết nối với
+                            <a asp-controller="Pet"
+                               asp-action="Details"
+                               asp-route-id="@item.ReceiverPetId">
+                                @item.ReceiverPet.Name
+                            </a>
+                        </p>
+
+                        <span class="request-time">
+                            <i class="bi bi-clock"></i>
+                            @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
+                        </span>
+
+                        <div class="request-actions">
+
+                            <a asp-action="Accept"
+                               asp-route-id="@item.Id"
+                               class="request-accept">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Đồng ý
+                            </a>
+
+                            <form asp-action="Cancel"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@item.Id" />
+
+                                <button type="submit"
+                                        class="request-decline"
+                                        onclick="return confirm('Từ chối lời mời này?')">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Từ chối
+                                </button>
+                            </form>
                         </div>
                     </div>
-                </div>
+                </article>
             }
         }
+
     </div>
-</div>
+
+</section>

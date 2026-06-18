@@ -52,7 +52,15 @@
                     </div>
                     @if (!canManagePet)
                     {
-                        <a asp-controller="Chat" asp-action="Index" asp-route-userId="@Model.UserId" class="pet-detail-connect"><i class="fa fa-comments"></i> Kết nối</a>
+                        <a asp-controller="Match"
+                           asp-action="Index"
+                           asp-route-communityPetId="@Model.Id"
+                           class="pet-detail-connect">
+
+                            <i class="fa fa-heart"></i>
+                            Kết nối
+
+                        </a>
                     }
                 </div>
 

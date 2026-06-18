@@ -3,184 +3,421 @@
 @{
     ViewData["Title"] = "Tin nhắn";
     ViewData["FullWidth"] = true;
+    ViewData["ActiveMenu"] = "Message";
 
-    var currentUserId = ViewBag.CurrentUserId as string;
+    string currentUserId = ViewBag.CurrentUserId;
     var receiver = ViewBag.Receiver as PetSocial.Models.AppUser;
+    var unreadCounts = ViewBag.UnreadCounts as Dictionary<string, int> ?? new();
+    var lastMessages = ViewBag.LastMessages as Dictionary<string, string> ?? new();
+    var lastMessageTimes = ViewBag.LastMessageTimes as Dictionary<string, DateTime> ?? new();
+
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="~/css/chat.css" />
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+<link rel="stylesheet"
+      href="~/css/chat.css" />
 
 <div class="zalo-messenger-container">
 
+    <!-- SIDEBAR -->
+
     <div class="zalo-sidebar">
+
         <div class="zalo-sidebar-header">
+
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">Tin nhắn</h5>
-                <button class="btn btn-light btn-sm rounded-circle"><i class="bi bi-person-plus"></i></button>
+
+                <h5 class="fw-bold mb-0">
+                    Tin nhắn
+                </h5>
+
+                <button class="btn btn-light btn-sm rounded-circle">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+
             </div>
-            <div class="mt-2">
-                <input type="text" class="form-control form-control-sm bg-light" placeholder="Tìm kiếm bạn bè...">
+
+            <div class="mt-3">
+
+                <input type="text"
+                       id="searchUser"
+                       class="form-control"
+                       placeholder="Tìm kiếm bạn bè..." />
+
             </div>
+
         </div>
 
-        <div class="zalo-chat-list">
+        <div class="zalo-chat-list"
+             id="chatUserList">
+
             @foreach (var user in ViewBag.ChatUsers)
             {
-                // Kiểm tra xem đây có phải cuộc trò chuyện đang được chọn không để highlight
-                bool isActive = receiver != null && receiver.Id == user.Id;
+                bool isActive =
+                    receiver != null &&
+                    receiver.Id == user.Id;
+
+                string chatUserId = user.Id;
+                int count = 0;
+                string? message = user.Email;
+                DateTime messageTime = DateTime.MinValue;
+
+                int unreadCount =
+                    unreadCounts.TryGetValue(chatUserId, out count)
+                    ? count
+                    : 0;
+
+                string lastMessage =
+                    lastMessages.TryGetValue(chatUserId, out message)
+                    ? message ?? ""
+                    : user.Email ?? "";
+
+                DateTime? lastMessageTime =
+                    lastMessageTimes.TryGetValue(chatUserId, out messageTime)
+                    ? messageTime
+                    : null;
 
                 <a asp-controller="Chat"
                    asp-action="Index"
                    asp-route-userId="@user.Id"
-                   class="zalo-chat-item @(isActive ? "active-chat" : "")">
+                   data-user-id="@user.Id"
+                   class="zalo-chat-item @(isActive ? "active-chat" : "") @(unreadCount > 0 ? "has-unread" : "")">
 
                     <div class="position-relative">
-                        <img src="@(string.IsNullOrEmpty(user.AvatarUrl) ? "/images/default-avatar.png" : user.AvatarUrl)"
-                             class="zalo-avatar" />
-                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle chat-online-dot"></span>
+
+                        @if (!string.IsNullOrEmpty(user.AvatarUrl))
+                        {
+                            <img src="@user.AvatarUrl"
+                                 class="zalo-avatar" />
+                        }
+                        else
+                        {
+                            <div class="zalo-avatar-letter">
+                                @(string.IsNullOrEmpty(user.FullName)
+                                    ? "U"
+                                    : user.FullName.Substring(0, 1).ToUpper())
+                            </div>
+                        }
+
+                        <span class="online-dot"></span>
+
                     </div>
 
-                    <div class="zalo-item-body ms-3 flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="zalo-item-name">@user.FullName</span>
-                            <span class="zalo-item-time">10:19 PM</span>
+                    <div class="zalo-item-body">
+
+                        <div class="zalo-item-top">
+                            <span class="zalo-item-name">
+                                @user.FullName
+                            </span>
+
+                            @if (lastMessageTime.HasValue)
+                            {
+                                <time class="zalo-item-time">
+                                    @lastMessageTime.Value.ToString("HH:mm")
+                                </time>
+                            }
                         </div>
-                        <div class="zalo-item-lastmsg">
-                            @user.Email
+
+                        <div class="zalo-item-bottom">
+                            <span class="zalo-item-lastmsg">
+                                @lastMessage
+                            </span>
+
+                            <span class="zalo-unread-dot"
+                                  aria-label="Tin nhắn mới"></span>
                         </div>
+
                     </div>
+
                 </a>
             }
+
         </div>
+
     </div>
 
+    <!-- CHAT CONTENT -->
+
     <div class="zalo-content">
+
         @if (receiver != null)
         {
-            <div class="zalo-chat-header d-flex align-items-center justify-content-between">
+            <!-- HEADER -->
+
+            <div class="zalo-chat-header">
+
                 <div class="d-flex align-items-center">
-                    <img src="@(string.IsNullOrEmpty(receiver.AvatarUrl) ? "/images/default-avatar.png" : receiver.AvatarUrl)"
-                         class="zalo-avatar" />
+
+                    @if (!string.IsNullOrEmpty(receiver.AvatarUrl))
+                    {
+                        <img src="@receiver.AvatarUrl"
+                             class="zalo-avatar" />
+                    }
+                    else
+                    {
+                        <div class="zalo-avatar-letter">
+                            @(string.IsNullOrEmpty(receiver.FullName)
+                                ? "U"
+                                : receiver.FullName.Substring(0, 1).ToUpper())
+                        </div>
+                    }
+
                     <div class="ms-3">
-                        <h6 class="fw-bold mb-0">@receiver.FullName</h6>
-                        <small class="text-muted text-success-status">● Vừa truy cập</small>
+
+                        <h6 class="fw-bold mb-0">
+                            @receiver.FullName
+                        </h6>
+
+                        <small class="text-success">
+                            ● Đang hoạt động
+                        </small>
+
                     </div>
+
                 </div>
-                <div class="zalo-header-actions text-muted fs-5">
-                    <i class="bi bi-telephone me-3" role="button"></i>
-                    <i class="bi bi-camera-video me-3" role="button"></i>
-                    <i class="bi bi-sidebar" role="button"></i>
-                </div>
+
             </div>
 
-            <div id="chatBox" class="zalo-chat-body">
+            <!-- BODY -->
+
+            <div id="chatBox"
+                 class="zalo-chat-body">
+
                 @foreach (var msg in Model)
                 {
-                    bool isMine = msg.SenderId == currentUserId;
+                    bool isMine =
+                        msg.SenderId == currentUserId;
 
                     <div class="zalo-msg-row @(isMine ? "msg-mine" : "msg-other")">
+
                         @if (!isMine)
                         {
-                            <img src="@(string.IsNullOrEmpty(receiver.AvatarUrl) ? "/images/default-avatar.png" : receiver.AvatarUrl)" class="zalo-avatar-mini me-2" />
+                            @if (!string.IsNullOrEmpty(receiver.AvatarUrl))
+                            {
+                                <img src="@receiver.AvatarUrl"
+                                     class="zalo-avatar-mini me-2" />
+                            }
+                            else
+                            {
+                                <div class="zalo-avatar-letter mini me-2">
+                                    @(receiver.FullName.Substring(0, 1).ToUpper())
+                                </div>
+                            }
                         }
-                        <div class="zalo-msg-bubble shadow-sm">
-                            <div class="zalo-msg-text">@msg.Content</div>
-                            <div class="zalo-msg-time text-end text-muted">
-                                @msg.CreatedAt.ToString("HH:mm")
+
+                        <div class="zalo-msg-bubble">
+
+                            <div class="msg-text">
+                                @msg.Content
                             </div>
+
+                            <small class="msg-time">
+                                @msg.CreatedAt.ToString("HH:mm")
+                            </small>
+
                         </div>
+
                     </div>
                 }
+
             </div>
+
+            <!-- FOOTER -->
 
             <div class="zalo-chat-footer">
 
-                <div class="zalo-toolbar d-flex align-items-center py-2 px-3 border-bottom border-top bg-light">
-                    <i class="bi bi-emoji-smile me-3" role="button" title="Biểu cảm"></i>
-                    <i class="bi bi-image me-3" role="button" title="Gửi hình ảnh"></i>
-                    <i class="bi bi-paperclip me-3" role="button" title="Đính kèm file"></i>
-                    <i class="bi bi-person-badge me-3" role="button" title="Gửi danh thiếp"></i>
-                    <i class="bi bi-scissors me-3" role="button" title="Chụp màn hình"></i>
-                </div>
+                <input type="hidden"
+                       id="receiverId"
+                       value="@receiver.Id" />
 
-                <div class="d-flex align-items-center p-2 bg-white">
-                    <input type="hidden" id="receiverId" value="@receiver.Id" />
-                    <input type="text" id="messageInput" class="form-control border-0 no-focus-outline" placeholder="Nhập @(receiver.FullName)..." />
+                <div class="input-group">
 
-                    <button class="btn btn-link text-primary fs-4 p-0 px-2" onclick="sendMessage()">
+                    <input type="text"
+                           id="messageInput"
+                           class="form-control"
+                           placeholder="Nhập tin nhắn..." />
+
+                    <button class="btn btn-primary"
+                            onclick="sendMessage()">
+
                         <i class="bi bi-send-fill"></i>
+
                     </button>
+
                 </div>
+
             </div>
         }
         else
         {
-            <div class="zalo-empty-chat d-flex flex-column align-items-center justify-content-center h-100 bg-light text-center">
-                <i class="bi bi-chat-square-dots text-muted" style="font-size: 5rem;"></i>
-                <h4 class="mt-3 fw-bold text-secondary">Chào mừng bạn đến với PetSocial Chat</h4>
-                <p class="text-muted w-70">Hãy chọn một cuộc trò chuyện từ danh sách bên trái để kết nối với những người nuôi thú cưng khác.</p>
+            <div class="zalo-empty-chat">
+
+                <i class="bi bi-chat-dots"
+                   style="font-size:90px;"></i>
+
+                <h3 class="mt-3">
+                    Chào mừng đến với PetSocial Chat
+                </h3>
+
+                <p class="text-muted">
+                    Hãy chọn một cuộc trò chuyện ở bên trái
+                </p>
+
             </div>
         }
+
     </div>
+
 </div>
 
 @section Scripts
 {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
     <script>
+
         const currentUserId = "@currentUserId";
-        const receiverId = document.getElementById("receiverId") ? document.getElementById("receiverId").value : null;
 
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub")
-            .withAutomaticReconnect()
-            .build();
+        const receiverId =
+        document.getElementById("receiverId")
+        ?.value;
 
-        connection.on("ReceiveMessage", function(senderId, content, time) {
-            const chatBox = document.getElementById("chatBox");
-            if (!chatBox) return;
+        const connection =
+        new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub")
+        .withAutomaticReconnect()
+        .build();
 
-            if (senderId === currentUserId || senderId === receiverId) {
-                const isMine = senderId === currentUserId;
-                const rowClass = isMine ? "msg-mine" : "msg-other";
+        connection.on(
+        "ReceiveMessage",
+        function(senderId, senderName, content, time)
+        {
+        const chatItem =
+        senderId === currentUserId
+        ? document.querySelector(".zalo-chat-item.active-chat")
+        : document.querySelector(
+        `.zalo-chat-item[data-user-id="${senderId}"]`);
 
-                // Lấy ảnh đại diện người nhận cho tin nhắn của họ
-                const avatarHtml = !isMine ? `<img src="${document.querySelector('.zalo-chat-header img').src}" class="zalo-avatar-mini me-2" />` : '';
+        if(chatItem)
+        {
+        const preview =
+        chatItem.querySelector(".zalo-item-lastmsg");
 
-                chatBox.innerHTML += `
-                    <div class="zalo-msg-row ${rowClass}">
-                        ${avatarHtml}
-                        <div class="zalo-msg-bubble shadow-sm">
-                            <div class="zalo-msg-text">${content}</div>
-                            <div class="zalo-msg-time text-end text-muted">${time}</div>
-                        </div>
-                    </div>
-                `;
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        });
+        const previewTime =
+        chatItem.querySelector(".zalo-item-time");
 
-        connection.start().catch(err => console.error(err.toString()));
+        if(preview)
+        preview.textContent = content;
 
-        function sendMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const content = messageInput.value;
-
-            if (!content.trim() || !receiverId) return;
-
-            connection.invoke("SendMessage", receiverId, content)
-                .then(() => { messageInput.value = ""; })
-                .catch(err => console.error(err.toString()));
+        if(previewTime)
+        previewTime.textContent = time;
         }
 
-        document.getElementById("messageInput")?.addEventListener("keypress", function (e) {
-            if (e.key === 'Enter') sendMessage();
+        if(senderId !== currentUserId &&
+        senderId !== receiverId)
+        {
+        chatItem?.classList.add("has-unread");
+        return;
+        }
+
+        const chatBox =
+        document.getElementById("chatBox");
+
+        if(!chatBox)
+        return;
+
+        const isMine =
+        senderId === currentUserId;
+
+        const cssClass =
+        isMine
+        ? "msg-mine"
+        : "msg-other";
+
+        chatBox.innerHTML +=
+        `
+        <div class="zalo-msg-row ${cssClass}">
+        <div class="zalo-msg-bubble">
+        <div>${content}</div>
+        <small class="msg-time">
+        ${time}
+        </small>
+        </div>
+        </div>
+        `;
+
+        chatBox.scrollTop =
+        chatBox.scrollHeight;
         });
 
-        window.onload = function() {
-            const chatBox = document.getElementById("chatBox");
-            if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+        connection.start()
+        .catch(err =>
+        console.error(err.toString()));
+
+        function sendMessage()
+        {
+        const content =
+        document.getElementById("messageInput").value;
+
+        if(content.trim() === "")
+        return;
+
+        connection.invoke(
+        "SendMessage",
+        receiverId,
+        content);
+
+        document.getElementById(
+        "messageInput").value = "";
         }
+
+        document.getElementById("messageInput")
+        ?.addEventListener(
+        "keypress",
+        function(e)
+        {
+        if(e.key === "Enter")
+        {
+        sendMessage();
+        }
+        });
+
+        document.getElementById("searchUser")
+        ?.addEventListener(
+        "keyup",
+        function()
+        {
+        const keyword =
+        this.value.toLowerCase();
+
+        document
+        .querySelectorAll(".zalo-chat-item")
+        .forEach(item =>
+        {
+        const text =
+        item.innerText.toLowerCase();
+
+        item.style.display =
+        text.includes(keyword)
+        ? "flex"
+        : "none";
+        });
+        });
+
+        window.onload = function()
+        {
+        const chatBox =
+        document.getElementById("chatBox");
+
+        if(chatBox)
+        {
+        chatBox.scrollTop =
+        chatBox.scrollHeight;
+        }
+        };
+
     </script>
+
 }

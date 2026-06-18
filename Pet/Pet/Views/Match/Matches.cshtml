@@ -1,99 +1,158 @@
 ﻿@model IEnumerable<PetSocial.Models.PetMatch>
 
 @{
+    ViewData["Title"] = "Kết nối thành công";
+    ViewData["ActiveMenu"] = "Matches";
+    ViewData["FullWidth"] = true;
+
     string currentUserId = ViewBag.CurrentUserId;
+
+    string PetImage(PetSocial.Models.PetModule pet)
+    {
+        return string.IsNullOrWhiteSpace(pet.AvatarUrl)
+            ? Url.Content("~/images/default-avatar.png")
+            : Url.Content(pet.AvatarUrl);
+    }
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link rel="stylesheet" href="~/css/match.css" />
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<div class="container mt-4 mb-5">
+<link rel="stylesheet"
+      href="~/css/match.css" />
 
-    <div class="text-center mb-5">
-        <h2 class="fw-bold text-match-title">
-            <span class="heart-pulse"><i class="bi bi-heart-fill me-2 text-danger"></i></span>Kết nối thành công
-        </h2>
-        <p class="text-muted">Chúc mừng các bé đã tìm thấy một nửa hợp ý! Hãy trò chuyện với chủ nuôi để làm quen nhé.</p>
+<section class="matches-page">
+
+    <div class="matches-header">
+
+        <span class="matches-eyebrow">
+            <i class="bi bi-heart-fill"></i>
+            Pet Dating
+        </span>
+
+        <h1 class="text-match-title">
+            Danh sách kết nối
+        </h1>
+
+        <p>
+            Những thú cưng đã được cả hai chủ nuôi đồng ý kết nối.
+        </p>
+
     </div>
 
-    <div class="row">
+    <div class="matches-grid">
+
         @if (Model == null || !Model.Any())
         {
-            <div class="col-12 text-center py-5">
-                <i class="bi bi-heartbreak text-muted fs-1"></i>
-                <p class="text-muted mt-3">Chưa có kết nối nào thành công. Hãy tích cực tương tác tìm kiếm nhé!</p>
+            <div class="matches-empty">
+
+                <i class="bi bi-heartbreak"></i>
+
+                <h2>
+                    Chưa có kết nối nào
+                </h2>
+
+                <p>
+                    Hãy gửi lời mời kết nối đến các thú cưng khác.
+                </p>
+
             </div>
         }
         else
         {
             @foreach (var item in Model)
             {
-                // Xác định UserId của chủ nuôi đối phương để truyền vào nút Chat
-                var chatUserId = item.SenderPet.UserId == currentUserId
-                ? item.ReceiverPet.UserId
-                : item.SenderPet.UserId;
+                bool isSenderMine =
+                    item.SenderPet.UserId == currentUserId;
 
-                <div class="col-lg-6 col-md-12 mb-4">
-                    <div class="card match-card border-0 shadow-sm">
-                        <div class="card-body p-4 text-center">
+                var myPet =
+                    isSenderMine
+                    ? item.SenderPet
+                    : item.ReceiverPet;
 
-                            <div class="match-images-container d-flex justify-content-center align-items-center mb-4 position-relative">
+                var partnerPet =
+                    isSenderMine
+                    ? item.ReceiverPet
+                    : item.SenderPet;
 
-                                <div class="pet-avatar-wrapper left-avatar">
-                                    <img src="@(string.IsNullOrEmpty(item.SenderPet.AvatarUrl) ? "/images/default-avatar.png" : item.SenderPet.AvatarUrl)"
-                                         class="match-pet-img" alt="@item.SenderPet.Name" />
-                                    <span class="badge bg-orange-light text-orange mt-2 d-inline-block">@item.SenderPet.Name</span>
-                                </div>
+                var chatUserId =
+                    partnerPet.UserId;
 
-                                <div class="match-heart-center">
-                                    <div class="heart-bg shadow-sm">
-                                        <i class="bi bi-heart-fill text-danger fs-4"></i>
-                                    </div>
-                                </div>
+                <article class="match-card">
 
-                                <div class="pet-avatar-wrapper right-avatar">
-                                    <img src="@(string.IsNullOrEmpty(item.ReceiverPet.AvatarUrl) ? "/images/default-avatar.png" : item.ReceiverPet.AvatarUrl)"
-                                         class="match-pet-img" alt="@item.ReceiverPet.Name" />
-                                    <span class="badge bg-orange-light text-orange mt-2 d-inline-block">@item.ReceiverPet.Name</span>
-                                </div>
+                    <div class="match-pets">
 
-                            </div>
+                        <a asp-controller="Pet"
+                           asp-action="Details"
+                           asp-route-id="@myPet.Id"
+                           class="match-pet">
+                            <img src="@PetImage(myPet)"
+                                 class="match-pet-img"
+                                 alt="@myPet.Name" />
+                            <span>@myPet.Name</span>
+                        </a>
 
-                            <div class="match-info mb-4">
-                                <h5 class="fw-bold mb-1 text-dark">
-                                    @item.SenderPet.Name & @item.ReceiverPet.Name
-                                </h5>
-                                <small class="text-muted">
-                                    <i class="bi bi-tag-fill me-1 text-orange"></i> @item.SenderPet.Breed <span class="mx-2">|</span> <i class="bi bi-tag-fill me-1 text-orange"></i> @item.ReceiverPet.Breed
-                                </small>
-                                <div class="mt-2 text-muted small">
-                                    <i class="bi bi-clock-heart me-1 text-orange"></i>
-                                    Kết nối lúc @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
-                                </div>
-                            </div>
-
-                            <div class="d-grid gap-2 col-8 mx-auto">
-                                <a asp-controller="Chat"
-                                   asp-action="Index"
-                                   asp-route-userId="@chatUserId"
-                                   class="btn btn-match-chat rounded-pill py-2 shadow-sm fw-bold">
-                                    <i class="bi bi-chat-heart-fill me-2"></i> Trò chuyện ngay
-                                </a>
-
-                                <form asp-action="Cancel" method="post" class="m-0">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <button type="submit"
-                                            class="btn btn-outline-danger rounded-pill py-2 fw-bold w-100"
-                                            onclick="return confirm('Bạn có chắc chắn muốn hủy kết nối này không?')">
-                                        <i class="bi bi-heartbreak-fill me-2"></i> Hủy kết nối
-                                    </button>
-                                </form>
-                            </div>
-
+                        <div class="match-heart">
+                            <i class="bi bi-heart-fill"></i>
                         </div>
+
+                        <a asp-controller="Pet"
+                           asp-action="Details"
+                           asp-route-id="@partnerPet.Id"
+                           class="match-pet">
+                            <img src="@PetImage(partnerPet)"
+                                 class="match-pet-img"
+                                 alt="@partnerPet.Name" />
+                            <span>@partnerPet.Name</span>
+                        </a>
                     </div>
-                </div>
+
+                    <div class="match-info">
+
+                        <h2>
+                            @myPet.Name <span>❤</span> @partnerPet.Name
+                        </h2>
+
+                        <div class="match-status">
+                            <i class="bi bi-check-circle-fill"></i>
+                            Đã kết nối
+                        </div>
+
+                        <time>
+                            <i class="bi bi-clock-history"></i>
+                            @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
+                        </time>
+                    </div>
+
+                    <div class="match-actions">
+
+                        <a asp-controller="Chat"
+                           asp-action="Index"
+                           asp-route-userId="@chatUserId"
+                           class="match-chat">
+                            <i class="bi bi-chat-dots-fill"></i>
+                            Nhắn tin với chủ nuôi
+                        </a>
+
+                        <form asp-action="Cancel"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.Id" />
+
+                            <button type="submit"
+                                    class="match-cancel"
+                                    onclick="return confirm('Hủy kết nối này?')">
+                                <i class="bi bi-heartbreak-fill"></i>
+                                Hủy kết nối
+                            </button>
+                        </form>
+                    </div>
+                </article>
             }
         }
+
     </div>
-</div>
+
+</section>

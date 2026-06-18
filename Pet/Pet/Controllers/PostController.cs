@@ -31,6 +31,7 @@ namespace PetSocial.Controllers
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
                 .Include(p => p.Likes)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -55,6 +56,7 @@ namespace PetSocial.Controllers
             var myPosts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
                 .Include(p => p.Likes)
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
@@ -89,6 +91,7 @@ namespace PetSocial.Controllers
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
                 .Include(p => p.Likes)
                 .Where(p => followingIds.Contains(p.UserId))
                 .OrderByDescending(p => p.CreatedAt)
@@ -168,7 +171,7 @@ namespace PetSocial.Controllers
             _context.Posts.Add(model);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyPosts));
         }
 
         // 5. HIỂN THỊ FORM CẬP NHẬT BÀI VIẾT
@@ -219,7 +222,7 @@ namespace PetSocial.Controllers
             _context.Update(post);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyPosts));
         }
 
         // 7. HIỂN THỊ FORM XÁC NHẬN XÓA BÀI VIẾT
@@ -248,7 +251,7 @@ namespace PetSocial.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyPosts));
         }
 
         // PHÂN QUYỀN TRUY CẬP: Chỉ chủ sở hữu bài viết hoặc Admin mới được phép can thiệp sâu
@@ -325,7 +328,7 @@ namespace PetSocial.Controllers
             return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
         }
 
-        // 10. BÌNH LUẬN
+        // 10. BÌNH LUẬN (ĐỒNG BỘ - RELOAD TRANG)
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -351,6 +354,70 @@ namespace PetSocial.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // 11. THEO DÕI / BỎ THEO DÕI (AJAX)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ToggleFollow([FromForm] string targetUserId)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Json(new { success = false, message = "Vui lòng đăng nhập." });
+            if (currentUser.Id == targetUserId) return Json(new { success = false, message = "Không thể tự theo dõi bản thân." });
+
+            var existing = await _context.Follows
+                .FirstOrDefaultAsync(f => f.FollowerId == currentUser.Id && f.FollowingId == targetUserId);
+
+            bool isFollowingNow;
+            if (existing != null)
+            {
+                _context.Follows.Remove(existing);
+                isFollowingNow = false;
+            }
+            else
+            {
+                _context.Follows.Add(new Follow { FollowerId = currentUser.Id, FollowingId = targetUserId });
+                isFollowingNow = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == targetUserId);
+            return Json(new { success = true, isFollowing = isFollowingNow, followerCount });
+        }
+
+        // 12. THÊM BÌNH LUẬN - TRẢ VỀ JSON CHO INLINE COMMENT (XỬ LÝ AJAX)
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCommentAjax(int postId, string commentContent)
+        {
+            if (string.IsNullOrWhiteSpace(commentContent))
+                return Json(new { success = false, message = "Nội dung không được để trống." });
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Json(new { success = false, message = "Vui lòng đăng nhập." });
+
+            var newComment = new Comment
+            {
+                PostId = postId,
+                UserId = user.Id,
+                Content = commentContent,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+
+            return Json(new
+            {
+                success = true,
+                id = newComment.Id,
+                content = newComment.Content,
+                createdAt = newComment.CreatedAt.ToString("dd/MM HH:mm"),
+                authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName, // Ưu tiên tên hiển thị
+                avatarUrl = user.AvatarUrl ?? ""
+            });
         }
 
         private async Task LoadFollowingIdsAsync()

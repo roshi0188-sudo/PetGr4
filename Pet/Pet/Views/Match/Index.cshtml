@@ -8,70 +8,134 @@
     ViewData["FullWidth"] = true;
 
     var suggestions = Model?.ToList() ?? new List<PetSocial.Models.PetModule>();
-    var myPets = ViewBag.MyPets as List<PetSocial.Models.PetModule> ?? new List<PetSocial.Models.PetModule>();
+    var myPets = ViewBag.MyPets as List<PetSocial.Models.PetModule> ?? new();
     var selectedMyPet = ViewBag.SelectedMyPet as PetSocial.Models.PetModule;
     var selectedCommunityPet = ViewBag.SelectedCommunityPet as PetSocial.Models.PetModule;
     var showSuggestions = ViewBag.ShowSuggestions as bool? ?? false;
 
+    bool canSendRequest = ViewBag.CanSendRequest as bool? ?? true;
+
     string PetImage(PetSocial.Models.PetModule? pet)
     {
         return pet == null || string.IsNullOrWhiteSpace(pet.AvatarUrl)
-            ? Url.Content("~/images/logo.jpg")
+            ? Url.Content("~/images/default-avatar.png")
             : Url.Content(pet.AvatarUrl);
     }
 }
 
 <section class="dating-page">
     <div class="dating-main">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4">
+                <i class="fa fa-check-circle"></i>
+                @TempData["Success"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4">
+                <i class="fa fa-exclamation-triangle"></i>
+                @TempData["Error"]
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+            </div>
+        }
+
         <div class="dating-heading">
+
             <div>
-                <span class="dating-eyebrow"><i class="fa fa-heart"></i> Pet Dating</span>
+                <span class="dating-eyebrow">
+                    <i class="fa fa-paper-plane"></i>
+                    Pet Dating
+                </span>
+
                 <h1>Ghép đôi thú cưng</h1>
-                <p>Chọn đủ hai thú cưng phù hợp rồi nhấn trái tim để ghép đôi.</p>
+
+                <p>
+                    Chọn thú cưng của bạn và thú cưng cộng đồng,
+                    sau đó gửi lời mời kết nối.
+                </p>
             </div>
 
             <div class="dating-heading-actions">
-                <a asp-controller="Match" asp-action="Requests" class="dating-soft-button">
-                    <i class="fa fa-envelope"></i>
+
+                <a asp-controller="Match"
+                   asp-action="Requests"
+                   class="dating-soft-button">
+
+                    <i class="fa fa-bell"></i>
+
                     Lời mời
+
+                    @if (ViewBag.PendingCount != null &&
+                   (int)ViewBag.PendingCount > 0)
+                    {
+                        <span class="dating-badge">
+                            @ViewBag.PendingCount
+                        </span>
+                    }
+
                 </a>
-                <a asp-controller="Match" asp-action="Matches" class="dating-soft-button dating-blue-button">
+
+                <a asp-controller="Match"
+                   asp-action="Matches"
+                   class="dating-soft-button dating-blue-button">
+
                     <i class="fa fa-users"></i>
                     Đã kết nối
+
                 </a>
+
             </div>
+
         </div>
 
         <div class="dating-pet-strip">
+
             <div class="dating-strip-title">
                 <strong>Thú cưng của tôi</strong>
-                <span>@myPets.Count hồ sơ phù hợp</span>
+                <span>@myPets.Count hồ sơ</span>
             </div>
 
             <div class="dating-my-pets">
+
                 @if (myPets.Any())
                 {
                     foreach (var pet in myPets)
                     {
-                        var petImage = PetImage(pet);
-
-                        <a asp-controller="Match"
-                           asp-action="Index"
+                        <a asp-action="Index"
                            asp-route-communityPetId="@selectedCommunityPet?.Id"
                            asp-route-myPetId="@pet.Id"
-                           class="dating-my-pet @(selectedMyPet?.Id == pet.Id ? "active" : "")"
-                           title="@pet.Name">
-                            <img src="@petImage" alt="Ảnh của @pet.Name" loading="lazy" />
+                           class="dating-my-pet @(selectedMyPet?.Id == pet.Id ? "active" : "")">
+
+                            <img src="@PetImage(pet)"
+                                 alt="@pet.Name" />
+
                         </a>
                     }
                 }
                 else
                 {
-                    <a asp-controller="Pet" asp-action="MyPets" class="dating-add-pet" title="Thêm thú cưng">
+                    <a asp-controller="Pet"
+                       asp-action="MyPets"
+                       class="dating-add-pet">
+
                         <i class="fa fa-plus"></i>
+
                     </a>
                 }
+
             </div>
+
         </div>
 
         <div class="dating-stage">
@@ -87,61 +151,99 @@
             </div>
 
             <article class="dating-profile dating-profile-left">
+
                 @if (selectedCommunityPet == null)
                 {
-                    <a asp-controller="Match"
-                       asp-action="Index"
+                    <a asp-action="Index"
                        asp-route-myPetId="@selectedMyPet?.Id"
                        asp-route-showSuggestions="true"
-                       class="dating-photo-ring dating-empty-ring @(selectedMyPet == null ? "is-disabled" : "")"
-                       title="Chọn thú cưng cộng đồng">
+                       class="dating-photo-ring dating-empty-ring">
+
                         <i class="fa fa-plus"></i>
+
                     </a>
+
                     <div class="dating-info">
                         <span>Thú cưng cộng đồng</span>
                         <h2>Chưa chọn</h2>
-                        <p>Nhấn dấu cộng để xem và chọn thú cưng cộng đồng phù hợp.</p>
+                        <p>Nhấn dấu cộng để chọn thú cưng phù hợp.</p>
                     </div>
                 }
                 else
                 {
                     <div class="dating-photo-ring">
-                        <img src="@PetImage(selectedCommunityPet)" alt="Ảnh của @selectedCommunityPet.Name" loading="lazy" />
+
+                        <img src="@PetImage(selectedCommunityPet)"
+                             alt="@selectedCommunityPet.Name" />
+
                     </div>
+
                     <div class="dating-info">
+
                         <span>Thú cưng cộng đồng</span>
+
                         <h2>@selectedCommunityPet.Name</h2>
+
                         <p>
                             <i class="fa fa-paw"></i>
-                            @(string.IsNullOrWhiteSpace(selectedCommunityPet.Breed) ? selectedCommunityPet.Species : selectedCommunityPet.Breed)
-                            <i class="fa fa-map-marker"></i>
-                            @(selectedCommunityPet.Location ?? "PetSocial")
+                            @(string.IsNullOrWhiteSpace(selectedCommunityPet.Breed)
+                                ? selectedCommunityPet.Species
+                                : selectedCommunityPet.Breed)
                         </p>
+
                         <div class="dating-tags">
+
                             <span>@selectedCommunityPet.Age tuổi</span>
-                            <span>@(selectedCommunityPet.Gender ?? "Chưa cập nhật")</span>
-                            <span>@(selectedCommunityPet.Personality ?? "Thân thiện")</span>
+
+                            <span>
+                                @(selectedCommunityPet.Gender ??
+                                    "Chưa cập nhật")
+                            </span>
+
                         </div>
+
+                        @if (ViewBag.MatchStatus != null)
+                        {
+                            <div class="alert alert-warning mt-3 mb-0">
+                                @ViewBag.MatchStatus
+                            </div>
+                        }
+
                     </div>
                 }
+
             </article>
 
             <div class="dating-heart-panel">
+
                 @if (selectedCommunityPet != null && selectedMyPet != null)
                 {
-                    <form asp-action="SendMatch" method="post" class="dating-heart-form">
-                        <input type="hidden" name="senderPetId" value="@selectedMyPet.Id" />
-                        <input type="hidden" name="receiverPetId" value="@selectedCommunityPet.Id" />
-                        <button type="submit"
-                                class="dating-heart"
-                                title="Ghép đôi thú cưng"
-                                onclick="return confirm('Ghép đôi hai thú cưng này?')">
-                            <i class="fa fa-heart"></i>
-                            <span class="dating-heart-spark dating-heart-spark-one"></span>
-                            <span class="dating-heart-spark dating-heart-spark-two"></span>
-                            <span class="dating-heart-spark dating-heart-spark-three"></span>
-                        </button>
-                    </form>
+                    if (canSendRequest)
+                    {
+                        <form asp-action="SendMatch" method="post">
+                            @Html.AntiForgeryToken()
+                            
+                            <input type="hidden" name="senderPetId" value="@selectedMyPet.Id" />
+                            <input type="hidden" name="receiverPetId" value="@selectedCommunityPet.Id" />
+
+                            <button type="submit"
+                                    class="dating-heart"
+                                    title="Ghép đôi thú cưng"
+                                    onclick="return confirm('Gửi lời moiwg kết nối!')">
+                                <i class="fa fa-heart"></i>
+                                <span class="dating-heart-spark dating-heart-spark-one"></span>
+                                <span class="dating-heart-spark dating-heart-spark-two"></span>
+                                <span class="dating-heart-spark dating-heart-spark-three"></span>
+                            </button>
+
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="dating-heart dating-heart-disabled">
+                            <i class="fa fa-lock"></i>
+                        </div>
+                    }
                 }
                 else
                 {
@@ -151,113 +253,154 @@
                         <span class="dating-heart-spark dating-heart-spark-two"></span>
                         <span class="dating-heart-spark dating-heart-spark-three"></span>
                     </div>
+
                 }
+
             </div>
 
             <article class="dating-profile dating-profile-right">
+
                 @if (selectedMyPet == null)
                 {
                     <div class="dating-photo-ring dating-empty-ring">
+
                         <i class="fa fa-plus"></i>
+
                     </div>
+
                     <div class="dating-info">
+
                         <span>Thú cưng của tôi</span>
                         <h2>Chưa chọn</h2>
-                        <p>Chọn một hồ sơ ở thanh thú cưng của tôi phía trên.</p>
+
                     </div>
                 }
                 else
                 {
                     <div class="dating-photo-ring">
-                        <img src="@PetImage(selectedMyPet)" alt="Ảnh của @selectedMyPet.Name" loading="lazy" />
+
+                        <img src="@PetImage(selectedMyPet)"
+                             alt="@selectedMyPet.Name" />
+
                     </div>
+
                     <div class="dating-info">
+
                         <span>Thú cưng của tôi</span>
+
                         <h2>@selectedMyPet.Name</h2>
+
                         <p>
                             <i class="fa fa-paw"></i>
-                            @(string.IsNullOrWhiteSpace(selectedMyPet.Breed) ? selectedMyPet.Species : selectedMyPet.Breed)
-                            <i class="fa fa-map-marker"></i>
-                            @(selectedMyPet.Location ?? "PetSocial")
+                            @(string.IsNullOrWhiteSpace(selectedMyPet.Breed)
+                                ? selectedMyPet.Species
+                                : selectedMyPet.Breed)
                         </p>
+
                         <div class="dating-tags">
+
                             <span>@selectedMyPet.Age tuổi</span>
-                            <span>@(selectedMyPet.Gender ?? "Chưa cập nhật")</span>
-                            <span>@(selectedMyPet.Personality ?? "Thân thiện")</span>
+
+                            <span>
+                                @(selectedMyPet.Gender ??
+                                    "Chưa cập nhật")
+                            </span>
+
                         </div>
+
                     </div>
                 }
+
             </article>
+
         </div>
 
-        @if (selectedCommunityPet != null && selectedMyPet != null)
+        @if (selectedCommunityPet != null &&
+       selectedMyPet != null)
         {
             <div class="dating-selected-panel">
+
                 <div>
+
                     <span>Cặp ghép đã chọn</span>
-                    <strong>@selectedMyPet.Name và @selectedCommunityPet.Name</strong>
-                    <p>Nhấn trái tim ở giữa để ghép đôi. Điều kiện: cùng loài, cả hai thú cưng hiện chưa có kết nối hoặc lời mời khác.</p>
+
+                    <strong>
+                        @selectedMyPet.Name
+                        ❤️
+                        @selectedCommunityPet.Name
+                    </strong>
+
+                    <p>
+                        Gửi lời mời kết nối đến chủ thú cưng.
+                    </p>
+
                 </div>
-            </div>
-        }
-        else if (selectedCommunityPet != null && !myPets.Any())
-        {
-            <div class="dating-selected-panel dating-note-panel">
-                <div>
-                    <span>Chưa có thú cưng phù hợp</span>
-                    <strong>Không tìm thấy hồ sơ cùng loài và chưa kết nối.</strong>
-                    <p>Bạn có thể thêm hồ sơ mới hoặc kiểm tra lại các kết nối hiện tại.</p>
-                </div>
-                <a asp-controller="Pet" asp-action="MyPets" class="dating-soft-button">
-                    <i class="fa fa-paw"></i>
-                    Thú cưng của tôi
-                </a>
+
             </div>
         }
 
-        @if (showSuggestions && selectedMyPet != null && selectedCommunityPet == null)
+        @if (showSuggestions &&
+       selectedMyPet != null &&
+       selectedCommunityPet == null)
         {
             <div class="dating-suggestions-head">
-                <div>
-                    <h2>Gợi ý thú cưng phù hợp</h2>
-                    <p>Chỉ hiển thị thú cưng cộng đồng cùng loài với @selectedMyPet.Name.</p>
-                </div>
+
+                <h2>Gợi ý thú cưng phù hợp</h2>
+
+                <p>
+                    Các thú cưng cùng loài với
+                    @selectedMyPet.Name
+                </p>
+
             </div>
 
             @if (suggestions.Any())
             {
                 <div class="dating-suggestion-grid">
+
                     @foreach (var pet in suggestions)
                     {
                         <article class="dating-suggestion-card">
-                            <img src="@PetImage(pet)" alt="Ảnh của @pet.Name" loading="lazy" />
+
+                            <img src="@PetImage(pet)"
+                                 alt="@pet.Name" />
+
                             <div>
+
                                 <h3>@pet.Name</h3>
-                                <p>
-                                    <i class="fa fa-paw"></i>
-                                    @(string.IsNullOrWhiteSpace(pet.Breed) ? pet.Species : pet.Breed)
-                                </p>
+
+                                <p>@pet.Species</p>
+
                                 <span>@pet.Age tuổi</span>
+
                             </div>
-                            <a asp-controller="Match"
-                               asp-action="Index"
+
+                            <a asp-action="Index"
                                asp-route-myPetId="@selectedMyPet.Id"
-                               asp-route-communityPetId="@pet.Id"
-                               title="Chọn @pet.Name">
+                               asp-route-communityPetId="@pet.Id">
+
                                 <i class="fa fa-plus"></i>
+
                             </a>
+
                         </article>
                     }
+
                 </div>
             }
             else
             {
                 <div class="dating-empty-suggestions">
+
                     <i class="fa fa-paw"></i>
-                    <strong>Chưa có thú cưng cộng đồng phù hợp</strong>
-                    <span>Hiện chưa có hồ sơ cùng loài và còn khả dụng để ghép với @selectedMyPet.Name.</span>
+
+                    <strong>
+                        Chưa có thú cưng phù hợp
+                    </strong>
+
                 </div>
             }
         }
+
     </div>
 </section>
