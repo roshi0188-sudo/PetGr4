@@ -1,0 +1,431 @@
+@model IEnumerable<PetSocial.ViewModels.PetManageVM>
+@{
+    ViewData["Title"] = "Quản lý Thú cưng";
+
+    var pets = Model.ToList();
+    var searchString = ViewBag.SearchString as string ?? "";
+    var species = ViewBag.Species as string ?? "all";
+    var completeness = ViewBag.Completeness as string ?? "all";
+    var sort = ViewBag.Sort as string ?? "newest";
+    var pageNumber = ViewBag.Page is int currentPage ? currentPage : 1;
+    var pageSize = ViewBag.PageSize is int size ? size : 20;
+    var totalItems = ViewBag.TotalItems is int items ? items : pets.Count;
+    var totalPages = ViewBag.TotalPages is int pages ? pages : 1;
+    var totalPets = ViewBag.TotalPets is int total ? total : pets.Count;
+    var totalOwners = ViewBag.TotalOwners is int owners ? owners : 0;
+    var speciesCount = ViewBag.SpeciesCount is int typeCount ? typeCount : 0;
+    var missingPhoto = ViewBag.MissingPhoto is int noPhoto ? noPhoto : 0;
+    var completeProfiles = ViewBag.CompleteProfiles is int complete ? complete : 0;
+    var startItem = totalItems == 0 ? 0 : ((pageNumber - 1) * pageSize) + 1;
+    var endItem = Math.Min(pageNumber * pageSize, totalItems);
+    var speciesValues = ViewBag.SpeciesOptions as List<string> ?? new List<string>();
+
+    var speciesOptions = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+    {
+        new("Tất cả loài", "all", species == "all")
+    };
+    speciesOptions.AddRange(speciesValues.Select(value => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(value, value, value == species)));
+
+    var completenessOptions = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+    {
+        new("Tất cả hồ sơ", "all", completeness == "all"),
+        new("Hồ sơ đầy đủ", "complete", completeness == "complete"),
+        new("Cần rà soát", "needs-review", completeness == "needs-review")
+    };
+
+    var sortOptions = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+    {
+        new("Mới nhất", "newest", sort == "newest"),
+        new("Cũ nhất", "oldest", sort == "oldest"),
+        new("Tên A-Z", "name", sort == "name"),
+        new("Ưu tiên rà soát", "score", sort == "score")
+    };
+}
+
+<style>
+    .pet-admin-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    .breadcrumb-admin {
+        color: #64748b;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .breadcrumb-admin a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .breadcrumb-admin a:hover,
+    .breadcrumb-admin span {
+        color: var(--pet-orange);
+    }
+
+    .pet-stat-card,
+    .pet-filter-card,
+    .pet-table-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    .pet-stat-card {
+        padding: 20px;
+        height: 100%;
+    }
+
+    .pet-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        font-size: 1rem;
+    }
+
+    .pet-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: #f1f5f9;
+    }
+
+    .pet-thumb-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: #fff7ed;
+        color: var(--pet-orange);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .pet-pill {
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 0.35rem 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        white-space: nowrap;
+    }
+
+    .score-bar {
+        width: 92px;
+        height: 7px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        overflow: hidden;
+    }
+
+    .score-bar span {
+        display: block;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--pet-orange);
+    }
+
+    .table-action {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        background: transparent;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .table-action:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .table-action.warning:hover {
+        background: #fff7ed;
+        color: var(--pet-orange);
+    }
+
+    .table-action.danger:hover {
+        background: #fff1f2;
+        color: #e11d48;
+    }
+
+    .pagination .page-link {
+        color: #64748b;
+        border-color: #e2e8f0;
+        font-weight: 700;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--pet-orange);
+        border-color: var(--pet-orange);
+        color: #ffffff;
+    }
+</style>
+
+<div class="pet-admin-page">
+    <div class="pet-admin-header">
+        <div class="breadcrumb-admin">
+            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+            <i class="fa-solid fa-chevron-right mx-2" style="font-size: 0.7rem;"></i>
+            <span>Quản lý thú cưng</span>
+        </div>
+
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+            <div>
+                <h1 class="h3 mb-1 text-dark" style="font-weight: 800;">Quản lý Thú cưng</h1>
+                <p class="text-muted mb-0">Theo dõi chất lượng hồ sơ, chủ sở hữu và dữ liệu thú cưng trên toàn mạng xã hội.</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <a asp-area="" asp-controller="Pet" asp-action="Index" class="btn btn-outline-secondary fw-bold">
+                    <i class="fa-solid fa-arrow-up-right-from-square me-2"></i>Xem trang cộng đồng
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm fw-bold" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>@TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger border-0 shadow-sm fw-bold" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="pet-stat-card">
+                <div class="pet-stat-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="fa-solid fa-paw"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Tổng hồ sơ</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@totalPets.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="pet-stat-card">
+                <div class="pet-stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Chủ sở hữu</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@totalOwners.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="pet-stat-card">
+                <div class="pet-stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Hồ sơ đầy đủ</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@completeProfiles.ToString("N0")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pet-filter-card p-3 mb-4">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+            <div class="col-xl-4 col-lg-5">
+                <label for="searchString" class="form-label small fw-bold text-muted">Tìm kiếm</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input id="searchString" type="text" name="searchString" value="@searchString"
+                           class="form-control border-start-0"
+                           placeholder="Tên, loài, giống, vị trí hoặc chủ sở hữu..." />
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3 col-xl-2">
+                <label for="species" class="form-label small fw-bold text-muted">Loài</label>
+                <select id="species" name="species" class="form-select fw-semibold" asp-items="speciesOptions" onchange="this.form.submit()"></select>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <label for="completeness" class="form-label small fw-bold text-muted">Chất lượng</label>
+                <select id="completeness" name="completeness" class="form-select fw-semibold" asp-items="completenessOptions" onchange="this.form.submit()"></select>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <label for="sort" class="form-label small fw-bold text-muted">Sắp xếp</label>
+                <select id="sort" name="sort" class="form-select fw-semibold" asp-items="sortOptions" onchange="this.form.submit()"></select>
+            </div>
+            <div class="col-lg-12 col-xl-2 d-flex gap-2">
+                <button type="submit" class="btn text-white fw-bold flex-fill" style="background-color: var(--pet-orange);">
+                    <i class="fa-solid fa-filter me-2"></i>Lọc
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa bộ lọc">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="pet-table-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Hồ sơ</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Chủ sở hữu</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Phân loại</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Thông tin</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Chất lượng</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!pets.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="fa-regular fa-folder-open d-block mb-2 fs-4"></i>
+                                <span class="fw-semibold">Không có hồ sơ thú cưng phù hợp.</span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var pet in pets)
+                        {
+                            var imageUrl = string.IsNullOrWhiteSpace(pet.AvatarUrl) ? "" : Url.Content(pet.AvatarUrl);
+                            var scoreClass = pet.ProfileScore >= 80 ? "bg-success bg-opacity-10 text-success" : pet.ProfileScore >= 50 ? "bg-warning bg-opacity-10 text-warning" : "bg-danger bg-opacity-10 text-danger";
+                            var scoreLabel = pet.ProfileScore >= 80 ? "Tốt" : pet.ProfileScore >= 50 ? "Cần bổ sung" : "Thiếu dữ liệu";
+
+                            <tr>
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if (!string.IsNullOrWhiteSpace(imageUrl))
+                                        {
+                                            <img src="@imageUrl" class="pet-thumb" alt="Ảnh của @pet.Name" />
+                                        }
+                                        else
+                                        {
+                                            <span class="pet-thumb-placeholder"><i class="fa-solid fa-paw"></i></span>
+                                        }
+                                        <div class="min-w-0">
+                                            <div class="fw-bold text-dark">@pet.Name</div>
+                                            <div class="small text-muted">ID #@pet.Id &bull; @pet.Location</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="fw-bold text-dark">@pet.OwnerName</div>
+                                    <div class="small text-muted">@pet.OwnerEmail</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="pet-pill bg-warning bg-opacity-10 text-warning">
+                                        <i class="fa-solid fa-tag"></i>@pet.Species
+                                    </span>
+                                    <div class="small text-muted mt-2">@pet.Breed</div>
+                                </td>
+                                <td class="px-4 py-3 text-muted fw-semibold">
+                                    @pet.Age tuổi &bull; @pet.Gender
+                                    <div class="small text-muted mt-1">
+                                        @(pet.Weight.HasValue ? $"{pet.Weight:0.#} kg" : "Chưa có cân nặng") &bull; @pet.Personality
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="score-bar"><span style="width: @pet.ProfileScore%;"></span></div>
+                                        <strong class="small">@pet.ProfileScore%</strong>
+                                    </div>
+                                    <span class="pet-pill @scoreClass">
+                                        <i class="fa-solid @(pet.IsComplete ? "fa-circle-check" : "fa-circle-exclamation")"></i>@scoreLabel
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-end">
+                                    <a asp-area="" asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id"
+                                       class="table-action" title="Xem hồ sơ">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a asp-area="" asp-controller="Pet" asp-action="Edit" asp-route-id="@pet.Id"
+                                       class="table-action warning" title="Chỉnh sửa hồ sơ">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <form asp-action="Delete" asp-route-id="@pet.Id" method="post" class="d-inline">
+                                        <input type="hidden" name="searchString" value="@searchString" />
+                                        <input type="hidden" name="species" value="@species" />
+                                        <input type="hidden" name="completeness" value="@completeness" />
+                                        <input type="hidden" name="sort" value="@sort" />
+                                        <input type="hidden" name="page" value="@pageNumber" />
+                                        <button type="submit"
+                                                class="table-action danger"
+                                                title="Xóa hồ sơ"
+                                                onclick="return confirm('Xóa hồ sơ thú cưng này? Hành động này không thể hoàn tác.');">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 px-4 py-3 border-top">
+            <div class="text-muted small fw-semibold">
+                Hiển thị <span class="text-dark">@startItem-@endItem</span> trong số <span class="text-dark">@totalItems</span> hồ sơ
+                <span class="ms-2 text-muted">(@speciesCount loại đang được ghi nhận)</span>
+            </div>
+            <nav aria-label="Phân trang thú cưng">
+                <ul class="pagination mb-0">
+                    @if (pageNumber <= 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-left"></i></span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-species="@species" asp-route-completeness="@completeness" asp-route-sort="@sort" asp-route-page="@(pageNumber - 1)">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
+
+                    @for (var i = Math.Max(1, pageNumber - 2); i <= Math.Min(totalPages, pageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == pageNumber ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-species="@species" asp-route-completeness="@completeness" asp-route-sort="@sort" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+
+                    @if (pageNumber >= totalPages)
+                    {
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-right"></i></span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-species="@species" asp-route-completeness="@completeness" asp-route-sort="@sort" asp-route-page="@(pageNumber + 1)">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

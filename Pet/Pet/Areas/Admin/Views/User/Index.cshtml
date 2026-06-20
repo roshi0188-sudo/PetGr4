@@ -1,0 +1,413 @@
+@model IEnumerable<PetSocial.ViewModels.UserManageVM>
+@{
+    ViewData["Title"] = "Quản lý Người dùng";
+
+    var users = Model.ToList();
+    var searchString = ViewBag.SearchString as string ?? "";
+    var filter = ViewBag.Filter as string ?? "all";
+    var sort = ViewBag.Sort as string ?? "newest";
+    var pageNumber = ViewBag.Page is int currentPage ? currentPage : 1;
+    var pageSize = ViewBag.PageSize is int size ? size : 20;
+    var totalItems = ViewBag.TotalItems is int items ? items : users.Count;
+    var totalPages = ViewBag.TotalPages is int pages ? pages : 1;
+    var totalUsers = ViewBag.TotalUsers is int total ? total : users.Count;
+    var activeUsers = ViewBag.ActiveUsers is int active ? active : users.Count(u => u.IsActive);
+    var suspendedUsers = ViewBag.SuspendedUsers is int suspended ? suspended : users.Count(u => !u.IsActive);
+    var newThisMonth = ViewBag.NewThisMonth is int newest ? newest : users.Count(u => u.JoinDate.Month == DateTime.Now.Month && u.JoinDate.Year == DateTime.Now.Year);
+    var startItem = totalItems == 0 ? 0 : ((pageNumber - 1) * pageSize) + 1;
+    var endItem = Math.Min(pageNumber * pageSize, totalItems);
+    var filterOptions = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+    {
+        new("Tất cả", "all", filter == "all"),
+        new("Hoạt động", "active", filter == "active"),
+        new("Bị đình chỉ", "suspended", filter == "suspended")
+    };
+    var sortOptions = new List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>
+    {
+        new("Mới nhất", "newest", sort == "newest"),
+        new("Cũ nhất", "oldest", sort == "oldest")
+    };
+}
+
+<style>
+    .user-page-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    .breadcrumb-admin {
+        color: #64748b;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .breadcrumb-admin a {
+        color: #64748b;
+        text-decoration: none;
+    }
+
+    .breadcrumb-admin a:hover,
+    .breadcrumb-admin span {
+        color: var(--pet-orange);
+    }
+
+    .user-stat-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    .user-stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        font-size: 1rem;
+    }
+
+    .user-filter-card,
+    .user-table-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
+    }
+
+    .user-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .avatar-placeholder {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #475569;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .status-pill {
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 0.35rem 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .role-pill {
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 0.35rem 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .role-pill.admin {
+        background: #eef2ff;
+        color: #4f46e5;
+    }
+
+    .table-action {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748b;
+        background: transparent;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .table-action:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .table-action.danger:hover,
+    .table-action.danger.active {
+        background: #fff1f2;
+        color: #e11d48;
+    }
+
+    .pagination .page-link {
+        color: #64748b;
+        border-color: #e2e8f0;
+        font-weight: 700;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--pet-orange);
+        border-color: var(--pet-orange);
+        color: #ffffff;
+    }
+</style>
+
+<div class="user-page">
+    <div class="user-page-header">
+        <div class="breadcrumb-admin">
+            <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+            <i class="fa-solid fa-chevron-right mx-2" style="font-size: 0.7rem;"></i>
+            <span>Quản lý người dùng</span>
+        </div>
+
+        <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+            <div>
+                <h1 class="h3 mb-1 text-dark" style="font-weight: 800;">Quản lý Thành viên</h1>
+                <p class="text-muted mb-0">Theo dõi tài khoản, trạng thái hoạt động và đóng góp của người dùng.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success border-0 shadow-sm fw-bold" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>@TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger border-0 shadow-sm fw-bold" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>@TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="user-stat-card">
+                <div class="user-stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Tổng người dùng</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@totalUsers.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="user-stat-card">
+                <div class="user-stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Đang hoạt động</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@activeUsers.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="user-stat-card">
+                <div class="user-stat-icon bg-danger bg-opacity-10 text-danger">
+                    <i class="fa-solid fa-user-slash"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Bị đình chỉ</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@suspendedUsers.ToString("N0")</div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="user-stat-card">
+                <div class="user-stat-icon bg-info bg-opacity-10 text-info">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <div class="text-muted small fw-bold mb-1">Mới trong tháng</div>
+                <div class="h3 mb-0 text-dark" style="font-weight: 800;">@newThisMonth.ToString("N0")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="user-filter-card p-3 mb-4">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+            <div class="col-lg-6">
+                <label for="searchString" class="form-label small fw-bold text-muted">Tìm kiếm</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input id="searchString" type="text" name="searchString" value="@searchString"
+                           class="form-control border-start-0"
+                           placeholder="Tìm theo tên hoặc email..." />
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <label for="filter" class="form-label small fw-bold text-muted">Trạng thái</label>
+                <select id="filter" name="filter" class="form-select fw-semibold" asp-items="filterOptions" onchange="this.form.submit()"></select>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <label for="sort" class="form-label small fw-bold text-muted">Sắp xếp</label>
+                <select id="sort" name="sort" class="form-select fw-semibold" asp-items="sortOptions" onchange="this.form.submit()"></select>
+            </div>
+            <div class="col-lg-2 d-flex gap-2">
+                <button type="submit" class="btn text-white fw-bold flex-fill" style="background-color: var(--pet-orange);">
+                    <i class="fa-solid fa-filter me-2"></i>Lọc
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa bộ lọc">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="user-table-card overflow-hidden">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Tài khoản</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Vai trò</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Đóng góp</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Tham gia</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase">Trạng thái</th>
+                        <th class="px-4 py-3 small text-muted text-uppercase text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!users.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="fa-regular fa-folder-open d-block mb-2 fs-4"></i>
+                                <span class="fw-semibold">Không có người dùng phù hợp.</span>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var user in users)
+                        {
+                            <tr>
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if (!string.IsNullOrWhiteSpace(user.AvatarUrl))
+                                        {
+                                            <img src="@user.AvatarUrl" class="user-avatar" alt="Avatar của @user.FullName" />
+                                        }
+                                        else
+                                        {
+                                            <span class="avatar-placeholder">@(string.IsNullOrWhiteSpace(user.FullName) ? "U" : user.FullName.Substring(0, 1).ToUpper())</span>
+                                        }
+                                        <div class="min-w-0">
+                                            <div class="fw-bold text-dark">@user.FullName</div>
+                                            <div class="small text-muted">@user.Email</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="role-pill @(user.IsAdmin ? "admin" : "")">
+                                        <i class="fa-solid @(user.IsAdmin ? "fa-user-shield" : "fa-user")"></i>
+                                        @(user.IsAdmin ? "Admin" : "Thành viên")
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-muted fw-semibold">
+                                    @user.PetCount thú cưng &bull; @user.PostCount bài viết
+                                </td>
+                                <td class="px-4 py-3 text-muted fw-semibold">
+                                    @user.JoinDate.ToString("dd/MM/yyyy")
+                                </td>
+                                <td class="px-4 py-3">
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="status-pill bg-success bg-opacity-10 text-success">
+                                            <i class="fa-solid fa-circle-check"></i>Hoạt động
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-pill bg-danger bg-opacity-10 text-danger">
+                                            <i class="fa-solid fa-circle-pause"></i>Bị đình chỉ
+                                        </span>
+                                    }
+                                </td>
+                                <td class="px-4 py-3 text-end">
+                                    <a asp-area="" asp-controller="Profile" asp-action="Details" asp-route-id="@user.Id"
+                                       class="table-action" title="Xem hồ sơ">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+
+                                    @if (user.Email != "admin@petsocial.com")
+                                    {
+                                        <form asp-action="ToggleBlock" asp-route-id="@user.Id" method="post" class="d-inline">
+                                            <input type="hidden" name="searchString" value="@searchString" />
+                                            <input type="hidden" name="filter" value="@filter" />
+                                            <input type="hidden" name="sort" value="@sort" />
+                                            <input type="hidden" name="page" value="@pageNumber" />
+                                            <button type="submit"
+                                                    class="table-action danger @(user.IsActive ? "" : "active")"
+                                                    title="Khóa/Mở khóa"
+                                                    onclick="return confirm('Xác nhận đổi trạng thái tài khoản này?');">
+                                                <i class="fa-solid @(user.IsActive ? "fa-ban" : "fa-unlock")"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 px-4 py-3 border-top">
+            <div class="text-muted small fw-semibold">
+                Hiển thị <span class="text-dark">@startItem-@endItem</span> trong số <span class="text-dark">@totalItems</span> tài khoản
+            </div>
+            <nav aria-label="Phân trang người dùng">
+                <ul class="pagination mb-0">
+                    @if (pageNumber <= 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-left"></i></span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-filter="@filter" asp-route-sort="@sort" asp-route-page="@(pageNumber - 1)">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
+
+                    @for (var i = Math.Max(1, pageNumber - 2); i <= Math.Min(totalPages, pageNumber + 2); i++)
+                    {
+                        <li class="page-item @(i == pageNumber ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-filter="@filter" asp-route-sort="@sort" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+
+                    @if (pageNumber >= totalPages)
+                    {
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-right"></i></span></li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Index" asp-route-searchString="@searchString" asp-route-filter="@filter" asp-route-sort="@sort" asp-route-page="@(pageNumber + 1)">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

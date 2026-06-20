@@ -1,42 +1,53 @@
-﻿﻿
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Admin PetSocial</title>
+    <title>@ViewData["Title"] - Quản trị viên PetSocial</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
             :root {
                 --pet-orange: #ff7e21;
+                --pet-orange-hover: #e66e1c;
                 --bg-light: #f8fafc;
+                --text-muted: #64748b;
+                --text-dark: #0f172a;
             }
 
             body {
-                font-family: 'Inter', sans-serif;
+                font-family: 'Plus Jakarta Sans', sans-serif;
                 background-color: var(--bg-light);
                 margin: 0;
                 padding: 0;
+                overflow: hidden;
             }
 
             .dashboard-wrapper {
                 display: flex;
-                min-height: 100vh;
+                height: 100vh;
+                width: 100vw;
             }
 
+            /* Thanh điều hướng bên trái cao cấp */
             .admin-sidebar {
-                width: 260px;
+                width: 280px;
                 background: #ffffff;
                 border-right: 1px solid #e2e8f0;
                 flex-shrink: 0;
-                padding: 24px 16px;
+                padding: 32px 20px;
                 display: flex;
-                flex-direction: column; /* Đẩy nút Đăng xuất xuống đáy */
+                flex-direction: column;
             }
 
+            .admin-mobile-header {
+                display: none;
+            }
+
+            /* Vùng nội dung chính cuộn độc lập */
             .main-content {
                 flex-grow: 1;
                 padding: 40px;
@@ -45,79 +56,254 @@
                 height: 100vh;
             }
 
-            /* Định dạng menu */
+            /* Định dạng thương hiệu logo */
             .sidebar-brand {
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                padding-left: 12px;
+                padding-left: 8px;
                 margin-bottom: 40px;
+                text-decoration: none;
             }
 
+                .sidebar-brand strong {
+                    font-size: 1.3rem;
+                    font-weight: 800;
+                    letter-spacing: -0.5px;
+                    color: var(--text-dark);
+                }
+
+            /* Định dạng danh sách Menu */
             .nav-menu {
                 list-style: none;
                 padding: 0;
                 margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
             }
 
             .nav-menu-item {
-                margin-bottom: 8px;
+                margin-bottom: 0;
             }
 
             .nav-menu-link {
                 display: flex;
                 align-items: center;
-                padding: 12px 16px;
-                color: #64748b;
+                padding: 14px 18px;
+                color: var(--text-muted);
                 text-decoration: none;
-                font-weight: 500;
-                border-radius: 12px;
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 14px;
                 transition: all 0.2s ease;
+                border: none;
+                background: transparent;
             }
+
+                .nav-menu-link i {
+                    font-size: 1.15rem;
+                    width: 24px;
+                    text-align: center;
+                }
 
                 .nav-menu-link:hover {
                     background-color: #f1f5f9;
-                    color: #0f172a;
+                    color: var(--text-dark);
                 }
 
+                /* Trạng thái Kích hoạt Menu - Màu Cam đồng bộ */
                 .nav-menu-link.active {
-                    background-color: #ffedd5;
+                    background-color: #fff5ee;
                     color: var(--pet-orange);
-                    font-weight: 600;
+                    font-weight: 700;
                 }
+
+                /* Menu thoát ra ngoài giao diện người dùng */
+                .nav-menu-link.link-mxh {
+                    color: #0284c7;
+                }
+
+                    .nav-menu-link.link-mxh:hover {
+                        background-color: #f0f9ff;
+                        color: #0369a1;
+                    }
+
+            .sidebar-footer {
+                margin-top: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-public-site {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding: 14px 18px;
+                color: #0369a1;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 14px;
+                background: #f0f9ff;
+                transition: all 0.2s;
+            }
+
+                .btn-public-site:hover {
+                    background: #e0f2fe;
+                    color: #075985;
+                    transform: translateY(-1px);
+                }
+
+            .btn-logout-admin {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                padding: 14px 18px;
+                color: #e11d48;
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 14px;
+                background: #fff1f2;
+                border: none;
+                transition: all 0.2s;
+            }
+
+                .btn-logout-admin:hover {
+                    background: #ffe4e6;
+                    transform: translateY(-1px);
+                }
+
+            @@media (max-width: 991.98px) {
+                body {
+                    overflow: auto;
+                }
+
+                .dashboard-wrapper {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                    min-height: 100vh;
+                }
+
+                .admin-mobile-header {
+                    display: flex;
+                    position: sticky;
+                    top: 0;
+                    z-index: 20;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                    padding: 14px 18px;
+                    background: #ffffff;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+
+                    .admin-mobile-header a {
+                        color: var(--text-dark);
+                        text-decoration: none;
+                        font-weight: 800;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+
+                .admin-sidebar {
+                    width: 100%;
+                    min-height: auto;
+                    padding: 16px;
+                    border-right: 0;
+                    border-bottom: 1px solid #e2e8f0;
+                }
+
+                    .admin-sidebar .sidebar-brand {
+                        display: none;
+                    }
+
+                .nav-menu {
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 8px;
+                }
+
+                .nav-menu-link {
+                    min-height: 52px;
+                    padding: 12px 14px;
+                    font-size: 0.9rem;
+                }
+
+                .sidebar-footer {
+                    margin-top: 16px;
+                    display: grid;
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+
+                .main-content {
+                    height: auto;
+                    min-height: auto;
+                    padding: 20px 16px 32px;
+                    overflow: visible;
+                }
+            }
+
+            @@media (max-width: 575.98px) {
+                .nav-menu,
+                .sidebar-footer {
+                    grid-template-columns: 1fr;
+                }
+            }
     </style>
 </head>
 <body>
-    @{
-        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    }
+
     <div class="dashboard-wrapper">
+        <header class="admin-mobile-header">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="fa-solid fa-paw" style="color: var(--pet-orange);"></i>
+                PetSocial Admin
+            </a>
+            <a asp-area="" asp-controller="Post" asp-action="Community" class="small text-muted">
+                <i class="fa-solid fa-earth-asia"></i>
+                Mạng xã hội
+            </a>
+        </header>
+
         <nav class="admin-sidebar">
-            <div class="sidebar-brand">
-                <i class="fas fa-paw text-warning fs-3"></i>
-                <h4 class="fw-bold mb-0 text-dark">PetSocial</h4>
-            </div>
+            <a class="sidebar-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                <i class="fa-solid fa-paw text-warning fs-3" style="color: var(--pet-orange) !important;"></i>
+                <strong>PetSocial <span class="small font-medium text-muted" style="font-size: 0.75rem; font-weight:500;">Admin</span></strong>
+            </a>
 
             <ul class="nav-menu">
                 <li class="nav-menu-item">
-                    <a class="nav-menu-link @(currentController == "Dashboard" ? "active" : "")" href="/Admin/Dashboard"><i class="fas fa-gauge me-3"></i>Dashboard</a>
+                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fa-solid fa-chart-pie me-3"></i>Tổng quan
+                    </a>
+                </li>
+
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "User" ? "active" : "")" asp-area="Admin" asp-controller="User" asp-action="Index">
+                        <i class="fa-solid fa-users me-3"></i>Quản lý Người Dùng
+                    </a>
+                </li>
+
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Pet" ? "active" : "")" href="/Admin/Pet">
+                        <i class="fa-solid fa-shield-cat me-3"></i>Quản lý Thú cưng
+                    </a>
                 </li>
                 <li class="nav-menu-item">
-                    <a class="nav-menu-link" href="#"><i class="fas fa-users me-3"></i>User Management</a>
-                </li>
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link @(currentController == "Posts" ? "active" : "")" asp-area="Admin" asp-controller="Posts" asp-action="Index"><i class="fas fa-file-alt me-3"></i>Post Management</a>
-                </li>
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link" asp-area="" asp-controller="Pet" asp-action="Index"><i class="fas fa-paw me-3"></i>Pet Profiles</a>
+                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Posts" ? "active" : "")" asp-area="Admin" asp-controller="Posts" asp-action="Index">
+                        <i class="fas fa-file-alt me-3"></i>Quản lý bài viết
+                    </a>
                 </li>
             </ul>
 
-            <div style="margin-top: auto;">
-                <hr class="text-muted opacity-25">
-                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                    <button type="submit" class="nav-menu-link text-danger w-100 text-start" style="background: transparent; border: none;">
-                        <i class="fas fa-sign-out-alt me-3"></i>Đăng xuất
+            <div class="sidebar-footer">
+                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                    <button type="submit" class="btn-logout-admin">
+                        <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>Đăng xuất Admin
                     </button>
                 </form>
             </div>

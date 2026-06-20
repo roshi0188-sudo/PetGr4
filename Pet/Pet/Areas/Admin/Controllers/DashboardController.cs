@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PetSocial.Data; // Thừa hưởng ApplicationDbContext từ project của bạn
+using PetSocial.Data;
 using PetSocial.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PetSocial.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")] // Bảo mật tuyệt đối: Chỉ Admin mới được vào
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        // Tiêm ApplicationDbContext thật của bạn vào đây
         public DashboardController(ApplicationDbContext context)
         {
             _context = context;
@@ -20,47 +22,51 @@ namespace PetSocial.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // 1. Tính toán các con số thống kê thực tế ngoài Database
+            // 1. TÍNH TOÁN CÁC CON SỐ THỐNG KÊ TỔNG QUAN NGOÀI DATABASE
             var totalUsers = await _context.Users.CountAsync();
             var totalPets = await _context.Pets.CountAsync();
             var totalPosts = await _context.Posts.CountAsync();
 
-            // Tạm thời gán bằng 0 nếu các bảng này chưa được team hoàn thiện
-            var totalComments = 0;
-            var totalLikes = 0;
-            var totalMessages = 0;
+            // Lấy dữ liệu thật từ bảng Comments và Likes để thẻ Tương tác có số liệu thực
+            var totalComments = await _context.Comments.CountAsync();
+            var totalLikes = await _context.Likes.CountAsync();
+            var totalMessages = 0; // Giữ nguyên 0 nếu nhóm bạn chưa làm tính năng Chat
 
-            // 2. Lấy danh sách thành viên thực tế (Từ hạt giống SeedData của bạn)
-            var usersFromDb = await _context.Users.ToListAsync();
-            var usersList = new List<UserDashboardVM>();
+            // (ĐÃ XÓA VÒNG LẶP FOREACH LẤY DANH SÁCH USER VÌ CHÚNG TA ĐÃ TÁCH SANG TRANG QUẢN LÝ USER RIÊNG)
+            // Việc này giúp Dashboard load siêu nhanh do không bị vướng lỗi N+1 Query.
 
-            foreach (var user in usersFromDb)
+            // 2. DỮ LIỆU CHO BIỂU ĐỒ ĐƯỜNG (LINE CHART) - 7 NGÀY GẦN NHẤT
+            var weeklyLabels = new List<string>();
+            var weeklyNewUsers = new List<int>();
+            var weeklyNewPosts = new List<int>();
+
+            for (int d = 6; d >= 0; d--)
             {
-                // Đếm số lượng Pet thật của User này dựa theo mã UserId khóa ngoại
-                var petCount = await _context.Pets.CountAsync(p => p.UserId == user.Id);
+                var day = DateTime.Today.AddDays(-d);
+                weeklyLabels.Add(day.ToString("dd/MM")); // Format dd/MM cho đẹp mắt
 
-                // Đếm số lượng Bài viết thật của User này (Ráp nối dữ liệu tiến độ của Anh sau này)
-                var postCount = await _context.Posts.CountAsync(p => p.UserId == user.Id);
-
-                // Kiểm tra tài khoản có đang bị khóa (Lockout) hay không
-                bool isActive = !user.LockoutEnd.HasValue || user.LockoutEnd <= DateTimeOffset.Now;
-
-                // Gán hiển thị Role tạm thời dựa theo Email để bảng hiển thị đẹp mắt
-                string displayRole = user.Email == "admin@petsocial.com" ? "Admin" : "User";
-
-                usersList.Add(new UserDashboardVM
-                {
-                    FullName = user.FullName ?? "Chưa cập nhật",
-                    Email = user.Email,
-                    JoinDate = DateTime.Now.AddDays(-5), // Hoặc dùng thuộc tính ngày tạo của bạn nếu có
-                    PetCount = petCount,
-                    PostCount = postCount,
-                    Role = displayRole,
-                    IsActive = isActive
-                });
+                weeklyNewUsers.Add(await _context.Users.CountAsync(u => u.CreatedAt.Date == day));
+                weeklyNewPosts.Add(await _context.Posts.CountAsync(p => p.CreatedAt.Date == day));
             }
 
-            // 3. Đóng gói dữ liệu thật ném qua cho View hiển thị
+            // 3. DỮ LIỆU CHO BIỂU ĐỒ CỘT (BAR CHART) - 6 THÁNG GẦN NHẤT
+            var monthlyLabels = new List<string>();
+            var monthlyNewUsers = new List<int>();
+            var monthlyNewPosts = new List<int>();
+
+            for (int m = 5; m >= 0; m--)
+            {
+                var month = DateTime.Today.AddMonths(-m);
+                monthlyLabels.Add(month.ToString("MM/yyyy"));
+
+                var firstOfMonth = new DateTime(month.Year, month.Month, 1);
+                var lastOfMonth = firstOfMonth.AddMonths(1).AddDays(-1);
+
+                monthlyNewUsers.Add(await _context.Users.CountAsync(u => u.CreatedAt.Date >= firstOfMonth && u.CreatedAt.Date <= lastOfMonth));
+                monthlyNewPosts.Add(await _context.Posts.CountAsync(p => p.CreatedAt.Date >= firstOfMonth && p.CreatedAt.Date <= lastOfMonth));
+            }
+
+            // 4. ĐÓNG GÓI DỮ LIỆU CHUYỂN SANG VIEW
             var model = new DashboardVM
             {
                 TotalUsers = totalUsers,
@@ -69,7 +75,14 @@ namespace PetSocial.Areas.Admin.Controllers
                 TotalComments = totalComments,
                 TotalLikes = totalLikes,
                 TotalMessages = totalMessages,
-                Users = usersList
+
+                WeeklyLabels = weeklyLabels,
+                WeeklyNewUsers = weeklyNewUsers,
+                WeeklyNewPosts = weeklyNewPosts,
+
+                MonthlyLabels = monthlyLabels,
+                MonthlyNewUsers = monthlyNewUsers,
+                MonthlyNewPosts = monthlyNewPosts
             };
 
             return View(model);

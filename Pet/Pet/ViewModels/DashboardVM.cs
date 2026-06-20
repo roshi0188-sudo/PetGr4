@@ -9,6 +9,14 @@ namespace PetSocial.ViewModels
         public int TotalLikes { get; set; }
         public int TotalMessages { get; set; }
         public List<UserDashboardVM> Users { get; set; } = new List<UserDashboardVM>();
+        // Weekly / Monthly series for charts
+        public List<string> WeeklyLabels { get; set; } = new List<string>();
+        public List<int> WeeklyNewUsers { get; set; } = new List<int>();
+        public List<int> WeeklyNewPosts { get; set; } = new List<int>();
+
+        public List<string> MonthlyLabels { get; set; } = new List<string>();
+        public List<int> MonthlyNewUsers { get; set; } = new List<int>();
+        public List<int> MonthlyNewPosts { get; set; } = new List<int>();
     }
 
     public class UserDashboardVM

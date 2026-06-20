@@ -1,336 +1,316 @@
 ﻿@model PetSocial.ViewModels.DashboardVM
 @{
-    ViewData["Title"] = "Bảng điều khiển";
+    ViewData["Title"] = "Bảng điều khiển Tổng quan";
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
     :root {
-        --pet-orange: #ff7e21;
-        --pet-orange-hover: #e66e1c;
-        --bg-light: #f8fafc;
+    --pet-orange: #ff7e21;
+    --pet-orange-hover: #e66e1c;
+    --bg-light: #f8fafc;
     }
 
     body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--bg-light);
-    }
-
-    /* Khắc phục lỗi thanh điều hướng dính sát mép */
-    .dashboard-wrapper {
-        display: flex;
-        min-height: 100vh;
-    }
-
-    .admin-sidebar {
-        width: 260px;
-        background: #ffffff;
-        border-right: 1px solid #e2e8f0;
-        flex-shrink: 0;
-        padding: 24px 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-light);
     }
 
     .main-content {
-        flex-grow: 1;
-        padding: 40px;
-        background-color: var(--bg-light);
-        overflow-y: auto;
+    flex-grow: 1;
+    padding: 40px;
+    background-color: var(--bg-light);
+    overflow-x: hidden;
     }
 
-    /* Định dạng menu điều hướng */
-    .sidebar-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding-left: 12px;
-        margin-bottom: 40px;
-    }
-
-    .nav-menu {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .nav-menu-item {
-        margin-bottom: 8px;
-    }
-
-    .nav-menu-link {
-        display: flex;
-        align-items: center;
-        padding: 12px 16px;
-        color: #64748b;
-        text-decoration: none;
-        font-weight: 500;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-    }
-
-        .nav-menu-link:hover {
-            background-color: #f1f5f9;
-            color: #0f172a;
-        }
-
-        .nav-menu-link.active {
-            background-color: #ffedd5;
-            color: var(--pet-orange);
-            font-weight: 600;
-        }
-
-    /* Thẻ hiển thị thông số */
     .admin-header {
-        background: white;
-        padding: 24px;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-        margin-bottom: 32px;
+    background: white;
+    padding: 24px 32px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(21, 28, 39, 0.02);
+    margin-bottom: 32px;
+    border: 1px solid #e2e8f0;
     }
 
     .stat-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(21, 28, 39, 0.02);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.04);
-        }
+    .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    }
 
     .icon-box {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
     }
 
     .card-footer-action {
-        background: #fafafa;
-        border-top: 1px solid #f1f5f9;
-        padding: 12px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+    padding: 14px 24px;
+    margin-top: auto;
     }
 
     .card-footer-link {
-        text-decoration: none;
-        color: #64748b;
-        font-size: 0.85rem;
-        font-weight: 500;
+    text-decoration: none;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: color 0.2s;
     }
 
-        .card-footer-link:hover {
-            color: var(--pet-orange);
-        }
-
-    /* Định dạng bảng danh sách */
-    .table-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 20px;
-        overflow: hidden;
+    .card-footer-link:hover {
+    color: var(--pet-orange);
     }
 
-    .badge-active {
-        background-color: #dcfce7;
-        color: #166534;
-    }
-
-    .badge-suspended {
-        background-color: #fee2e2;
-        color: #991b1b;
+    .chart-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(21, 28, 39, 0.02);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     }
 </style>
 
-<div class="dashboard-wrapper">  
-    <main class="main-content">
+<div class="main-content">
+    <div style="max-width: 1300px; margin: 0 auto; width: 100%;">
+
         <div class="admin-header d-flex justify-content-between align-items-center">
             <div>
-                <h1 class="h3 fw-bold text-dark mb-1">Chào mừng quay lại, Quản trị viên!</h1>
-                <p class="text-muted mb-0">Dưới đây là tổng quan về hoạt động của mạng xã hội PetSocial.</p>
+                <h1 class="h3 fw-extrabold text-dark mb-1" style="font-weight: 800; letter-spacing: -0.5px;">Trung tâm điều khiển</h1>
+                <p class="text-muted mb-0 small font-medium">Theo dõi dữ liệu và luồng tương tác mạng xã hội PetSocial theo thời gian thực.</p>
             </div>
-            <div class="display-6"></div>
-        </div>
-
-        <h5 class="mb-3 fw-bold text-secondary">Thông số cốt lõi</h5>
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small fw-bold mb-1">TỔNG NGƯỜI DÙNG</div>
-                                <div class="h2 fw-bold mb-0 text-dark">@Model.TotalUsers</div>
-                            </div>
-                            <div class="icon-box bg-primary bg-opacity-10 text-primary">
-                                <i class="fas fa-users"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer-action d-flex justify-content-between align-items-center">
-                        <a href="#" class="card-footer-link">Quản lý người dùng</a>
-                        <i class="fas fa-angle-right text-muted small"></i>
-                    </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold text-dark" style="font-size: 0.9rem;">Admin Hệ thống</div>
+                    <div class="text-success small fw-bold"><i class="fa-solid fa-circle text-[8px] me-1"></i>Đang trực tuyến</div>
                 </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small fw-bold mb-1">TỔNG THÚ CƯNG</div>
-                                <div class="h2 fw-bold mb-0 text-dark">@Model.TotalPets</div>
-                            </div>
-                            <div class="icon-box bg-warning bg-opacity-10 text-warning">
-                                <i class="fas fa-paw"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer-action d-flex justify-content-between align-items-center">
-                        <a href="#" class="card-footer-link">Kiểm duyệt thú cưng</a>
-                        <i class="fas fa-angle-right text-muted small"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small fw-bold mb-1">TỔNG BÀI VIẾT</div>
-                                <div class="h2 fw-bold mb-0 text-dark">@Model.TotalPosts</div>
-                            </div>
-                            <div class="icon-box bg-success bg-opacity-10 text-success">
-                                <i class="fas fa-file-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer-action d-flex justify-content-between align-items-center">
-                        <a asp-area="Admin" asp-controller="Posts" asp-action="Index" class="card-footer-link">Quản lý nội dung</a>
-                        <i class="fas fa-angle-right text-muted small"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card stat-card shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small fw-bold mb-1">TỔNG BÌNH LUẬN</div>
-                                <div class="h2 fw-bold mb-0 text-dark">@Model.TotalComments</div>
-                            </div>
-                            <div class="icon-box bg-info bg-opacity-10 text-info">
-                                <i class="fas fa-comments"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer-action d-flex justify-content-between align-items-center">
-                        <a href="#" class="card-footer-link">Xem chi tiết</a>
-                        <i class="fas fa-angle-right text-muted small"></i>
-                    </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="background: #fff3eb; color: var(--pet-orange); width: 48px; height: 48px;">
+                    <i class="fa-solid fa-bolt fs-5"></i>
                 </div>
             </div>
         </div>
 
-        <h5 class="mt-4 mb-3 fw-bold text-secondary">❤️ Tương tác & Tin nhắn</h5>
-        <div class="row mb-5">
-            <div class="col-md-6 mb-4">
-                <div class="card stat-card shadow-sm border-0">
-                    <div class="card-body p-4 d-flex align-items-center gap-4">
-                        <div class="icon-box bg-danger bg-opacity-10 text-danger fs-2" style="width: 64px; height: 64px; border-radius: 16px;">
-                            <i class="fas fa-heart"></i>
-                        </div>
+        <h5 class="mb-4 fw-bold text-secondary text-uppercase tracking-wider" style="font-size: 0.8rem; letter-spacing: 1px;">Chỉ số hệ thống lõi</h5>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
+
+            <div class="card stat-card border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <div class="text-muted small fw-bold">TỔNG LƯỢT THÍCH</div>
-                            <div class="h1 fw-bold mb-0 text-dark">@Model.TotalLikes</div>
+                            <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Tổng người dùng</div>
+                            <div class="h2 fw-black mb-0 text-dark" style="font-weight: 900;">@Model.TotalUsers</div>
+                        </div>
+                        <div class="icon-box" style="background: #eff6ff; color: #3b82f6;">
+                            <i class="fa-solid fa-users"></i>
                         </div>
                     </div>
                 </div>
+                <div class="card-footer-action d-flex justify-content-between align-items-center">
+                    <a asp-area="Admin" asp-controller="User" asp-action="Index" class="card-footer-link">Quản lý thành viên</a>
+                    <i class="fa-solid fa-arrow-right text-muted small"></i>
+                </div>
             </div>
 
-            <div class="col-md-6 mb-4">
-                <div class="card stat-card shadow-sm border-0">
-                    <div class="card-body p-4 d-flex align-items-center gap-4">
-                        <div class="icon-box bg-warning bg-opacity-10 text-warning fs-2" style="width: 64px; height: 64px; border-radius: 16px;">
-                            <i class="fas fa-envelope"></i>
-                        </div>
+            <div class="card stat-card border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <div class="text-muted small fw-bold">TỔNG TIN NHẮN CHAT</div>
-                            <div class="h1 fw-bold mb-0 text-dark">@Model.TotalMessages</div>
+                            <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Tổng thú cưng</div>
+                            <div class="h2 fw-black mb-0 text-dark" style="font-weight: 900;">@Model.TotalPets</div>
+                        </div>
+                        <div class="icon-box" style="background: #fffbeb; color: #f59e0b;">
+                            <i class="fa-solid fa-paw"></i>
                         </div>
                     </div>
+                </div>
+                <div class="card-footer-action d-flex justify-content-between align-items-center">
+                    <a asp-area="" asp-controller="Pet" asp-action="Index" class="card-footer-link">Kiểm duyệt hồ sơ</a>
+                    <i class="fa-solid fa-arrow-right text-muted small"></i>
+                </div>
+            </div>
+
+            <div class="card stat-card border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Tổng bài đăng</div>
+                            <div class="h2 fw-black mb-0 text-dark" style="font-weight: 900;">@Model.TotalPosts</div>
+                        </div>
+                        <div class="icon-box" style="background: #f0fdf4; color: #22c55e;">
+                            <i class="fa-solid fa-images"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer-action d-flex justify-content-between align-items-center">
+                    <a asp-area="" asp-controller="Post" asp-action="Community" class="card-footer-link">Quản lý nội dung</a>
+                    <i class="fa-solid fa-arrow-right text-muted small"></i>
+                </div>
+            </div>
+
+            <div class="card stat-card border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted fw-bold mb-2 text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Lượt tương tác</div>
+                            <div class="h2 fw-black mb-0 text-dark" style="font-weight: 900;">@((Model.TotalLikes + Model.TotalComments))</div>
+                        </div>
+                        <div class="icon-box" style="background: #fef2f2; color: #ef4444;">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer-action d-flex justify-content-between align-items-center">
+                    <span class="text-muted small font-bold">Thích & Bình luận</span>
+                    <i class="fa-solid fa-chart-line text-danger small"></i>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold text-secondary mb-0">Quản lý người dùng</h5>
-            <button class="btn btn-dark btn-sm rounded-pill px-3" style="background-color: var(--pet-orange); border: none;"><i class="fas fa-plus me-2"></i>Thêm Admin</button>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px; margin-bottom: 40px;">
+
+            <div class="chart-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="fw-bold text-dark mb-0">Xu hướng 7 ngày qua</h6>
+                    <span class="badge bg-light text-muted border">Hàng tuần</span>
+                </div>
+                <div style="position: relative; height: 320px; width: 100%;">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h6 class="fw-bold text-dark mb-0">Tăng trưởng 6 tháng gần nhất</h6>
+                    <span class="badge bg-light text-muted border">Hàng tháng</span>
+                </div>
+                <div style="position: relative; height: 320px; width: 100%;">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
         </div>
 
-        <div class="card table-card shadow-sm border-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light text-secondarysmall">
-                        <tr>
-                            <th class="ps-4 py-3">USER</th>
-                            <th class="py-3">JOIN DATE</th>
-                            <th class="py-3">PETS</th>
-                            <th class="py-3">POSTS</th>
-                            <th class="py-3">ROLE</th>
-                            <th class="py-3">STATUS</th>
-                            <th class="text-end pe-4 py-3">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Users != null)
-                        {
-                            foreach (var user in Model.Users)
-                            {
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 38px; height: 38px;">
-                                                @(string.IsNullOrEmpty(user.FullName) ? "U" : user.FullName.Substring(0, 1).ToUpper())
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold text-dark">@user.FullName</div>
-                                                <small class="text-muted">@user.Email</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td><span class="text-muted">@user.JoinDate.ToString("MMM dd, yyyy")</span></td>
-                                    <td><span class="badge bg-light text-dark border px-2 py-1">@user.PetCount Pets</span></td>
-                                    <td class="fw-semibold text-dark">@user.PostCount</td>
-                                    <td><span class="text-secondary fw-medium">@user.Role</span></td>
-                                    <td>
-                                        <span class="badge px-2 py-1 @(user.IsActive ? "badge-active" : "badge-suspended")">
-                                            ● @(user.IsActive ? "Active" : "Suspended")
-                                        </span>
-                                    </td>
-                                    <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-light text-primary me-1 rounded-circle"><i class="fas fa-eye"></i></button>
-                                        <button class="btn btn-sm btn-light text-warning rounded-circle"><i class="fas fa-edit"></i></button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">Không có dữ liệu hiển thị</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
+    </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const weeklyLabels = @Html.Raw(Json.Serialize(Model.WeeklyLabels ?? new List<string>()));
+    const weeklyUsers = @Html.Raw(Json.Serialize(Model.WeeklyNewUsers ?? new List<int>()));
+    const weeklyPosts = @Html.Raw(Json.Serialize(Model.WeeklyNewPosts ?? new List<int>()));
+
+    const monthlyLabels = @Html.Raw(Json.Serialize(Model.MonthlyLabels ?? new List<string>()));
+    const monthlyUsers = @Html.Raw(Json.Serialize(Model.MonthlyNewUsers ?? new List<int>()));
+    const monthlyPosts = @Html.Raw(Json.Serialize(Model.MonthlyNewPosts ?? new List<int>()));
+
+    Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+    Chart.defaults.color = '#64748b';
+
+    const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
+    new Chart(ctxWeekly, {
+    type: 'line',
+    data: {
+    labels: weeklyLabels.length > 0 ? weeklyLabels : ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+    datasets: [
+    {
+    label: 'Người dùng mới',
+    data: weeklyUsers.length > 0 ? weeklyUsers : [0, 0, 0, 0, 0, 0, 0],
+    borderColor: '#3b82f6',
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    borderWidth: 3,
+    tension: 0.4,
+    fill: true,
+    pointBackgroundColor: '#ffffff',
+    pointBorderColor: '#3b82f6',
+    pointBorderWidth: 2,
+    pointRadius: 4
+    },
+    {
+    label: 'Bài viết mới',
+    data: weeklyPosts.length > 0 ? weeklyPosts : [0, 0, 0, 0, 0, 0, 0],
+    borderColor: '#ff7e21',
+    backgroundColor: 'transparent',
+    borderWidth: 3,
+    tension: 0.4,
+    borderDash: [5, 5],
+    pointBackgroundColor: '#ffffff',
+    pointBorderColor: '#ff7e21',
+    pointBorderWidth: 2,
+    pointRadius: 4
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+    legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } }
+    },
+    scales: {
+    y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#e2e8f0' }, border: { display: false } },
+    x: { grid: { display: false }, border: { display: false } }
+    }
+    }
+    });
+
+    const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+    new Chart(ctxMonthly, {
+    type: 'bar',
+    data: {
+    labels: monthlyLabels.length > 0 ? monthlyLabels : ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+    datasets: [
+    {
+    label: 'Người dùng mới',
+    data: monthlyUsers.length > 0 ? monthlyUsers : [0, 0, 0, 0, 0, 0],
+    backgroundColor: '#3b82f6',
+    borderRadius: 6,
+    barPercentage: 0.6,
+    categoryPercentage: 0.8
+    },
+    {
+    label: 'Bài viết mới',
+    data: monthlyPosts.length > 0 ? monthlyPosts : [0, 0, 0, 0, 0, 0],
+    backgroundColor: '#ff7e21',
+    borderRadius: 6,
+    barPercentage: 0.6,
+    categoryPercentage: 0.8
+    }
+    ]
+    },
+    options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+    legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } }
+    },
+    scales: {
+    y: { beginAtZero: true, grid: { borderDash: [2, 4], color: '#e2e8f0' }, border: { display: false } },
+    x: { grid: { display: false }, border: { display: false } }
+    }
+    }
+    });
+    });
+</script>
