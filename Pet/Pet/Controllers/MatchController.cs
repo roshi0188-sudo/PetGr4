@@ -43,8 +43,14 @@ namespace PetSocial.Controllers
                 if (communityPet != null)
                 {
                     var communitySpecies = NormalizeSpecies(communityPet.Species);
+                    var communityGender = NormalizeGender(communityPet.Gender);
+
                     myPetsQuery = myPetsQuery
-                        .Where(x => x.Species.Trim().ToLower() == communitySpecies);
+                        .Where(x => x.Species.Trim().ToLower() == communitySpecies)
+                        .Where(x =>
+                            !string.IsNullOrEmpty(communityGender) &&
+                            !string.IsNullOrEmpty(x.Gender) &&
+                            x.Gender.Trim().ToLower() != communityGender);
                 }
 
                 myPets = myPetsQuery
@@ -63,11 +69,16 @@ namespace PetSocial.Controllers
             if (showSuggestions && selectedMyPet != null && communityPet == null)
             {
                 var selectedSpecies = NormalizeSpecies(selectedMyPet.Species);
+                var selectedGender = NormalizeGender(selectedMyPet.Gender);
 
                 pets = _context.Pets
                     .AsNoTracking()
                     .Where(x => x.UserId != currentUserId)
                     .Where(x => x.Species.Trim().ToLower() == selectedSpecies)
+                    .Where(x =>
+                        !string.IsNullOrEmpty(selectedGender) &&
+                        !string.IsNullOrEmpty(x.Gender) &&
+                        x.Gender.Trim().ToLower() != selectedGender)
                     .OrderByDescending(x => x.Id)
                     .ToList();
             }
@@ -133,6 +144,18 @@ namespace PetSocial.Controllers
                 }
             }
 
+            var canCheckGender = ViewBag.CanSendRequest is bool canSendRequest && canSendRequest;
+
+            if (selectedMyPet != null &&
+                communityPet != null &&
+                canCheckGender &&
+                !OppositeGender(selectedMyPet.Gender, communityPet.Gender))
+            {
+                ViewBag.CanSendRequest = false;
+                ViewBag.MatchStatus =
+                    "Hai thú cưng phải khác giới tính mới có thể gửi lời mời kết nối.";
+            }
+
             return View(pets);
         }
 
@@ -146,10 +169,15 @@ namespace PetSocial.Controllers
             ViewBag.PetName = pet.Name;
 
             var petSpecies = NormalizeSpecies(pet.Species);
+            var petGender = NormalizeGender(pet.Gender);
 
             var suggestions = _context.Pets
                 .Where(x => x.Id != pet.Id)
                 .Where(x => x.Species.Trim().ToLower() == petSpecies)
+                .Where(x =>
+                    !string.IsNullOrEmpty(petGender) &&
+                    !string.IsNullOrEmpty(x.Gender) &&
+                    x.Gender.Trim().ToLower() != petGender)
                 .ToList();
 
             ViewBag.Count = suggestions.Count;
@@ -195,6 +223,14 @@ namespace PetSocial.Controllers
             }
 
             // Kiểm tra tồn tại cả hai chiều cho trạng thái Pending
+            if (!OppositeGender(receiverPet.Gender, senderPet.Gender))
+            {
+                TempData["Error"] =
+                    "Hai thú cưng phải khác giới tính mới có thể gửi lời mời kết nối.";
+
+                return RedirectToAction(nameof(Index), new { communityPetId = receiverPetId, myPetId = senderPet.Id });
+            }
+
             bool existed = _context.PetMatches.Any(x =>
                 ((x.SenderPetId == senderPet.Id && x.ReceiverPetId == receiverPetId) ||
                  (x.SenderPetId == receiverPetId && x.ReceiverPetId == senderPet.Id))
@@ -317,6 +353,15 @@ namespace PetSocial.Controllers
             if (match.Status != "Pending")
                 return RedirectToAction(nameof(Requests));
 
+            if (!SameSpecies(match.SenderPet.Species, match.ReceiverPet.Species) ||
+                !OppositeGender(match.SenderPet.Gender, match.ReceiverPet.Gender))
+            {
+                TempData["Error"] =
+                    "Chỉ có thể chấp nhận ghép đôi khi hai thú cưng cùng loài và khác giới tính.";
+
+                return RedirectToAction(nameof(Requests));
+            }
+
             match.Status = "Accepted";
 
             var notification = new Notification
@@ -422,9 +467,27 @@ namespace PetSocial.Controllers
                 StringComparison.OrdinalIgnoreCase);
         }
 
+        private static bool OppositeGender(string? left, string? right)
+        {
+            var normalizedLeft = NormalizeGender(left);
+            var normalizedRight = NormalizeGender(right);
+
+            return !string.IsNullOrEmpty(normalizedLeft) &&
+                   !string.IsNullOrEmpty(normalizedRight) &&
+                   !string.Equals(
+                       normalizedLeft,
+                       normalizedRight,
+                       StringComparison.OrdinalIgnoreCase);
+        }
+
         private static string NormalizeSpecies(string? species)
         {
             return species?.Trim().ToLowerInvariant() ?? string.Empty;
+        }
+
+        private static string NormalizeGender(string? gender)
+        {
+            return gender?.Trim().ToLowerInvariant() ?? string.Empty;
         }
     }
 }

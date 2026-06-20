@@ -1,0 +1,108 @@
+@model PetSocial.Models.Post
+
+@{
+    ViewData["Title"] = "Chi tiết bài viết";
+}
+
+<style>
+    .content-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; }
+    .post-image { max-height: 460px; object-fit: contain; background: #f8fafc; border-radius: 14px; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">Chi tiết bài viết #@Model.Id</h1>
+        <p class="text-muted mb-0">Kiểm tra nội dung, bình luận và báo cáo liên quan.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Quay lại
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <article class="content-card p-4">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="rounded-circle bg-warning bg-opacity-25 text-warning d-flex align-items-center justify-content-center fw-bold" style="width:48px;height:48px;">
+                    @((Model.User?.FullName ?? "U").Substring(0, 1).ToUpper())
+                </div>
+                <div>
+                    <div class="fw-bold">@(Model.User?.FullName ?? "Người dùng")</div>
+                    <small class="text-muted">@Model.User?.Email · @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+            </div>
+
+            <p class="text-dark lh-lg" style="white-space: pre-line;">@Model.Content</p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Url.Content(Model.ImageUrl)" class="w-100 post-image mt-3" alt="Ảnh bài viết" />
+            }
+
+            <div class="d-flex gap-2 mt-4">
+                <span class="badge bg-light text-dark border">@Model.Likes.Count lượt thích</span>
+                <span class="badge bg-light text-dark border">@Model.Comments.Count bình luận</span>
+                <span class="badge bg-danger">@Model.Reports.Count(r => r.Status == "Pending") báo cáo chờ</span>
+            </div>
+        </article>
+
+        <section class="content-card p-4 mt-4">
+            <h2 class="h5 fw-bold mb-3">Bình luận</h2>
+            @if (!Model.Comments.Any())
+            {
+                <p class="text-muted mb-0">Bài viết chưa có bình luận.</p>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                    {
+                        <div class="border rounded-3 p-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>@(comment.User?.FullName ?? "Thành viên")</strong>
+                                <small class="text-muted">@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                            <p class="mb-0 mt-2">@comment.Content</p>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+
+    <div class="col-lg-4">
+        <section class="content-card p-4 mb-4">
+            <h2 class="h5 fw-bold mb-3">Xử lý</h2>
+            <form asp-action="DeleteViolation" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn btn-danger w-100" onclick="return confirm('Xóa vĩnh viễn bài viết vi phạm này?')">
+                    <i class="fas fa-trash me-2"></i>Xóa bài viết vi phạm
+                </button>
+            </form>
+        </section>
+
+        <section class="content-card p-4">
+            <h2 class="h5 fw-bold mb-3">Báo cáo bài viết</h2>
+            @if (!Model.Reports.Any())
+            {
+                <p class="text-muted mb-0">Chưa có báo cáo nào.</p>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var report in Model.Reports.OrderByDescending(r => r.CreatedAt))
+                    {
+                        <div class="border rounded-3 p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <strong>@(report.Reporter?.FullName ?? "Người báo cáo")</strong>
+                                <span class="badge @(report.Status == "Pending" ? "bg-warning text-dark" : report.Status == "Resolved" ? "bg-success" : "bg-secondary")">@report.Status</span>
+                            </div>
+                            <p class="mb-1 mt-2">@report.Reason</p>
+                            <small class="text-muted">@report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+    </div>
+</div>

@@ -30,6 +30,7 @@ wwwroot\images\Pet\9758fd1f9b964492bb447af0d0f8209f.jpg
 wwwroot\images\Pet\9d81a60974c145ff9fe727fd04493e2b.jpg
 wwwroot\images\Pet\bb23bee6fa9247c0afc7508389488fc8.jpg
 wwwroot\images\Pet\cho-corgi.jpg
+wwwroot\images\Pet\e34386e3a0f54daf819836b035f89fe5.jpg
 wwwroot\images\Pet\e472f8c97d92417f9d1e81c400388dd2.jpg
 wwwroot\images\Pet\eb2b73155ef44ee6a09511fccbac1968.jpg
 wwwroot\images\Pet\meo.jpg

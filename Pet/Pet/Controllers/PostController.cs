@@ -39,10 +39,16 @@ namespace PetSocial.Controllers
             await LoadFollowingIdsAsync();
 
             ViewData["ActiveMenu"] = "Home";
+            ViewBag.PageTitle = "Bài viết mới nhất";
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
             return View(posts);
+        }
+
+        public Task<IActionResult> Community()
+        {
+            return Index();
         }
 
         // ====== THÊM MỚI NGHIỆP VỤ SIDEBAR: BÀI VIẾT CỦA TÔI ======
@@ -66,6 +72,7 @@ namespace PetSocial.Controllers
 
             // Đánh dấu menu kích hoạt trên Sidebar gốc
             ViewData["ActiveMenu"] = "MyPost";
+            ViewBag.PageTitle = "Bài viết của tôi";
             ViewBag.CurrentUserId = userId;
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
@@ -100,6 +107,7 @@ namespace PetSocial.Controllers
             await LoadFollowingIdsAsync();
 
             ViewData["IsFeed"] = true;
+            ViewBag.PageTitle = "Bảng tin đang theo dõi";
             ViewBag.CurrentUserId = user.Id;
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
@@ -328,6 +336,52 @@ namespace PetSocial.Controllers
             return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
         }
 
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Report(int postId, string? reason)
+        {
+            EnsurePostReportsTable();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            if (post == null) return NotFound();
+
+            if (post.UserId == user.Id)
+            {
+                TempData["Error"] = "Bạn không thể báo cáo bài viết của chính mình.";
+                return RedirectToAction(nameof(Details), new { id = postId });
+            }
+
+            var hasPendingReport = await _context.PostReports.AnyAsync(r =>
+                r.PostId == postId &&
+                r.ReporterId == user.Id &&
+                r.Status == "Pending");
+
+            if (!hasPendingReport)
+            {
+                _context.PostReports.Add(new PostReport
+                {
+                    PostId = postId,
+                    ReporterId = user.Id,
+                    Reason = string.IsNullOrWhiteSpace(reason) ? "Nội dung vi phạm" : reason.Trim(),
+                    Status = "Pending",
+                    CreatedAt = DateTime.Now
+                });
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Đã gửi báo cáo bài viết đến quản trị viên.";
+            }
+            else
+            {
+                TempData["Error"] = "Bạn đã báo cáo bài viết này và đang chờ quản trị viên xử lý.";
+            }
+
+            return RedirectToAction(nameof(Details), new { id = postId });
+        }
+
         // 10. BÌNH LUẬN (ĐỒNG BỘ - RELOAD TRANG)
         [HttpPost]
         [Authorize]
@@ -435,6 +489,37 @@ namespace PetSocial.Controllers
                 .ToListAsync();
 
             ViewData["FollowingIds"] = new HashSet<string>(followingIds);
+        }
+
+        private void EnsurePostReportsTable()
+        {
+            _context.Database.ExecuteSqlRaw(@"
+            IF OBJECT_ID(N'[dbo].[PostReports]', N'U') IS NULL
+            BEGIN
+                CREATE TABLE [dbo].[PostReports]
+                (
+                    [Id] int IDENTITY(1,1) NOT NULL CONSTRAINT [PK_PostReports] PRIMARY KEY,
+                    [PostId] int NOT NULL,
+                    [ReporterId] nvarchar(450) NOT NULL,
+                    [Reason] nvarchar(300) NOT NULL,
+                    [Status] nvarchar(30) NOT NULL,
+                    [CreatedAt] datetime2 NOT NULL,
+                    [ReviewedAt] datetime2 NULL,
+                    [ReviewedByAdminId] nvarchar(max) NULL,
+                    [AdminNote] nvarchar(500) NULL,
+                    CONSTRAINT [FK_PostReports_Posts_PostId]
+                        FOREIGN KEY ([PostId]) REFERENCES [dbo].[Posts]([Id]) ON DELETE CASCADE,
+                    CONSTRAINT [FK_PostReports_Users_ReporterId]
+                        FOREIGN KEY ([ReporterId]) REFERENCES [dbo].[Users]([Id]) ON DELETE NO ACTION
+                );
+
+                CREATE INDEX [IX_PostReports_PostId]
+                    ON [dbo].[PostReports]([PostId]);
+
+                CREATE INDEX [IX_PostReports_ReporterId]
+                    ON [dbo].[PostReports]([ReporterId]);
+            END;
+            ");
         }
     }
 }

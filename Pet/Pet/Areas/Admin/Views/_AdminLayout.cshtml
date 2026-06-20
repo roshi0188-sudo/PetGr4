@@ -88,6 +88,9 @@
     </style>
 </head>
 <body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
     <div class="dashboard-wrapper">
         <nav class="admin-sidebar">
             <div class="sidebar-brand">
@@ -97,10 +100,13 @@
 
             <ul class="nav-menu">
                 <li class="nav-menu-item">
-                    <a class="nav-menu-link active" href="/Admin/Dashboard"><i class="fas fa-gauge me-3"></i>Dashboard</a>
+                    <a class="nav-menu-link @(currentController == "Dashboard" ? "active" : "")" href="/Admin/Dashboard"><i class="fas fa-gauge me-3"></i>Dashboard</a>
                 </li>
                 <li class="nav-menu-item">
                     <a class="nav-menu-link" href="#"><i class="fas fa-users me-3"></i>User Management</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a class="nav-menu-link @(currentController == "Posts" ? "active" : "")" asp-area="Admin" asp-controller="Posts" asp-action="Index"><i class="fas fa-file-alt me-3"></i>Post Management</a>
                 </li>
                 <li class="nav-menu-item">
                     <a class="nav-menu-link" asp-area="" asp-controller="Pet" asp-action="Index"><i class="fas fa-paw me-3"></i>Pet Profiles</a>

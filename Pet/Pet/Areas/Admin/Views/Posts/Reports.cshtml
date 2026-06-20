@@ -1,0 +1,104 @@
+@model PetSocial.ViewModels.AdminPostReportsVM
+
+@{
+    ViewData["Title"] = "Quản lý báo cáo bài viết";
+}
+
+<style>
+    .content-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; }
+    .report-tabs .btn { font-weight: 700; }
+    .report-content { max-width: 520px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">Quản lý báo cáo bài viết</h1>
+        <p class="text-muted mb-0">Xem và xử lý các báo cáo từ người dùng.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-list me-2"></i>Danh sách bài viết
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="report-tabs d-flex gap-2 mb-4">
+    <a asp-action="Reports" asp-route-status="Pending" class="btn @(Model.Status == "Pending" ? "btn-warning" : "btn-outline-warning")">
+        Chờ xử lý (@Model.PendingCount)
+    </a>
+    <a asp-action="Reports" asp-route-status="Resolved" class="btn @(Model.Status == "Resolved" ? "btn-success" : "btn-outline-success")">
+        Đã xử lý (@Model.ResolvedCount)
+    </a>
+    <a asp-action="Reports" asp-route-status="Dismissed" class="btn @(Model.Status == "Dismissed" ? "btn-secondary" : "btn-outline-secondary")">
+        Bỏ qua (@Model.DismissedCount)
+    </a>
+</div>
+
+<div class="content-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-4">Bài viết</th>
+                    <th>Người báo cáo</th>
+                    <th>Lý do</th>
+                    <th>Thời gian</th>
+                    <th class="text-end pe-4">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Reports.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-5">Không có báo cáo trong trạng thái này.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var report in Model.Reports)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-semibold report-content">@report.Post.Content</div>
+                                <small class="text-muted">Bởi @(report.Post.User?.FullName ?? "Người dùng")</small>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">@(report.Reporter?.FullName ?? "Người dùng")</div>
+                                <small class="text-muted">@report.Reporter?.Email</small>
+                            </td>
+                            <td>@report.Reason</td>
+                            <td class="text-muted">@report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-end pe-4">
+                                <a asp-action="Details" asp-route-id="@report.PostId" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (report.Status == "Pending")
+                                {
+                                    <form asp-action="UpdateReportStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@report.Id" />
+                                        <input type="hidden" name="status" value="Resolved" />
+                                        <button class="btn btn-sm btn-outline-success" title="Đánh dấu đã xử lý">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="UpdateReportStatus" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@report.Id" />
+                                        <input type="hidden" name="status" value="Dismissed" />
+                                        <button class="btn btn-sm btn-outline-secondary" title="Bỏ qua">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
