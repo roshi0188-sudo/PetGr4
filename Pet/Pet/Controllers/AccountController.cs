@@ -51,9 +51,11 @@ namespace PetSocial.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Tự động đăng nhập sau khi đăng ký thành công
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToHomeByRole();
+                    await _userManager.AddToRoleAsync(user, "User");
+
+                    TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+
+                    return RedirectToAction("Login", "Account");
                 }
 
                 foreach (var error in result.Errors)
@@ -113,6 +115,72 @@ namespace PetSocial.Controllers
                 return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
 
             return RedirectToAction("Index", "Post");
+        }
+        //YÊU CẦU QUÊN MẬT KHẨU
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {            
+                TempData["SuccessMessage"] = "Nếu email chính xác, một liên kết đặt lại mật khẩu đã được gửi.";
+                return RedirectToAction(nameof(ForgotPassword));
+            }
+
+            // Tạo Token xác thực đặt lại mật khẩu của Identity Core
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Tạo đường dẫn link khôi phục mật khẩu thật trỏ về hàm ResetPassword bên dưới
+            var callbackUrl = Url.Action("ResetPassword", "Account",
+                new { token = token, email = user.Email }, Request.Scheme);
+
+            ViewBag.ResetLink = callbackUrl;
+
+            TempData["SuccessMessage"] = "Hệ thống đã khởi tạo link mã hóa khôi phục mật khẩu thành công!";
+            return View();
+        }
+
+        //ĐẶT LẠI MẬT KHẨU MỚI
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null) return BadRequest("Yêu cầu không hợp lệ.");
+
+            var model = new ResetPasswordVM { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null) return RedirectToAction(nameof(Login));
+
+            // Thực thi đổi mật khẩu mới thông qua Token bảo mật của Identity Core
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Đổi mật khẩu thành công! Hãy đăng nhập bằng mật khẩu mới.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
         }
     }
 }

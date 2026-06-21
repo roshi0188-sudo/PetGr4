@@ -2,60 +2,99 @@
     var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
     var action = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
     var area = (ViewContext.RouteData.Values["area"]?.ToString() ?? string.Empty).ToLowerInvariant();
+
     var isHomePage = string.IsNullOrWhiteSpace(area) && controller == "home" && action == "index";
 }
 
-<footer class="app-footer @(isHomePage ? "app-footer-full" : "app-footer-compact")">
-    <div class="container-fluid app-footer-inner">
-        <div class="app-footer-brand-block">
-            <a class="app-footer-logo" asp-controller="Home" asp-action="Index">
-                <span class="app-brand-icon">
-                    <img src="~/images/logo.jpg" alt="PetSocial" />
-                </span>
-                <span>
-                    <strong>PetSocial</strong>
-                    <small>Cộng đồng yêu thú cưng</small>
-                </span>
-            </a>
-            <p class="app-footer-slogan">Kết nối, chia sẻ khoảnh khắc và quản lý hồ sơ thú cưng của bạn theo cách thân thiện hơn.</p>
-            <div class="app-footer-socials">
-                <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
-                <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
-                <a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
-            </div>
-        </div>
+<footer style="background-color: #ffffff; border-top: 1px solid #f1f5f9; width: 100%; font-family: 'Plus Jakarta Sans', sans-serif;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: @(isHomePage ? "64px 24px 32px 24px" : "28px 24px");">
 
-        @if (isHomePage)
+        <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; align-items: flex-start; text-align: left;">
+
+            <div style="flex: 1; @(isHomePage ? "max-width: 320px; display: block;" : "display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%; gap: 24px;")">
+
+                <div style="@(isHomePage ? "" : "flex: 0 0 auto;")">
+                    <a asp-controller="Home" asp-action="Index" style="display: flex; align-items: center; gap: 14px; text-decoration: none;">
+                        <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.08);">
+                            <img src="~/images/logo.jpg" alt="PetSocial" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </div>
+                        <div>
+                            <strong style="font-size: 1.15rem; font-weight: 800; color: #0f172a; display: block; letter-spacing: -0.5px;">PetSocial</strong>
+                            <small style="font-size: 0.7rem; font-weight: 700; color: #ff6b00; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-top: 2px;">CỘNG ĐỒNG THÚ CƯNG</small>
+                        </div>
+                    </a>
+                </div>
+
+                <p style="font-size: 0.8rem; color: #64748b; line-height: 1.6; font-weight: 500; margin: 0; @(isHomePage ? "margin-top: 16px; margin-bottom: 20px;" : "flex: 1; min-width: 280px; max-width: 600px; padding-left: 12px; padding-right: 12px;")">
+                    Kết nối, chia sẻ khoảnh khắc và quản lý hồ sơ thú cưng của bạn theo cách thân thiện hơn.
+                </p>
+
+                <div style="display: flex; align-items: center; gap: 10px; @(isHomePage ? "" : "flex: 0 0 auto;")">
+
+                    <a href="#" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fff0e5; display: flex; align-items: center; justify-content: center; text-decoration: none;" aria-label="Facebook">
+                        <svg style="width: 14px; height: 14px; fill: #ff6b00;" viewBox="0 0 24 24">
+                            <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" />
+                        </svg>
+                    </a>
+
+                    <a href="#" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fff0e5; display: flex; align-items: center; justify-content: center; text-decoration: none;" aria-label="Instagram">
+                        <svg style="width: 14px; height: 14px; fill: #ff6b00;" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                        </svg>
+                    </a>
+
+                    <a href="#" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fff0e5; display: flex; align-items: center; justify-content: center; text-decoration: none;" aria-label="Twitter">
+                        <svg style="width: 12px; height: 12px; fill: #ff6b00;" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                    </a>
+
+                </div>
+
+            </div> @if (isHomePage)
+            {
+                <div style="flex: 1; min-width: 160px; max-width: 200px;">
+                    <h3 style="font-size: 0.75rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border: none; padding: 0;">Liên kết nhanh</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a asp-controller="Home" asp-action="Index" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Trang chủ</a></li>
+                        <li><a asp-controller="Pet" asp-action="Index" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Hồ sơ thú cưng</a></li>
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Pet Dating</a></li>
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Tin nhắn</a></li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1; min-width: 160px; max-width: 200px;">
+                    <h3 style="font-size: 0.75rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border: none; padding: 0;">Tài nguyên</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Trung tâm hỗ trợ</a></li>
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Quy định cộng đồng</a></li>
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Chính sách riêng tư</a></li>
+                        <li><a href="#" style="font-size: 0.8rem; color: #64748b; font-weight: 600; text-decoration: none;">Điều khoản dịch vụ</a></li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1; min-width: 180px; max-width: 240px;">
+                    <h3 style="font-size: 0.75rem; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; border: none; padding: 0;">Liên hệ</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px;">
+                        <li style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: #64748b; font-weight: 600;">
+                            <i class="fa fa-envelope" style="color: #94a3b8; font-size: 13px; width: 16px;"></i>
+                            <a href="mailto:hello@petsocial.com" style="color: #64748b; text-decoration: none;">hello@petsocial.com</a>
+                        </li>
+                        <li style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: #64748b; font-weight: 600;">
+                            <i class="fa fa-phone" style="color: #94a3b8; font-size: 13px; width: 16px;"></i>
+                            <a href="tel:0900000000" style="color: #64748b; text-decoration: none;">0900 000 000</a>
+                        </li>
+                    </ul>
+                </div>
+            }
+
+        </div> @if (isHomePage)
         {
-            <div class="app-footer-column">
-                <h3>Liên kết nhanh</h3>
-                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
-                <a asp-controller="Pet" asp-action="Index">Hồ sơ thú cưng</a>
-                <a href="#">Pet Dating</a>
-                <a href="#">Tin nhắn</a>
-            </div>
-
-            <div class="app-footer-column">
-                <h3>Tài nguyên</h3>
-                <a href="#">Trung tâm hỗ trợ</a>
-                <a href="#">Quy định cộng đồng</a>
-                <a href="#">Chính sách riêng tư</a>
-                <a href="#">Điều khoản dịch vụ</a>
-            </div>
-
-            <div class="app-footer-column app-footer-contact">
-                <h3>Liên hệ</h3>
-                <a href="mailto:hello@petsocial.com">hello@petsocial.com</a>
-                <a href="tel:0900000000">0900 000 000</a>
+            <div style="border-top: 1px solid #f1f5f9; margin-top: 40px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 600; color: #94a3b8; gap: 12px;">
+                <span>© 2026 <span style="color: #475569; font-weight: 700;">PetSocial</span>. All rights reserved.</span>
+                <span>Made for pet lovers.</span>
             </div>
         }
-    </div>
 
-    @if (isHomePage)
-    {
-        <div class="container-fluid app-footer-bottom">
-            <span>© 2026 PetSocial. All rights reserved.</span>
-            <span>Made for pet lovers.</span>
-        </div>
-    }
+    </div>
 </footer>
