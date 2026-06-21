@@ -2,107 +2,338 @@
 
 @{
     ViewData["Title"] = "Chi tiết bài viết";
+    var authorName = Model.User?.FullName ?? "Người dùng";
+    var initial = string.IsNullOrWhiteSpace(authorName) ? "U" : authorName.Substring(0, 1).ToUpper();
+    var pendingReports = Model.Reports.Count(r => r.Status == "Pending");
 }
 
 <style>
-    .content-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; }
-    .post-image { max-height: 460px; object-fit: contain; background: #f8fafc; border-radius: 14px; }
+    .admin-detail-page {
+        max-width: 1120px;
+        margin: 0 auto;
+    }
+
+    .admin-detail-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 18px;
+    }
+
+    .admin-detail-top h1 {
+        margin: 0 0 6px;
+        color: #0f172a;
+        font-size: 1.65rem;
+        font-weight: 850;
+    }
+
+    .admin-detail-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 18px;
+        align-items: start;
+    }
+
+    .admin-post-card,
+    .admin-side-card {
+        background: #fff;
+        border: 1px solid #eef1f5;
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(21, 28, 39, .03);
+    }
+
+    .admin-post-card {
+        overflow: hidden;
+    }
+
+    .admin-post-head,
+    .admin-post-body,
+    .admin-post-foot,
+    .admin-comments {
+        padding: 20px;
+    }
+
+    .admin-post-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .admin-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .admin-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex: 0 0 auto;
+        background: #fff3ea;
+        color: #ff7e21;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 850;
+        border: 2px solid #fff0e5;
+    }
+
+    .admin-author strong {
+        display: block;
+        color: #0f172a;
+        font-weight: 850;
+    }
+
+    .admin-author small,
+    .admin-muted {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .admin-post-content {
+        color: #1f2937;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
+    .admin-post-image {
+        display: block;
+        width: 100%;
+        max-height: 620px;
+        object-fit: contain;
+        border-radius: 20px;
+        margin-top: 16px;
+        background: #f8fafc;
+        border: 1px solid #eef1f5;
+    }
+
+    .admin-post-foot {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        border-top: 1px solid #f1f5f9;
+        color: #64748b;
+        font-size: .86rem;
+        font-weight: 850;
+    }
+
+    .admin-comments {
+        border-top: 1px solid #f1f5f9;
+        background: #fbfdff;
+    }
+
+    .admin-comment {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .admin-comment-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #fff3ea;
+        color: #ff7e21;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .78rem;
+        font-weight: 850;
+        flex: 0 0 auto;
+    }
+
+    .admin-comment-bubble {
+        flex: 1;
+        border: 1px solid #eef1f5;
+        border-radius: 18px;
+        padding: 12px 14px;
+        background: #fff;
+    }
+
+    .admin-side-card {
+        padding: 18px;
+        margin-bottom: 18px;
+    }
+
+    .admin-side-card h2 {
+        margin: 0 0 14px;
+        color: #0f172a;
+        font-size: 1rem;
+        font-weight: 850;
+    }
+
+    .admin-report-item {
+        border: 1px solid #eef1f5;
+        border-radius: 18px;
+        padding: 14px;
+        margin-top: 12px;
+        background: #fff;
+    }
+
+    .admin-status {
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: .75rem;
+        font-weight: 850;
+    }
+
+    .admin-status-pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .admin-status-resolved {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .admin-status-dismissed {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    @@media (max-width: 991.98px) {
+        .admin-detail-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .admin-detail-top,
+        .admin-post-head {
+            align-items: stretch;
+            flex-direction: column;
+        }
+    }
 </style>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 fw-bold mb-1">Chi tiết bài viết #@Model.Id</h1>
-        <p class="text-muted mb-0">Kiểm tra nội dung, bình luận và báo cáo liên quan.</p>
+<div class="admin-detail-page">
+    <div class="admin-detail-top">
+        <div>
+            <h1>Chi tiết bài viết #@Model.Id</h1>
+            <p class="admin-muted mb-0">Kiểm tra nội dung, bình luận và báo cáo liên quan.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+            <i class="fa-solid fa-arrow-left me-2"></i>Quay lại
+        </a>
     </div>
-    <a asp-action="Index" class="btn btn-outline-secondary">
-        <i class="fas fa-arrow-left me-2"></i>Quay lại
-    </a>
-</div>
 
-<div class="row g-4">
-    <div class="col-lg-8">
-        <article class="content-card p-4">
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <div class="rounded-circle bg-warning bg-opacity-25 text-warning d-flex align-items-center justify-content-center fw-bold" style="width:48px;height:48px;">
-                    @((Model.User?.FullName ?? "U").Substring(0, 1).ToUpper())
-                </div>
-                <div>
-                    <div class="fw-bold">@(Model.User?.FullName ?? "Người dùng")</div>
-                    <small class="text-muted">@Model.User?.Email · @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                </div>
-            </div>
-
-            <p class="text-dark lh-lg" style="white-space: pre-line;">@Model.Content</p>
-
-            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
-            {
-                <img src="@Url.Content(Model.ImageUrl)" class="w-100 post-image mt-3" alt="Ảnh bài viết" />
-            }
-
-            <div class="d-flex gap-2 mt-4">
-                <span class="badge bg-light text-dark border">@Model.Likes.Count lượt thích</span>
-                <span class="badge bg-light text-dark border">@Model.Comments.Count bình luận</span>
-                <span class="badge bg-danger">@Model.Reports.Count(r => r.Status == "Pending") báo cáo chờ</span>
-            </div>
-        </article>
-
-        <section class="content-card p-4 mt-4">
-            <h2 class="h5 fw-bold mb-3">Bình luận</h2>
-            @if (!Model.Comments.Any())
-            {
-                <p class="text-muted mb-0">Bài viết chưa có bình luận.</p>
-            }
-            else
-            {
-                <div class="d-flex flex-column gap-3">
-                    @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
-                    {
-                        <div class="border rounded-3 p-3">
-                            <div class="d-flex justify-content-between">
-                                <strong>@(comment.User?.FullName ?? "Thành viên")</strong>
-                                <small class="text-muted">@comment.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
-                            </div>
-                            <p class="mb-0 mt-2">@comment.Content</p>
+    <div class="admin-detail-layout">
+        <div>
+            <article class="admin-post-card">
+                <header class="admin-post-head">
+                    <div class="admin-author">
+                        @if (!string.IsNullOrWhiteSpace(Model.User?.AvatarUrl))
+                        {
+                            <img src="@Model.User.AvatarUrl" class="admin-avatar" alt="Avatar" />
+                        }
+                        else
+                        {
+                            <span class="admin-avatar">@initial</span>
+                        }
+                        <div>
+                            <strong>@authorName</strong>
+                            <small><i class="fa-regular fa-clock me-1"></i>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm") · @Model.User?.Email</small>
                         </div>
+                    </div>
+
+                    @if (pendingReports > 0)
+                    {
+                        <span class="badge rounded-pill bg-danger-subtle text-danger px-3 py-2">
+                            @pendingReports báo cáo chờ
+                        </span>
+                    }
+                </header>
+
+                <div class="admin-post-body">
+                    <p class="admin-post-content mb-0">@Model.Content</p>
+                    @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                    {
+                        <img src="@Url.Content(Model.ImageUrl)" class="admin-post-image" alt="Ảnh bài viết" />
                     }
                 </div>
-            }
-        </section>
-    </div>
 
-    <div class="col-lg-4">
-        <section class="content-card p-4 mb-4">
-            <h2 class="h5 fw-bold mb-3">Xử lý</h2>
-            <form asp-action="DeleteViolation" asp-route-id="@Model.Id" method="post">
-                @Html.AntiForgeryToken()
-                <button class="btn btn-danger w-100" onclick="return confirm('Xóa vĩnh viễn bài viết vi phạm này?')">
-                    <i class="fas fa-trash me-2"></i>Xóa bài viết vi phạm
-                </button>
-            </form>
-        </section>
+                <footer class="admin-post-foot">
+                    <span><i class="fa-regular fa-heart me-1"></i>@Model.Likes.Count lượt thích</span>
+                    <span><i class="fa-regular fa-comment me-1"></i>@Model.Comments.Count bình luận</span>
+                    <span><i class="fa-regular fa-flag me-1"></i>@Model.Reports.Count báo cáo</span>
+                </footer>
 
-        <section class="content-card p-4">
-            <h2 class="h5 fw-bold mb-3">Báo cáo bài viết</h2>
-            @if (!Model.Reports.Any())
-            {
-                <p class="text-muted mb-0">Chưa có báo cáo nào.</p>
-            }
-            else
-            {
-                <div class="d-flex flex-column gap-3">
+                <section class="admin-comments">
+                    <h2 class="h6 fw-bold mb-3">Bình luận</h2>
+                    @if (!Model.Comments.Any())
+                    {
+                        <p class="admin-muted mb-0">Bài viết chưa có bình luận.</p>
+                    }
+                    else
+                    {
+                        @foreach (var comment in Model.Comments.OrderBy(c => c.CreatedAt))
+                        {
+                            var commentName = comment.User?.FullName ?? "Thành viên";
+                            var commentInitial = string.IsNullOrWhiteSpace(commentName) ? "U" : commentName.Substring(0, 1).ToUpper();
+                            <div class="admin-comment">
+                                @if (!string.IsNullOrWhiteSpace(comment.User?.AvatarUrl))
+                                {
+                                    <img src="@comment.User.AvatarUrl" class="admin-comment-avatar" alt="Avatar" />
+                                }
+                                else
+                                {
+                                    <span class="admin-comment-avatar">@commentInitial</span>
+                                }
+                                <div class="admin-comment-bubble">
+                                    <div class="d-flex justify-content-between gap-3 mb-1">
+                                        <strong class="small">@commentName</strong>
+                                        <span class="small text-muted">@comment.CreatedAt.ToString("dd/MM HH:mm")</span>
+                                    </div>
+                                    <p class="mb-0 small">@comment.Content</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                </section>
+            </article>
+        </div>
+
+        <aside>
+            <section class="admin-side-card">
+                <h2>Xử lý</h2>
+                <form asp-action="DeleteViolation" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-danger w-100 fw-bold rounded-pill" onclick="return confirm('Xóa vĩnh viễn bài viết vi phạm này?')">
+                        <i class="fa-solid fa-trash me-2"></i>Xóa bài viết vi phạm
+                    </button>
+                </form>
+            </section>
+
+            <section class="admin-side-card">
+                <h2>Báo cáo bài viết</h2>
+                @if (!Model.Reports.Any())
+                {
+                    <p class="admin-muted mb-0">Chưa có báo cáo nào.</p>
+                }
+                else
+                {
                     @foreach (var report in Model.Reports.OrderByDescending(r => r.CreatedAt))
                     {
-                        <div class="border rounded-3 p-3">
-                            <div class="d-flex justify-content-between align-items-center">
+                        var statusClass = report.Status == "Pending" ? "admin-status-pending" : report.Status == "Resolved" ? "admin-status-resolved" : "admin-status-dismissed";
+                        <div class="admin-report-item">
+                            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
                                 <strong>@(report.Reporter?.FullName ?? "Người báo cáo")</strong>
-                                <span class="badge @(report.Status == "Pending" ? "bg-warning text-dark" : report.Status == "Resolved" ? "bg-success" : "bg-secondary")">@report.Status</span>
+                                <span class="admin-status @statusClass">@report.Status</span>
                             </div>
-                            <p class="mb-1 mt-2">@report.Reason</p>
+                            <p class="mb-2 small">@report.Reason</p>
                             <small class="text-muted">@report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
                         </div>
                     }
-                </div>
-            }
-        </section>
+                }
+            </section>
+        </aside>
     </div>
 </div>

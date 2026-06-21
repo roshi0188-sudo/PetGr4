@@ -13,19 +13,21 @@
             <div>
                 <span class="pet-create-eyebrow">Cập nhật hồ sơ</span>
                 <h1>Sửa hồ sơ thú cưng</h1>
-                <p>Thay đổi thông tin và bấm lưu để cập nhật vào database.</p>
+                <p>Thay đổi thông tin và bấm lưu để cập nhật hồ sơ thú cưng.</p>
             </div>
             <a asp-action="Details" asp-route-id="@Model.Id" class="pet-create-back"><i class="fa fa-arrow-left"></i> Quay lại</a>
         </div>
 
         <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="pet-create-form">
+            @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
+
             <div class="pet-create-upload">
                 <div class="pet-edit-current-photo">
                     <img id="petImagePreview" src="@imageUrl" alt="Ảnh của @Model.Name" />
                 </div>
                 <h2>Ảnh thú cưng</h2>
-                <p>Giữ ảnh hiện tại hoặc tải ảnh mới rõ mặt bé hơn.</p>
+                <p>Giữ ảnh hiện tại hoặc tải ảnh mới rõ mặt hơn.</p>
                 <label class="pet-upload-button">
                     <i class="fa fa-cloud-upload"></i>
                     Đổi ảnh
@@ -37,22 +39,67 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <div class="pet-create-grid">
-                    <div class="pet-create-field"><label asp-for="Name">Tên thú cưng</label><input asp-for="Name" /><span asp-validation-for="Name" class="text-danger small"></span></div>
-                    <div class="pet-create-field"><label asp-for="Species">Loài thú cưng</label><input asp-for="Species" /></div>
-                    <div class="pet-create-field"><label asp-for="Breed">Giống thú cưng</label><input asp-for="Breed" /></div>
-                    <div class="pet-create-field"><label asp-for="Age">Tuổi</label><input asp-for="Age" type="number" min="0" /></div>
+                    <div class="pet-create-field">
+                        <label asp-for="Name">Tên thú cưng</label>
+                        <input asp-for="Name" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="Species">Loại thú cưng</label>
+                        <input asp-for="Species" placeholder="Chó, Mèo..." />
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="Breed">Giống thú cưng</label>
+                        <input asp-for="Breed" placeholder="Ví dụ: Poodle, Mèo Anh lông ngắn..." />
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="Age">Tuổi</label>
+                        <input asp-for="Age" type="number" min="0" />
+                    </div>
+
                     <div class="pet-create-field">
                         <label asp-for="Gender">Giới tính</label>
-                        <select asp-for="Gender"><option value="">Chọn giới tính</option><option>Đực</option><option>Cái</option></select>
+                        <select asp-for="Gender">
+                            <option value="">Chọn giới tính</option>
+                            <option>Đực</option>
+                            <option>Cái</option>
+                        </select>
                     </div>
-                    <div class="pet-create-field"><label asp-for="FurColor">Màu lông</label><input asp-for="FurColor" /></div>
-                    <div class="pet-create-field"><label for="Weight">Cân nặng</label><input id="Weight" name="Weight" type="text" inputmode="decimal" value="@Model.Weight?.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)" /></div>
-                    <div class="pet-create-field"><label asp-for="Personality">Tính cách</label><input asp-for="Personality" /></div>
-                    <div class="pet-create-field"><label asp-for="Hobbies">Sở thích</label><input asp-for="Hobbies" /></div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="FurColor">Màu lông</label>
+                        <input asp-for="FurColor" placeholder="Ví dụ: trắng, vàng, xám..." />
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label for="Weight">Cân nặng</label>
+                        <input id="Weight"
+                               name="Weight"
+                               type="text"
+                               inputmode="decimal"
+                               value="@Model.Weight?.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                               placeholder="Ví dụ: 4.5 kg" />
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="Personality">Tính cách</label>
+                        <input asp-for="Personality" placeholder="Năng động, dễ thương, thân thiện..." />
+                    </div>
+
+                    <div class="pet-create-field">
+                        <label asp-for="Hobbies">Sở thích</label>
+                        <input asp-for="Hobbies" placeholder="Chạy bộ, chơi bóng, ngủ nắng..." />
+                    </div>
+
                     <div class="pet-create-field pet-location-field">
                         <label asp-for="Location">Vị trí/khu vực</label>
                         <div class="pet-location-control">
-                            <input asp-for="Location" data-location-input placeholder="Ví dụ: Bình Thạnh, TP.HCM hoặc tọa độ hiện tại" />
+                            <input asp-for="Location"
+                                   data-location-input
+                                   placeholder="Ví dụ: 254 Dương Đình Hội, Tăng Nhơn Phú, Thủ Đức, TP.HCM" />
                             <button type="button" class="pet-use-location" data-use-current-location>
                                 <i class="fa fa-location-arrow"></i>
                                 Dùng vị trí hiện tại
@@ -63,7 +110,11 @@
                             <iframe data-location-map-frame title="Bản đồ vị trí thú cưng" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
                     </div>
-                    <div class="pet-create-field full"><label asp-for="Description">Mô tả thêm</label><textarea asp-for="Description" rows="5"></textarea></div>
+
+                    <div class="pet-create-field full">
+                        <label asp-for="Description">Mô tả thêm</label>
+                        <textarea asp-for="Description" rows="5" placeholder="Mô tả thói quen, sức khỏe hoặc điều cần lưu ý..."></textarea>
+                    </div>
                 </div>
 
                 <div class="pet-create-note"><i class="fa fa-heart"></i> Lưu thay đổi để thông tin mới hiển thị trên trang danh sách và trang chi tiết.</div>
@@ -79,93 +130,90 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        document.querySelector('[data-preview-target="petImagePreview"]')?.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            const preview = document.getElementById(this.dataset.previewTarget);
-            if (!file || !preview) return;
-            preview.src = URL.createObjectURL(file);
-            preview.onload = () => URL.revokeObjectURL(preview.src);
-        });
+        (() => {
+            const locationInput = document.querySelector('[data-location-input]');
+            const locationStatus = document.querySelector('[data-location-status]');
+            const locationMap = document.querySelector('[data-location-map]');
+            const locationFrame = document.querySelector('[data-location-map-frame]');
 
-        document.querySelector('[data-use-current-location-old]')?.addEventListener('click', function () {
-            const input = document.querySelector('[data-location-input]');
-            const status = document.querySelector('[data-location-status]');
-            if (!navigator.geolocation) {
-                if (status) status.textContent = 'Trình duyệt không hỗ trợ định vị.';
-                return;
+            const normalizeMapQuery = value => {
+                const text = (value || '').trim();
+                if (!text) return '';
+                return /việt nam|viet nam/i.test(text) ? text : `${text}, Việt Nam`;
+            };
+
+            const showAddressMap = value => {
+                const query = normalizeMapQuery(value);
+                if (!query || !locationMap || !locationFrame) return;
+                locationFrame.src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=17&output=embed`;
+                locationMap.hidden = false;
+            };
+
+            if (locationInput?.value) {
+                showAddressMap(locationInput.value);
             }
 
-            this.disabled = true;
-            if (status) status.textContent = 'Đang lấy vị trí hiện tại...';
+            let mapTimer;
+            locationInput?.addEventListener('input', () => {
+                window.clearTimeout(mapTimer);
+                mapTimer = window.setTimeout(() => showAddressMap(locationInput.value), 650);
+            });
 
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lng = position.coords.longitude.toFixed(6);
-                    if (input) input.value = `${lat}, ${lng}`;
-                    if (status) status.textContent = 'Đã lấy vị trí hiện tại.';
-                    this.disabled = false;
-                },
-                () => {
-                    if (status) status.textContent = 'Không thể lấy vị trí. Hãy cho phép quyền định vị hoặc nhập thủ công.';
-                    this.disabled = false;
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        });
+            document.querySelector('[data-preview-target="petImagePreview"]')?.addEventListener('change', function () {
+                const file = this.files && this.files[0];
+                const preview = document.getElementById(this.dataset.previewTarget);
+                if (!file || !preview) return;
+                preview.src = URL.createObjectURL(file);
+                preview.onload = () => URL.revokeObjectURL(preview.src);
+            });
 
-        const showLocationMap = (lat, lng) => {
-            const map = document.querySelector('[data-location-map]');
-            const frame = document.querySelector('[data-location-map-frame]');
-            if (!map || !frame) return;
-            frame.src = `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}&output=embed`;
-            map.hidden = false;
-        };
+            const getAddressFromCoords = async (lat, lng) => {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=vi`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Không thể lấy địa chỉ');
+                const data = await response.json();
+                return data.display_name || '';
+            };
 
-        const getAddressFromCoords = async (lat, lng) => {
-            const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&accept-language=vi`;
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Không thể lấy địa chỉ');
-            const data = await response.json();
-            return data.display_name || '';
-        };
+            document.querySelector('[data-use-current-location]')?.addEventListener('click', async function () {
+                if (!navigator.geolocation) {
+                    if (locationStatus) locationStatus.textContent = 'Trình duyệt không hỗ trợ định vị.';
+                    return;
+                }
 
-        document.querySelector('[data-use-current-location]')?.addEventListener('click', async function () {
-            const input = document.querySelector('[data-location-input]');
-            const status = document.querySelector('[data-location-status]');
+                this.disabled = true;
+                if (locationStatus) locationStatus.textContent = 'Đang lấy vị trí hiện tại...';
 
-            if (!navigator.geolocation) {
-                if (status) status.textContent = 'Trình duyệt không hỗ trợ định vị.';
-                return;
-            }
+                navigator.geolocation.getCurrentPosition(
+                    async position => {
+                        const lat = position.coords.latitude.toFixed(6);
+                        const lng = position.coords.longitude.toFixed(6);
+                        const coords = `${lat}, ${lng}`;
 
-            this.disabled = true;
-            if (status) status.textContent = 'Đang lấy vị trí hiện tại...';
+                        if (locationFrame && locationMap) {
+                            locationFrame.src = `https://www.google.com/maps?q=${encodeURIComponent(coords)}&z=18&output=embed`;
+                            locationMap.hidden = false;
+                        }
 
-            navigator.geolocation.getCurrentPosition(
-                async position => {
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lng = position.coords.longitude.toFixed(6);
-                    showLocationMap(lat, lng);
+                        try {
+                            if (locationStatus) locationStatus.textContent = 'Đang chuyển tọa độ thành địa chỉ...';
+                            const address = await getAddressFromCoords(lat, lng);
+                            if (locationInput) locationInput.value = address || coords;
+                            if (locationStatus) locationStatus.textContent = address ? 'Đã lấy địa chỉ hiện tại và hiển thị bản đồ.' : 'Đã lấy tọa độ hiện tại và hiển thị bản đồ.';
+                        } catch {
+                            if (locationInput) locationInput.value = coords;
+                            if (locationStatus) locationStatus.textContent = 'Đã hiển thị bản đồ theo tọa độ. Bạn có thể chỉnh lại địa chỉ thủ công nếu cần.';
+                        }
 
-                    try {
-                        if (status) status.textContent = 'Đang chuyển tọa độ thành địa chỉ...';
-                        const address = await getAddressFromCoords(lat, lng);
-                        if (input) input.value = address || `${lat}, ${lng}`;
-                        if (status) status.textContent = address ? 'Đã lấy địa chỉ hiện tại và hiển thị bản đồ.' : 'Đã lấy tọa độ hiện tại và hiển thị bản đồ.';
-                    } catch {
-                        if (input) input.value = `${lat}, ${lng}`;
-                        if (status) status.textContent = 'Đã hiển thị bản đồ. Không thể đổi thành địa chỉ, bạn có thể nhập lại thủ công.';
-                    }
-
-                    this.disabled = false;
-                },
-                () => {
-                    if (status) status.textContent = 'Không thể lấy vị trí. Hãy cho phép quyền định vị hoặc nhập thủ công.';
-                    this.disabled = false;
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        });
+                        this.disabled = false;
+                    },
+                    () => {
+                        if (locationStatus) locationStatus.textContent = 'Không thể lấy vị trí. Hãy cho phép quyền định vị hoặc nhập thủ công.';
+                        this.disabled = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                );
+            });
+        })();
     </script>
 }

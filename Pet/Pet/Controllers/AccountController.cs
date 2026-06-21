@@ -27,7 +27,7 @@ namespace PetSocial.Controllers
         public IActionResult Register()
         {
             // Nếu đã đăng nhập thì đá về trang chủ
-            if (User.Identity!.IsAuthenticated) return RedirectToAction("Index", "Home");
+            if (User.Identity!.IsAuthenticated) return RedirectToHomeByRole();
             return View();
         }
 
@@ -53,7 +53,7 @@ namespace PetSocial.Controllers
                 {
                     // Tự động đăng nhập sau khi đăng ký thành công
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToHomeByRole();
                 }
 
                 foreach (var error in result.Errors)
@@ -68,7 +68,7 @@ namespace PetSocial.Controllers
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
-            if (User.Identity!.IsAuthenticated) return RedirectToAction("Index", "Home");
+            if (User.Identity!.IsAuthenticated) return RedirectToHomeByRole();
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -90,7 +90,7 @@ namespace PetSocial.Controllers
                     if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                         return Redirect(returnUrl);
                     else
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToHomeByRole();
                 }
 
                 ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không chính xác.");
@@ -105,6 +105,14 @@ namespace PetSocial.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        private IActionResult RedirectToHomeByRole()
+        {
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+
+            return RedirectToAction("Index", "Post");
         }
     }
 }

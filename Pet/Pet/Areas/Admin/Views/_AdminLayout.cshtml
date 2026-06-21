@@ -1,4 +1,21 @@
-﻿<!DOCTYPE html>
+@using Microsoft.EntityFrameworkCore
+@using PetSocial.Data
+@inject ApplicationDbContext DbContext
+
+@{
+    var pendingReportCount = 0;
+
+    try
+    {
+        pendingReportCount = await DbContext.PostReports.CountAsync(r => r.Status == "Pending");
+    }
+    catch
+    {
+        pendingReportCount = 0;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -6,315 +23,299 @@
     <title>@ViewData["Title"] - Quản trị viên PetSocial</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <style>
-            :root {
-                --pet-orange: #ff7e21;
-                --pet-orange-hover: #e66e1c;
-                --bg-light: #f8fafc;
-                --text-muted: #64748b;
-                --text-dark: #0f172a;
+        :root {
+            --admin-content-max: 1300px;
+            --admin-card-radius: 24px;
+            --admin-card-border: #eef1f5;
+            --admin-card-shadow: 0 10px 30px rgba(21, 28, 39, .03);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #fff8f2;
+        }
+
+        .admin-shell .app-header {
+            grid-column: 1 / -1;
+        }
+
+        .admin-shell .pet-sidebar {
+            top: 18px;
+        }
+
+        .admin-main {
+            grid-column: 2;
+            grid-row: 2;
+            display: block;
+            min-width: 0;
+            width: 100%;
+            min-height: calc(100vh - 82px);
+            padding: 34px clamp(18px, 3vw, 44px) 0;
+            background: #fffaf6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-main > main {
+            max-width: var(--admin-content-max);
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .admin-main .admin-feed-page,
+        .admin-main .admin-detail-page,
+        .admin-main .admin-reports-page,
+        .admin-main .admin-dashboard-page {
+            max-width: var(--admin-content-max);
+        }
+
+        .admin-shell.sidebar-collapsed .admin-main {
+            grid-column: 1 / -1;
+        }
+
+        .admin-shell .pet-sidebar-bottom {
+            display: flex;
+        }
+
+        .admin-sidebar-badge {
+            margin-left: auto;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 7px;
+            background: #fff1f2;
+            color: #e11d48;
+            font-size: .75rem;
+            font-weight: 850;
+        }
+
+        .admin-header-notifications {
+            position: relative;
+        }
+
+        .admin-notification-button {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            border: 0;
+            outline: none;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff4ec;
+            color: #ff7e21;
+            text-decoration: none;
+            box-shadow: none;
+            transition: transform .18s ease, background .18s ease, color .18s ease;
+        }
+
+        .admin-notification-button:hover {
+            background: #ffe7d4;
+            color: #e66e1c;
+            transform: translateY(-1px);
+        }
+
+        .admin-notification-button:focus,
+        .admin-notification-button:focus-visible,
+        .admin-notification-button:active {
+            border: 0;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .admin-notification-button.has-new i {
+            animation: adminBellRing 1.15s ease-in-out infinite;
+            transform-origin: 50% 0;
+        }
+
+        .admin-notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #e11d48;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, .12);
+        }
+
+        .admin-footer-note {
+            color: #6f625b;
+        }
+
+        @@keyframes adminBellRing {
+            0%, 100% { transform: rotate(0deg); }
+            15% { transform: rotate(15deg); }
+            30% { transform: rotate(-12deg); }
+            45% { transform: rotate(9deg); }
+            60% { transform: rotate(-6deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        @@media (max-width: 900px) {
+            .admin-main {
+                grid-column: 1;
+                grid-row: 3;
+                padding: 22px 16px 0;
             }
 
-            body {
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                background-color: var(--bg-light);
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
+            .admin-shell.sidebar-collapsed {
+                grid-template-rows: 82px minmax(0, 1fr);
             }
-
-            .dashboard-wrapper {
-                display: flex;
-                height: 100vh;
-                width: 100vw;
-            }
-
-            /* Thanh điều hướng bên trái cao cấp */
-            .admin-sidebar {
-                width: 280px;
-                background: #ffffff;
-                border-right: 1px solid #e2e8f0;
-                flex-shrink: 0;
-                padding: 32px 20px;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .admin-mobile-header {
-                display: none;
-            }
-
-            /* Vùng nội dung chính cuộn độc lập */
-            .main-content {
-                flex-grow: 1;
-                padding: 40px;
-                background-color: var(--bg-light);
-                overflow-y: auto;
-                height: 100vh;
-            }
-
-            /* Định dạng thương hiệu logo */
-            .sidebar-brand {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding-left: 8px;
-                margin-bottom: 40px;
-                text-decoration: none;
-            }
-
-                .sidebar-brand strong {
-                    font-size: 1.3rem;
-                    font-weight: 800;
-                    letter-spacing: -0.5px;
-                    color: var(--text-dark);
-                }
-
-            /* Định dạng danh sách Menu */
-            .nav-menu {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                display: flex;
-                flex-direction: column;
-                gap: 6px;
-            }
-
-            .nav-menu-item {
-                margin-bottom: 0;
-            }
-
-            .nav-menu-link {
-                display: flex;
-                align-items: center;
-                padding: 14px 18px;
-                color: var(--text-muted);
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 0.95rem;
-                border-radius: 14px;
-                transition: all 0.2s ease;
-                border: none;
-                background: transparent;
-            }
-
-                .nav-menu-link i {
-                    font-size: 1.15rem;
-                    width: 24px;
-                    text-align: center;
-                }
-
-                .nav-menu-link:hover {
-                    background-color: #f1f5f9;
-                    color: var(--text-dark);
-                }
-
-                /* Trạng thái Kích hoạt Menu - Màu Cam đồng bộ */
-                .nav-menu-link.active {
-                    background-color: #fff5ee;
-                    color: var(--pet-orange);
-                    font-weight: 700;
-                }
-
-                /* Menu thoát ra ngoài giao diện người dùng */
-                .nav-menu-link.link-mxh {
-                    color: #0284c7;
-                }
-
-                    .nav-menu-link.link-mxh:hover {
-                        background-color: #f0f9ff;
-                        color: #0369a1;
-                    }
-
-            .sidebar-footer {
-                margin-top: auto;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .btn-public-site {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                padding: 14px 18px;
-                color: #0369a1;
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 0.95rem;
-                border-radius: 14px;
-                background: #f0f9ff;
-                transition: all 0.2s;
-            }
-
-                .btn-public-site:hover {
-                    background: #e0f2fe;
-                    color: #075985;
-                    transform: translateY(-1px);
-                }
-
-            .btn-logout-admin {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                padding: 14px 18px;
-                color: #e11d48;
-                font-weight: 600;
-                font-size: 0.95rem;
-                border-radius: 14px;
-                background: #fff1f2;
-                border: none;
-                transition: all 0.2s;
-            }
-
-                .btn-logout-admin:hover {
-                    background: #ffe4e6;
-                    transform: translateY(-1px);
-                }
-
-            @@media (max-width: 991.98px) {
-                body {
-                    overflow: auto;
-                }
-
-                .dashboard-wrapper {
-                    display: block;
-                    width: 100%;
-                    height: auto;
-                    min-height: 100vh;
-                }
-
-                .admin-mobile-header {
-                    display: flex;
-                    position: sticky;
-                    top: 0;
-                    z-index: 20;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 16px;
-                    padding: 14px 18px;
-                    background: #ffffff;
-                    border-bottom: 1px solid #e2e8f0;
-                }
-
-                    .admin-mobile-header a {
-                        color: var(--text-dark);
-                        text-decoration: none;
-                        font-weight: 800;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 10px;
-                    }
-
-                .admin-sidebar {
-                    width: 100%;
-                    min-height: auto;
-                    padding: 16px;
-                    border-right: 0;
-                    border-bottom: 1px solid #e2e8f0;
-                }
-
-                    .admin-sidebar .sidebar-brand {
-                        display: none;
-                    }
-
-                .nav-menu {
-                    display: grid;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                    gap: 8px;
-                }
-
-                .nav-menu-link {
-                    min-height: 52px;
-                    padding: 12px 14px;
-                    font-size: 0.9rem;
-                }
-
-                .sidebar-footer {
-                    margin-top: 16px;
-                    display: grid;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                }
-
-                .main-content {
-                    height: auto;
-                    min-height: auto;
-                    padding: 20px 16px 32px;
-                    overflow: visible;
-                }
-            }
-
-            @@media (max-width: 575.98px) {
-                .nav-menu,
-                .sidebar-footer {
-                    grid-template-columns: 1fr;
-                }
-            }
+        }
     </style>
 </head>
 <body>
+    <div class="app-shell admin-shell" id="appShell">
+        <header class="app-header">
+            <div class="app-header-left">
+                <button type="button"
+                        class="app-header-toggle"
+                        data-sidebar-toggle
+                        aria-label="Ẩn/hiện thanh danh mục"
+                        aria-expanded="true">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
 
-    <div class="dashboard-wrapper">
-        <header class="admin-mobile-header">
-            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                <i class="fa-solid fa-paw" style="color: var(--pet-orange);"></i>
-                PetSocial Admin
-            </a>
-            <a asp-area="" asp-controller="Post" asp-action="Community" class="small text-muted">
-                <i class="fa-solid fa-earth-asia"></i>
-                Mạng xã hội
-            </a>
+                <a asp-area="Admin"
+                   asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="app-header-brand">
+                    <span class="app-header-logo">
+                        <img src="~/images/logo.jpg" alt="PetSocial" />
+                    </span>
+                    <span>
+                        <strong>PetSocial</strong>
+                        <small>Admin</small>
+                    </span>
+                </a>
+            </div>
+
+            <div class="app-header-right">
+                <div class="admin-header-notifications">
+                    <a class="admin-notification-button @(pendingReportCount > 0 ? "has-new" : "")"
+                       asp-area="Admin"
+                       asp-controller="Posts"
+                       asp-action="Reports"
+                       asp-route-status="Pending"
+                       aria-label="Thông báo kiểm duyệt">
+                        <i class="fa-solid fa-bell"></i>
+                        @if (pendingReportCount > 0)
+                        {
+                            <span class="admin-notification-dot"></span>
+                        }
+                    </a>
+                </div>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <a asp-area=""
+                       asp-controller="Profile"
+                       asp-action="Index"
+                       class="app-header-account">
+                        <span class="app-header-avatar">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <span>
+                            <small>Tài khoản</small>
+                            <strong>@User.Identity.Name</strong>
+                        </span>
+                    </a>
+
+                    <form asp-area=""
+                          asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="app-header-logout-form">
+                        <button type="submit" class="app-header-logout" aria-label="Đăng xuất">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </form>
+                }
+            </div>
         </header>
 
-        <nav class="admin-sidebar">
-            <a class="sidebar-brand" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                <i class="fa-solid fa-paw text-warning fs-3" style="color: var(--pet-orange) !important;"></i>
-                <strong>PetSocial <span class="small font-medium text-muted" style="font-size: 0.75rem; font-weight:500;">Admin</span></strong>
-            </a>
+        <partial name="_Sidebar" />
 
-            <ul class="nav-menu">
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                        <i class="fa-solid fa-chart-pie me-3"></i>Tổng quan
-                    </a>
-                </li>
+        <div class="admin-main">
+            <main role="main">
+                @RenderBody()
+            </main>
 
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "User" ? "active" : "")" asp-area="Admin" asp-controller="User" asp-action="Index">
-                        <i class="fa-solid fa-users me-3"></i>Quản lý Người Dùng
-                    </a>
-                </li>
+            <footer class="app-footer mt-5">
+                <div class="container-fluid app-footer-inner">
+                    <div class="app-footer-brand-block">
+                        <a class="app-footer-logo" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                            <span class="app-brand-icon">
+                                <img src="~/images/logo.jpg" alt="PetSocial" />
+                            </span>
+                            <span>
+                                <strong>PetSocial</strong>
+                                <small>Quản trị cộng đồng</small>
+                            </span>
+                        </a>
+                        <p>Kiểm duyệt nội dung, theo dõi hoạt động và giữ cho cộng đồng yêu thú cưng an toàn hơn.</p>
+                    </div>
 
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Pet" ? "active" : "")" href="/Admin/Pet">
-                        <i class="fa-solid fa-shield-cat me-3"></i>Quản lý Thú cưng
-                    </a>
-                </li>
-                <li class="nav-menu-item">
-                    <a class="nav-menu-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Posts" ? "active" : "")" asp-area="Admin" asp-controller="Posts" asp-action="Index">
-                        <i class="fas fa-file-alt me-3"></i>Quản lý bài viết
-                    </a>
-                </li>
-            </ul>
+                    <div class="app-footer-column">
+                        <h3>Quản trị</h3>
+                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Tổng quan</a>
+                        <a asp-area="Admin" asp-controller="User" asp-action="Index">Người dùng</a>
+                        <a asp-area="Admin" asp-controller="Pet" asp-action="Index">Thú cưng</a>
+                        <a asp-area="Admin" asp-controller="Posts" asp-action="Index">Bài viết</a>
+                    </div>
 
-            <div class="sidebar-footer">
-                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="m-0">
-                    <button type="submit" class="btn-logout-admin">
-                        <i class="fa-solid fa-arrow-right-from-bracket me-3"></i>Đăng xuất Admin
-                    </button>
-                </form>
-            </div>
-        </nav>
+                    <div class="app-footer-column">
+                        <h3>Kiểm duyệt</h3>
+                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Pending">Nội dung vi phạm</a>
+                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Resolved">Đã xử lý</a>
+                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Dismissed">Bỏ qua</a>
+                    </div>
 
-        <main class="main-content">
-            @RenderBody()
-        </main>
+                    
+                </div>
+
+                <div class="container-fluid app-footer-bottom">
+                    <span>© 2026 PetSocial Admin.</span>
+                    <span class="admin-footer-note">Made for a safer pet community.</span>
+                </div>
+            </footer>
+        </div>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (() => {
+            const appShell = document.getElementById('appShell');
+            const toggleButton = document.querySelector('[data-sidebar-toggle]');
+            if (!appShell || !toggleButton) return;
+
+            const storageKey = 'petsocial.admin.sidebar.collapsed';
+            const setCollapsed = (collapsed) => {
+                appShell.classList.toggle('sidebar-collapsed', collapsed);
+                toggleButton.setAttribute('aria-expanded', (!collapsed).toString());
+            };
+
+            setCollapsed(localStorage.getItem(storageKey) === 'true');
+
+            toggleButton.addEventListener('click', () => {
+                const collapsed = !appShell.classList.contains('sidebar-collapsed');
+                setCollapsed(collapsed);
+                localStorage.setItem(storageKey, collapsed.toString());
+            });
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PetSocial.Data;
 using System.Security.Claims;
 
 namespace PetSocial.Controllers
 {
+    [Authorize]
     public class NotificationController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,9 +17,7 @@ namespace PetSocial.Controllers
 
         public IActionResult Index()
         {
-            var userId =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var notifications = _context.Notifications
                 .Where(x => x.UserId == userId)
@@ -30,15 +29,10 @@ namespace PetSocial.Controllers
 
         public IActionResult MarkAllRead()
         {
-            var userId =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var notifications =
-                _context.Notifications
-                .Where(x =>
-                    x.UserId == userId &&
-                    !x.IsRead)
+            var notifications = _context.Notifications
+                .Where(x => x.UserId == userId && !x.IsRead)
                 .ToList();
 
             foreach (var item in notifications)
@@ -49,6 +43,35 @@ namespace PetSocial.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Open(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var notification = _context.Notifications
+                .FirstOrDefault(x => x.Id == id && x.UserId == userId);
+
+            if (notification == null)
+                return RedirectToAction(nameof(Index));
+
+            notification.IsRead = true;
+            _context.SaveChanges();
+
+            var isViolationNotice =
+                notification.Title.Contains("vi phạm", StringComparison.OrdinalIgnoreCase) ||
+                notification.Content.Contains("vi phạm", StringComparison.OrdinalIgnoreCase) ||
+                notification.Content.Contains("AI", StringComparison.OrdinalIgnoreCase);
+
+            if (User.IsInRole("Admin") && isViolationNotice)
+            {
+                return RedirectToAction(
+                    "Reports",
+                    "Posts",
+                    new { area = "Admin", status = "Pending" });
+            }
+
+            return RedirectToAction(nameof(Index), null, $"notification-{notification.Id}");
         }
     }
 }

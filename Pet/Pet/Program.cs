@@ -9,6 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection("OpenAI"));
+builder.Services.PostConfigure<OpenAiOptions>(options =>
+{
+    options.ApiKey ??= Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+});
+builder.Services.AddHttpClient<IPetAiService, OpenAiPetService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com");
+    client.Timeout = TimeSpan.FromSeconds(45);
+});
 
 // 1. Cáº¥u hĂ¬nh DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -52,6 +62,16 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.Migrate();
+    dbContext.Database.ExecuteSqlRaw(@"
+        IF COL_LENGTH('dbo.Posts', 'IsRemovedByAi') IS NULL
+            ALTER TABLE [dbo].[Posts] ADD [IsRemovedByAi] bit NOT NULL CONSTRAINT [DF_Posts_IsRemovedByAi] DEFAULT CAST(0 AS bit);
+
+        IF COL_LENGTH('dbo.Posts', 'ViolationReason') IS NULL
+            ALTER TABLE [dbo].[Posts] ADD [ViolationReason] nvarchar(500) NULL;
+
+        IF COL_LENGTH('dbo.Posts', 'RemovedAt') IS NULL
+            ALTER TABLE [dbo].[Posts] ADD [RemovedAt] datetime2 NULL;
+    ");
 }
 
 // Configure the HTTP request pipeline.
@@ -72,17 +92,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "pet",
-    pattern: "Pet/{action=Index}/{id?}",
-    defaults: new { controller = "Pet" });
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
+
 
 app.MapControllerRoute(
     name: "post",
     pattern: "Post/{action=Community}/{id?}", 
     defaults: new { controller = "Post" });
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

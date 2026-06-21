@@ -44,7 +44,7 @@ namespace PetSocial.Controllers
 
             var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == id);
             var followingCount = await _context.Follows.CountAsync(f => f.FollowerId == id);
-            var postCount = await _context.Posts.CountAsync(p => p.UserId == id);
+            var postCount = await _context.Posts.CountAsync(p => p.UserId == id && !p.IsRemovedByAi);
             var pets = await _context.Pets
                 .Include(p => p.User)
                 .Where(p => p.UserId == id)
@@ -60,7 +60,7 @@ namespace PetSocial.Controllers
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User) // BẮT BUỘC PHẢI CÓ DÒNG NÀY để hiển thị tên thật thay vì "Thành viên"
                 .Include(p => p.Likes)
-                .Where(p => p.UserId == id)
+                .Where(p => p.UserId == id && !p.IsRemovedByAi)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 

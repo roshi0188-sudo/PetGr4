@@ -1,3 +1,86 @@
+@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@using PetSocial.Data
+@inject ApplicationDbContext DbContext
+
+@{
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var unreadCount = 0;
+
+    if (!string.IsNullOrWhiteSpace(currentUserId))
+    {
+        try
+        {
+            unreadCount = await DbContext.Notifications.CountAsync(n => n.UserId == currentUserId && !n.IsRead);
+        }
+        catch
+        {
+            unreadCount = 0;
+        }
+    }
+}
+
+<style>
+    .app-header-notification {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        border: 0;
+        outline: none;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff4ec;
+        color: #ff7e21;
+        text-decoration: none;
+        box-shadow: none;
+        transition: transform .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .app-header-notification:hover {
+        background: #ffe7d4;
+        color: #e66e1c;
+        transform: translateY(-1px);
+    }
+
+    .app-header-notification:focus,
+    .app-header-notification:focus-visible,
+    .app-header-notification:active {
+        border: 0;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .app-header-notification.has-new i {
+        animation: appBellRing 1.15s ease-in-out infinite;
+        transform-origin: 50% 0;
+    }
+
+    .app-header-notification-dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #e11d48;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 4px rgba(225, 29, 72, .12);
+        font-size: 0;
+        overflow: hidden;
+    }
+
+    @@keyframes appBellRing {
+        0%, 100% { transform: rotate(0deg); }
+        15% { transform: rotate(15deg); }
+        30% { transform: rotate(-12deg); }
+        45% { transform: rotate(9deg); }
+        60% { transform: rotate(-6deg); }
+        75% { transform: rotate(3deg); }
+    }
+</style>
+
 <header class="app-header">
     <div class="app-header-left">
         <button type="button"
@@ -25,6 +108,16 @@
     <div class="app-header-right">
         @if (User.Identity != null && User.Identity.IsAuthenticated)
         {
+            <a asp-area=""
+               asp-controller="Notification"
+               asp-action="Index"
+               class="app-header-notification @(unreadCount > 0 ? "has-new" : "")"
+               aria-label="Thông báo">
+                <i class="fa fa-bell"></i>
+                <span id="notificationBadge"
+                      class="app-header-notification-dot @(unreadCount > 0 ? "" : "d-none")">@unreadCount</span>
+            </a>
+
             <a asp-area=""
                asp-controller="Profile"
                asp-action="Index"

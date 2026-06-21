@@ -1,0 +1,219 @@
+@{
+    ViewData["Title"] = "AI hỗ trợ người nuôi";
+}
+
+<section class="ai-page ai-chat-page">
+    <div class="ai-assistant-layout">
+        <aside class="ai-tools-panel">
+            <div class="ai-tools-title">
+                <span>Công cụ gợi ý</span>
+        
+            </div>
+
+            <div class="ai-suggestion-tags">
+                <button type="button" class="ai-tag is-active" data-diet-toggle>
+                    <i class="fa fa-cutlery"></i>
+                    Gợi ý chế độ ăn cho thú cưng
+                </button>
+            </div>
+
+            <div class="ai-quick-card" data-diet-card>
+                <div class="ai-quick-header">
+                    <div>
+                        <div class="ai-quick-title">
+                            <i class="fa fa-cutlery"></i>
+                            Gợi ý chế độ ăn
+                        </div>
+                        <p>Nhập thông tin cơ bản để AI lên khẩu phần tham khảo phù hợp hơn.</p>
+                    </div>
+                    <button type="button" class="ai-card-close" data-diet-close aria-label="Đóng">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+
+                <form data-diet-form asp-action="Diet" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="ai-fields">
+                        <label>
+                            <span>Loài</span>
+                            <input name="species" placeholder="Chó, Mèo..." />
+                        </label>
+                        <label>
+                            <span>Giống</span>
+                            <input name="breed" placeholder="Poodle, Mèo Anh..." />
+                        </label>
+                        <label>
+                            <span>Tuổi</span>
+                            <input name="age" type="number" min="0" placeholder="Ví dụ: 2" />
+                        </label>
+                        <label>
+                            <span>Cân nặng</span>
+                            <input name="weight" type="number" min="0" step="0.1" placeholder="kg" />
+                        </label>
+                    </div>
+                    <button type="submit" class="ai-diet-submit">
+                        <i class="fa fa-bolt"></i>
+                        Gợi ý khẩu phần
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <div class="ai-chat-shell">
+            <header class="ai-chat-header">
+                <div class="ai-chat-avatar">
+                    <i class="fa fa-magic"></i>
+                </div>
+                <div class="ai-chat-heading">
+                    <span class="ai-eyebrow">OpenAI Pet Assistant</span>
+                    <h1>AI hỗ trợ người nuôi</h1>
+                    <p>Tư vấn chăm sóc thú cưng và gợi ý khẩu phần theo độ tuổi, giống loài.</p>
+                </div>
+                @if (ViewBag.IsAiConfigured == false)
+                {
+                    <div class="ai-warning">Chưa cấu hình OpenAI API key.</div>
+                }
+            </header>
+
+            <div class="ai-chat-body" data-chat-body>
+                <div class="ai-message ai-message-bot ai-welcome-message">
+                    <div class="ai-message-avatar"><i class="fa fa-paw"></i></div>
+                    <div class="ai-bubble">
+                        <span class="ai-bubble-label">PetSocial AI</span>
+                        <span class="ai-bubble-text">Xin chào, mình có thể tư vấn cách chăm sóc thú cưng hoặc gợi ý chế độ ăn phù hợp. Bạn muốn hỏi gì hôm nay?</span>
+                    </div>
+                </div>
+            </div>
+
+            <form class="ai-chat-compose" data-chat-form asp-action="Ask" method="post">
+                @Html.AntiForgeryToken()
+                <textarea name="question" rows="1" placeholder="Nhập câu hỏi chăm sóc thú cưng..."></textarea>
+                <button type="submit" aria-label="Gửi câu hỏi">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const chatBody = document.querySelector('[data-chat-body]');
+        const chatForm = document.querySelector('[data-chat-form]');
+        const chatInput = chatForm?.querySelector('textarea[name="question"]');
+        const dietForm = document.querySelector('[data-diet-form]');
+        const dietCard = document.querySelector('[data-diet-card]');
+
+        const scrollToBottom = () => {
+            if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+        };
+
+        const addMessage = (content, role = 'bot', loading = false) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = `ai-message ai-message-${role}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'ai-message-avatar';
+            avatar.innerHTML = role === 'user' ? '<i class="fa fa-user"></i>' : '<i class="fa fa-paw"></i>';
+
+            const bubble = document.createElement('div');
+            bubble.className = loading ? 'ai-bubble is-loading' : 'ai-bubble';
+            bubble.textContent = content;
+
+            if (role === 'user') {
+                wrapper.appendChild(bubble);
+                wrapper.appendChild(avatar);
+            } else {
+                wrapper.appendChild(avatar);
+                wrapper.appendChild(bubble);
+            }
+
+            chatBody?.appendChild(wrapper);
+            scrollToBottom();
+            return bubble;
+        };
+
+        document.querySelector('[data-diet-toggle]')?.addEventListener('click', () => {
+            dietCard?.classList.toggle('is-hidden');
+        });
+
+        document.querySelector('[data-diet-close]')?.addEventListener('click', () => {
+            dietCard?.classList.add('is-hidden');
+        });
+
+        chatInput?.addEventListener('input', () => {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = `${Math.min(chatInput.scrollHeight, 120)}px`;
+        });
+
+        chatInput?.addEventListener('keydown', event => {
+            if (event.key !== 'Enter' || event.shiftKey) return;
+            event.preventDefault();
+            chatForm?.requestSubmit();
+        });
+
+        chatForm?.addEventListener('submit', async event => {
+            event.preventDefault();
+            const question = chatInput?.value.trim();
+            if (!question) return;
+
+            const formData = new FormData(chatForm);
+            formData.set('question', question);
+
+            addMessage(question, 'user');
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            const pending = addMessage('AI đang trả lời...', 'bot', true);
+
+            try {
+                const response = await fetch(chatForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                pending.textContent = data.answer || data.message || 'Không nhận được phản hồi.';
+            } catch {
+                pending.textContent = 'Không thể kết nối AI lúc này.';
+            } finally {
+                pending.classList.remove('is-loading');
+                scrollToBottom();
+            }
+        });
+
+        dietForm?.addEventListener('submit', async event => {
+            event.preventDefault();
+            const formData = new FormData(dietForm);
+            const species = formData.get('species')?.toString().trim();
+            if (!species) {
+                addMessage('Bạn nhập giúp mình loài thú cưng trước nhé.', 'bot');
+                return;
+            }
+
+            const summary = [
+                `Loài: ${species}`,
+                formData.get('breed') ? `Giống: ${formData.get('breed')}` : '',
+                formData.get('age') ? `Tuổi: ${formData.get('age')}` : '',
+                formData.get('weight') ? `Cân nặng: ${formData.get('weight')} kg` : ''
+            ].filter(Boolean).join(', ');
+
+            addMessage(`Gợi ý chế độ ăn cho ${summary}`, 'user');
+            const pending = addMessage('AI đang lên khẩu phần...', 'bot', true);
+
+            try {
+                const response = await fetch(dietForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                pending.textContent = data.answer || data.message || 'Không nhận được phản hồi.';
+            } catch {
+                pending.textContent = 'Không thể kết nối AI lúc này.';
+            } finally {
+                pending.classList.remove('is-loading');
+                scrollToBottom();
+            }
+        });
+    </script>
+}

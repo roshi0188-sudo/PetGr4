@@ -1,104 +1,332 @@
 @model PetSocial.ViewModels.AdminPostReportsVM
 
 @{
-    ViewData["Title"] = "Quản lý báo cáo bài viết";
+    ViewData["Title"] = "Nội dung vi phạm";
 }
 
 <style>
-    .content-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; }
-    .report-tabs .btn { font-weight: 700; }
-    .report-content { max-width: 520px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .violation-page {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        color: #111827;
+    }
+
+    .violation-hero,
+    .violation-card {
+        background: #fff;
+        border: 1px solid #eef1f5;
+        border-radius: 24px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, .05);
+    }
+
+    .violation-hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 24px;
+        margin-bottom: 18px;
+    }
+
+    .violation-hero h1 {
+        margin: 0 0 6px;
+        font-size: 1.7rem;
+        font-weight: 850;
+        color: #0f172a;
+    }
+
+    .violation-muted {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .violation-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .violation-tabs .btn {
+        border-radius: 999px;
+        font-weight: 850;
+        padding-inline: 18px;
+    }
+
+    .violation-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .violation-card {
+        overflow: hidden;
+        scroll-margin-top: 110px;
+    }
+
+    .violation-card:target {
+        border-color: #ff7e21;
+        box-shadow: 0 0 0 4px rgba(255, 126, 33, .16), 0 18px 42px rgba(15, 23, 42, .08);
+    }
+
+    .violation-head,
+    .violation-body,
+    .violation-foot {
+        padding: 18px 20px;
+    }
+
+    .violation-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .violation-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+    }
+
+    .violation-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        object-fit: cover;
+        background: #fff3ea;
+        color: #ff7e21;
+        border: 2px solid #fff0e5;
+        font-weight: 850;
+    }
+
+    .violation-author strong {
+        display: block;
+        font-weight: 850;
+        color: #0f172a;
+    }
+
+    .violation-author small {
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    .violation-status {
+        border-radius: 999px;
+        padding: 7px 12px;
+        background: #fff7ed;
+        color: #c2410c;
+        font-size: .78rem;
+        font-weight: 850;
+        white-space: nowrap;
+    }
+
+    .violation-ai-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border-radius: 999px;
+        background: #fff1f2;
+        color: #be123c;
+        padding: 8px 12px;
+        font-weight: 850;
+        font-size: .82rem;
+        margin-bottom: 12px;
+    }
+
+    .violation-content-label,
+    .violation-reason-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #64748b;
+        font-size: .78rem;
+        font-weight: 850;
+        text-transform: uppercase;
+    }
+
+    .violation-content {
+        border: 1px solid #eef1f5;
+        border-radius: 18px;
+        background: #fbfdff;
+        color: #1f2937;
+        padding: 14px;
+        line-height: 1.65;
+        font-weight: 650;
+        white-space: pre-line;
+    }
+
+    .violation-reason {
+        border: 1px solid #fed7aa;
+        border-radius: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        padding: 14px;
+        margin-top: 14px;
+        line-height: 1.55;
+        font-weight: 750;
+    }
+
+    .violation-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .violation-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .violation-empty {
+        padding: 56px 22px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    @@media (max-width: 767.98px) {
+        .violation-hero,
+        .violation-head,
+        .violation-foot {
+            align-items: stretch;
+            flex-direction: column;
+        }
+    }
 </style>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="h3 fw-bold mb-1">Quản lý báo cáo bài viết</h1>
-        <p class="text-muted mb-0">Xem và xử lý các báo cáo từ người dùng.</p>
-    </div>
-    <a asp-action="Index" class="btn btn-outline-secondary">
-        <i class="fas fa-list me-2"></i>Danh sách bài viết
-    </a>
-</div>
+<div class="violation-page">
+    <section class="violation-hero">
+        <div>
+            <h1>Nội dung vi phạm</h1>
+            <p class="violation-muted mb-0">Hiển thị bài viết bị báo cáo hoặc bị AI gỡ, kèm nội dung bài viết và lý do vi phạm.</p>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill px-4">
+            <i class="fa fa-list me-2"></i>Danh sách bài viết
+        </a>
+    </section>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success rounded-4 fw-bold">@TempData["Success"]</div>
+    }
 
-<div class="report-tabs d-flex gap-2 mb-4">
-    <a asp-action="Reports" asp-route-status="Pending" class="btn @(Model.Status == "Pending" ? "btn-warning" : "btn-outline-warning")">
-        Chờ xử lý (@Model.PendingCount)
-    </a>
-    <a asp-action="Reports" asp-route-status="Resolved" class="btn @(Model.Status == "Resolved" ? "btn-success" : "btn-outline-success")">
-        Đã xử lý (@Model.ResolvedCount)
-    </a>
-    <a asp-action="Reports" asp-route-status="Dismissed" class="btn @(Model.Status == "Dismissed" ? "btn-secondary" : "btn-outline-secondary")">
-        Bỏ qua (@Model.DismissedCount)
-    </a>
-</div>
+    <nav class="violation-tabs">
+        <a asp-action="Reports" asp-route-status="Pending" class="btn @(Model.Status == "Pending" || Model.Status == "All" ? "btn-warning" : "btn-outline-warning")">
+            Chờ xử lý (@Model.PendingCount)
+        </a>
+        <a asp-action="Reports" asp-route-status="Resolved" class="btn @(Model.Status == "Resolved" ? "btn-success" : "btn-outline-success")">
+            Đã xử lý (@Model.ResolvedCount)
+        </a>
+        <a asp-action="Reports" asp-route-status="Dismissed" class="btn @(Model.Status == "Dismissed" ? "btn-secondary" : "btn-outline-secondary")">
+            Bỏ qua (@Model.DismissedCount)
+        </a>
+    </nav>
 
-<div class="content-card">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-                <tr>
-                    <th class="ps-4">Bài viết</th>
-                    <th>Người báo cáo</th>
-                    <th>Lý do</th>
-                    <th>Thời gian</th>
-                    <th class="text-end pe-4">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Reports.Any())
-                {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted py-5">Không có báo cáo trong trạng thái này.</td>
-                    </tr>
-                }
-                else
-                {
-                    @foreach (var report in Model.Reports)
-                    {
-                        <tr>
-                            <td class="ps-4">
-                                <div class="fw-semibold report-content">@report.Post.Content</div>
-                                <small class="text-muted">Bởi @(report.Post.User?.FullName ?? "Người dùng")</small>
-                            </td>
-                            <td>
-                                <div class="fw-semibold">@(report.Reporter?.FullName ?? "Người dùng")</div>
-                                <small class="text-muted">@report.Reporter?.Email</small>
-                            </td>
-                            <td>@report.Reason</td>
-                            <td class="text-muted">@report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                            <td class="text-end pe-4">
-                                <a asp-action="Details" asp-route-id="@report.PostId" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye"></i>
+    <section class="violation-list">
+        @if (Model.Reports == null || !Model.Reports.Any())
+        {
+            <article class="violation-card violation-empty">
+                <i class="fa fa-flag fa-2x text-warning mb-3"></i>
+                <div class="fw-bold text-dark">Chưa có bài viết vi phạm trong trạng thái này.</div>
+                <div class="small mt-2">Khi AI phát hiện hoặc người dùng báo cáo, nội dung sẽ xuất hiện tại đây.</div>
+            </article>
+        }
+        else
+        {
+            @foreach (var report in Model.Reports)
+            {
+                var post = report.Post;
+                var authorName = post?.User?.FullName ?? "Người dùng";
+                var reporterName = report.Reporter?.FullName ?? "Người báo cáo";
+                var authorInitial = string.IsNullOrWhiteSpace(authorName) ? "U" : authorName.Substring(0, 1).ToUpper();
+                var content = string.IsNullOrWhiteSpace(post?.Content) ? "Bài viết không còn nội dung hoặc đã bị xóa." : post.Content;
+                var isAiRemoved = post?.IsRemovedByAi == true;
+
+                <article class="violation-card" id="report-@report.Id">
+                    <header class="violation-head">
+                        <div class="violation-author">
+                            @if (!string.IsNullOrWhiteSpace(post?.User?.AvatarUrl))
+                            {
+                                <img src="@post.User.AvatarUrl" class="violation-avatar" alt="Avatar" />
+                            }
+                            else
+                            {
+                                <span class="violation-avatar">@authorInitial</span>
+                            }
+                            <div>
+                                <strong>@authorName</strong>
+                                <small>Bài viết #@report.PostId · @(post?.CreatedAt.ToString("dd/MM/yyyy HH:mm") ?? report.CreatedAt.ToString("dd/MM/yyyy HH:mm"))</small>
+                            </div>
+                        </div>
+                        <span class="violation-status">@report.Status</span>
+                    </header>
+
+                    <div class="violation-body">
+                        @if (isAiRemoved)
+                        {
+                            <span class="violation-ai-pill">
+                                <i class="fa fa-magic"></i>AI đã gỡ bài khỏi cộng đồng
+                            </span>
+                        }
+
+                        <span class="violation-content-label">Nội dung bài viết</span>
+                        <div class="violation-content">@content</div>
+
+                        <div class="violation-reason">
+                            <span class="violation-reason-label">Nội dung vi phạm / lý do</span>
+                            <i class="fa fa-exclamation-triangle me-2"></i>@report.Reason
+                        </div>
+                    </div>
+
+                    <footer class="violation-foot">
+                        <div class="violation-muted small">
+                            Báo cáo bởi <strong class="text-dark">@reporterName</strong>
+                            @if (!string.IsNullOrWhiteSpace(report.Reporter?.Email))
+                            {
+                                <span> · @report.Reporter.Email</span>
+                            }
+                            <span> · @report.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+
+                        <div class="violation-actions">
+                            @if (post != null)
+                            {
+                                <a asp-action="Details" asp-route-id="@report.PostId" class="btn btn-sm btn-light fw-bold rounded-pill px-3">
+                                    Chi tiết
                                 </a>
-                                @if (report.Status == "Pending")
-                                {
-                                    <form asp-action="UpdateReportStatus" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@report.Id" />
-                                        <input type="hidden" name="status" value="Resolved" />
-                                        <button class="btn btn-sm btn-outline-success" title="Đánh dấu đã xử lý">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </form>
-                                    <form asp-action="UpdateReportStatus" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@report.Id" />
-                                        <input type="hidden" name="status" value="Dismissed" />
-                                        <button class="btn btn-sm btn-outline-secondary" title="Bỏ qua">
-                                            <i class="fas fa-ban"></i>
-                                        </button>
-                                    </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
+                            }
+                            @if (report.Status == "Pending")
+                            {
+                                <form asp-action="UpdateReportStatus" method="post" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@report.Id" />
+                                    <input type="hidden" name="status" value="Resolved" />
+                                    <button class="btn btn-sm btn-success fw-bold rounded-pill px-3">
+                                        <i class="fa fa-check me-1"></i>Đã xử lý
+                                    </button>
+                                </form>
+                                <form asp-action="UpdateReportStatus" method="post" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@report.Id" />
+                                    <input type="hidden" name="status" value="Dismissed" />
+                                    <button class="btn btn-sm btn-outline-secondary fw-bold rounded-pill px-3">
+                                        <i class="fa fa-ban me-1"></i>Bỏ qua
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </footer>
+                </article>
+            }
+        }
+    </section>
 </div>

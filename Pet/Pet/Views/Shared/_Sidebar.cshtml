@@ -1,151 +1,176 @@
+@using Microsoft.EntityFrameworkCore
+@using PetSocial.Data
+@inject ApplicationDbContext DbContext
+
 @{
     var activeMenu = ViewData["ActiveMenu"] as string;
+    var routeArea = ViewContext.RouteData.Values["Area"]?.ToString();
+    var routeController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var routeAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    var isAdminArea = string.Equals(routeArea, "Admin", StringComparison.OrdinalIgnoreCase);
+    var isAdmin = User.Identity?.IsAuthenticated == true && User.IsInRole("Admin");
+    var isViolationPage = isAdminArea && routeController == "Posts" && routeAction == "Reports";
+    var pendingReportCount = 0;
+
+    if (isAdmin)
+    {
+        try
+        {
+            pendingReportCount = await DbContext.PostReports.CountAsync(r => r.Status == "Pending");
+        }
+        catch
+        {
+            pendingReportCount = 0;
+        }
+    }
 }
 
 <aside class="pet-sidebar">
     <a class="pet-sidebar-brand"
-       asp-area=""
-       asp-controller="Post"
-       asp-action="Community">
+       asp-area="@(isAdminArea ? "Admin" : "")"
+       asp-controller="@(isAdminArea ? "Dashboard" : "Post")"
+       asp-action="@(isAdminArea ? "Index" : "Community")">
         <span class="pet-sidebar-logo">
             <img src="~/images/logo.jpg" alt="PetSocial" />
         </span>
-        <strong>PetGr4</strong>
+        <strong>@(isAdminArea ? "PetSocial Admin" : "PetGr4")</strong>
     </a>
 
     <nav class="pet-menu">
-        <a asp-area=""
-           asp-controller="Post"
-           asp-action="Index"
-           class="@(activeMenu == "Home" ? "active" : "")">
-            <i class="fa fa-home"></i>
-            <span>Trang chủ</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Profile"
-           asp-action="Index"
-           class="@(activeMenu == "Profile" ? "active" : "")">
-            <i class="fa fa-user-circle"></i>
-            <span>Trang cá nhân</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Pet"
-           asp-action="Index"
-           class="@(activeMenu == "PetDirectory" ? "active" : "")">
-            <i class="fa fa-paw"></i>
-            <span>Cộng đồng thú cưng</span>
-        </a>
-
-        
-        <a asp-area=""
-           asp-controller="Match"
-           asp-action="Index"
-           class="@(activeMenu == "Dating" ? "active" : "")">
-            <i class="fa fa-heart"></i>
-            <span>Pet Dating</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Match"
-           asp-action="Requests"
-           class="@(activeMenu == "Requests" ? "active" : "")">
-            <i class="fa fa-envelope"></i>
-            <span>Lời mời</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Match"
-           asp-action="Matches"
-           class="@(activeMenu == "Matches" ? "active" : "")">
-            <i class="fa fa-users"></i>
-            <span>Kết nối</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Post"
-           asp-action="MyPosts"
-           class="@(activeMenu == "MyPost" ? "active" : "")">
-            <i class="fa fa-pencil-square-o"></i>
-            <span>Bài viết của tôi</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Chat"
-           asp-action="Index"
-           class="@(activeMenu == "Message" ? "active" : "")">
-            <i class="fa fa-comments"></i>
-            <span>Tin nhắn</span>
-        </a>
-
-        <a asp-area=""
-           asp-controller="Notification"
-           asp-action="Index"
-           class="@(activeMenu == "Notification" ? "active" : "")">
-            <i class="fa fa-bell"></i>
-            <span>
-                Thông báo
-                @if (ViewBag.UnreadCount != null && (int)ViewBag.UnreadCount > 0)
-                {
-                    <span class="badge bg-danger">@ViewBag.UnreadCount</span>
-                }
-            </span>
-        </a>
-
-        @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
+        @if (isAdminArea)
         {
             <a asp-area="Admin"
                asp-controller="Dashboard"
                asp-action="Index"
-               style="border-left: 4px solid #ff7e21; background: #fafafa; font-weight: bold;">
-                <i class="fa fa-shield" style="color: #ff7e21;"></i>
-                <span style="color: #ff7e21;">Quản trị hệ thống</span>
-            </a>
-        }
-    </nav>
-
-    <div class="pet-sidebar-bottom">
-        @if (User.Identity != null && User.Identity.IsAuthenticated)
-        {
-            <a class="pet-sidebar-user"
-               asp-area=""
-               asp-controller="Profile"
-               asp-action="Index">
-                <span class="pet-sidebar-avatar">
-                    <i class="fa fa-user"></i>
-                </span>
-                <span>
-                    <small>Tài khoản cá nhân</small>
-                    <strong>@User.Identity.Name</strong>
-                </span>
+               class="@(routeController == "Dashboard" ? "active" : "")">
+                <i class="fa fa-pie-chart"></i>
+                <span>Tổng quan</span>
             </a>
 
-            <form asp-area=""
-                  asp-controller="Account"
-                  asp-action="Logout"
-                  method="post">
-                <button type="submit" class="pet-sidebar-logout">
-                    <i class="fa fa-sign-out"></i>
-                    Đăng xuất
-                </button>
-            </form>
+            <a asp-area="Admin"
+               asp-controller="User"
+               asp-action="Index"
+               class="@(routeController == "User" ? "active" : "")">
+                <i class="fa fa-users"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Pet"
+               asp-action="Index"
+               class="@(routeController == "Pet" ? "active" : "")">
+                <i class="fa fa-paw"></i>
+                <span>Quản lý thú cưng</span>
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Posts"
+               asp-action="Index"
+               class="@(routeController == "Posts" && !isViolationPage ? "active" : "")">
+                <i class="fa fa-file-text"></i>
+                <span>Quản lý bài viết</span>
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Posts"
+               asp-action="Reports"
+               asp-route-status="Pending"
+               class="@(isViolationPage ? "active" : "")">
+                <i class="fa fa-exclamation-triangle"></i>
+                <span>Nội dung vi phạm</span>
+                @if (pendingReportCount > 0)
+                {
+                    <span class="admin-sidebar-badge">@pendingReportCount</span>
+                }
+            </a>
         }
         else
         {
-            <a class="pet-sidebar-login"
-               asp-area=""
-               asp-controller="Account"
-               asp-action="Login">
-                Đăng nhập
+            <a asp-area=""
+               asp-controller="Post"
+               asp-action="Index"
+               class="@(activeMenu == "Home" ? "active" : "")">
+                <i class="fa fa-home"></i>
+                <span>Trang chủ</span>
             </a>
 
-            <a class="pet-sidebar-register"
-               asp-area=""
-               asp-controller="Account"
-               asp-action="Register">
-                Đăng ký
+            <a asp-area=""
+               asp-controller="Profile"
+               asp-action="Index"
+               class="@(activeMenu == "Profile" ? "active" : "")">
+                <i class="fa fa-user-circle"></i>
+                <span>Trang cá nhân</span>
             </a>
+
+            <a asp-area=""
+               asp-controller="Pet"
+               asp-action="Index"
+               class="@(activeMenu == "PetDirectory" ? "active" : "")">
+                <i class="fa fa-paw"></i>
+                <span>Cộng đồng thú cưng</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Match"
+               asp-action="Index"
+               class="@(activeMenu == "Dating" ? "active" : "")">
+                <i class="fa fa-heart"></i>
+                <span>Hẹn hò</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Match"
+               asp-action="Requests"
+               class="@(activeMenu == "Requests" ? "active" : "")">
+                <i class="fa fa-envelope"></i>
+                <span>Lời mời</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Match"
+               asp-action="Matches"
+               class="@(activeMenu == "Matches" ? "active" : "")">
+                <i class="fa fa-users"></i>
+                <span>Kết nối</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Ai"
+               asp-action="Index"
+               class="@(activeMenu == "Ai" ? "active" : "")">
+                <i class="fa fa-magic"></i>
+                <span>AI hỗ trợ</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Chat"
+               asp-action="Index"
+               class="@(activeMenu == "Message" ? "active" : "")">
+                <i class="fa fa-comments"></i>
+                <span>Tin nhắn</span>
+            </a>
+
+            <a asp-area=""
+               asp-controller="Notification"
+               asp-action="Index"
+               class="@(activeMenu == "Notification" ? "active" : "")">
+                <i class="fa fa-bell"></i>
+                <span>Thông báo</span>
+            </a>
+
+            @if (isAdmin)
+            {
+                <a asp-area="Admin"
+                   asp-controller="Dashboard"
+                   asp-action="Index">
+                    <i class="fa fa-shield"></i>
+                    <span>Quản trị hệ thống</span>
+                    @if (pendingReportCount > 0)
+                    {
+                        <span class="admin-sidebar-badge">@pendingReportCount</span>
+                    }
+                </a>
+            }
         }
-    </div>
+    </nav>
 </aside>

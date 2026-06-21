@@ -124,6 +124,17 @@ namespace PetSocial.Areas.Admin.Controllers
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
+            if (normalizedStatus == "Pending" && reports.Count == 0)
+            {
+                reports = await _context.PostReports
+                    .Include(r => r.Post).ThenInclude(p => p.User)
+                    .Include(r => r.Reporter)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .ToListAsync();
+
+                normalizedStatus = "All";
+            }
+
             var model = new AdminPostReportsVM
             {
                 Status = normalizedStatus,

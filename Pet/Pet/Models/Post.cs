@@ -10,6 +10,9 @@ namespace PetSocial.Models
         public string Content { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool IsRemovedByAi { get; set; }
+        public string? ViolationReason { get; set; }
+        public DateTime? RemovedAt { get; set; }
 
         public string UserId { get; set; } = string.Empty;
         [ForeignKey("UserId")]

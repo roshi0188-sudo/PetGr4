@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSocial.Data;
 using PetSocial.Models;
+using PetSocial.Services;
 using System.Globalization;
 
 namespace PetSocial.Controllers
@@ -15,15 +16,18 @@ namespace PetSocial.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly IPetAiService _petAiService;
 
         public PetController(
             ApplicationDbContext context,
             UserManager<AppUser> userManager,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IPetAiService petAiService)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            _petAiService = petAiService;
         }
 
         public async Task<IActionResult> Index(
@@ -166,6 +170,12 @@ namespace PetSocial.Controllers
             var pet = await _context.Pets.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (pet == null) return NotFound();
             ViewBag.CanManagePet = await CanManagePetAsync(pet);
+            ViewBag.NearbyPets = await _context.Pets
+                .AsNoTracking()
+                .Where(p => p.Id != id && !string.IsNullOrWhiteSpace(p.Location))
+                .OrderByDescending(p => p.Id)
+                .Take(8)
+                .ToListAsync();
 
             return View(pet);
         }
@@ -187,11 +197,38 @@ namespace PetSocial.Controllers
 
             if (!ModelState.IsValid) return View(pet);
 
+            if (imageFile != null && imageFile.Length > 0 && string.IsNullOrWhiteSpace(pet.Species))
+            {
+                var aiResult = await _petAiService.ClassifyPetImageAsync(imageFile);
+                if (!string.IsNullOrWhiteSpace(aiResult.Species))
+                    pet.Species = aiResult.Species;
+                if (string.IsNullOrWhiteSpace(pet.Breed) && !string.IsNullOrWhiteSpace(aiResult.Breed))
+                    pet.Breed = aiResult.Breed;
+            }
+
+            NormalizePetFields(pet);
             pet.AvatarUrl = await SavePetImageAsync(imageFile);
             _context.Pets.Add(pet);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Details), new { id = pet.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ClassifyImage(IFormFile? imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return Json(new { success = false, message = "Vui long chon anh thu cung." });
+
+            var result = await _petAiService.ClassifyPetImageAsync(imageFile);
+            return Json(new
+            {
+                success = !string.IsNullOrWhiteSpace(result.Species) || !string.IsNullOrWhiteSpace(result.Breed),
+                species = result.Species,
+                breed = result.Breed,
+                note = result.Note
+            });
         }
 
         public async Task<IActionResult> Edit(int id)
@@ -236,6 +273,7 @@ namespace PetSocial.Controllers
             pet.Hobbies = formPet.Hobbies;
             pet.Location = formPet.Location;
             pet.Description = formPet.Description;
+            NormalizePetFields(pet);
 
             var newImageUrl = await SavePetImageAsync(imageFile);
             if (!string.IsNullOrWhiteSpace(newImageUrl))
@@ -319,6 +357,58 @@ namespace PetSocial.Controllers
             return decimal.TryParse(normalizedValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
                 ? result
                 : null;
+        }
+
+        private static void NormalizePetFields(PetModule pet)
+        {
+            pet.Species = NormalizeTextField(pet.Species) ?? string.Empty;
+            pet.Gender = NormalizeGenderDisplay(pet.Gender);
+            pet.Location = NormalizeTextField(pet.Location);
+            pet.Breed = NormalizeTextField(pet.Breed);
+            pet.FurColor = NormalizeTextField(pet.FurColor);
+            pet.Personality = NormalizeTextField(pet.Personality);
+            pet.Hobbies = NormalizeTextField(pet.Hobbies);
+            pet.Description = NormalizeTextField(pet.Description);
+        }
+
+        private static string? NormalizeGenderDisplay(string? value)
+        {
+            var text = NormalizeTextField(value);
+            if (string.IsNullOrWhiteSpace(text)) return text;
+
+            var key = RemoveVietnameseMarks(text).ToLowerInvariant();
+            return key switch
+            {
+                "duc" or "male" => "Đực",
+                "cai" or "female" => "Cái",
+                _ => text
+            };
+        }
+
+        private static string? NormalizeTextField(string? value)
+        {
+            return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+        }
+
+        private static string RemoveVietnameseMarks(string value)
+        {
+            var normalized = value.Normalize(System.Text.NormalizationForm.FormD);
+            var builder = new System.Text.StringBuilder(normalized.Length);
+
+            foreach (var character in normalized)
+            {
+                var category = CharUnicodeInfo.GetUnicodeCategory(character);
+                if (category != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(character);
+                }
+            }
+
+            return builder
+                .ToString()
+                .Normalize(System.Text.NormalizationForm.FormC)
+                .Replace('đ', 'd')
+                .Replace('Đ', 'D');
         }
     }
 }

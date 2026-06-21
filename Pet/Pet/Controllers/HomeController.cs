@@ -20,7 +20,7 @@ namespace PetSocial.Controllers
                 else
                 {
                     // Đá sang Bảng tin của User
-                    return RedirectToAction("Index", "Pet");
+                    return RedirectToAction("Index", "Post");
                 }
             }
 

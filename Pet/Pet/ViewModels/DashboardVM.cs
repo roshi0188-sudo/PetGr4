@@ -21,12 +21,12 @@ namespace PetSocial.ViewModels
 
     public class UserDashboardVM
     {
-        public string FullName { get; set; }
-        public string Email { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public DateTime JoinDate { get; set; }
         public int PetCount { get; set; }
         public int PostCount { get; set; }
-        public string Role { get; set; }
+        public string Role { get; set; } = string.Empty;
         public bool IsActive { get; set; }
     }
 }

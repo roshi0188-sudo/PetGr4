@@ -1,22 +1,37 @@
+@using System.Text.Json
 @model PetSocial.Models.PetModule
 
 @{
     ViewData["Title"] = Model.Name;
     ViewData["FullWidth"] = true;
+
     var imageUrl = string.IsNullOrWhiteSpace(Model.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.AvatarUrl);
     var breed = string.IsNullOrWhiteSpace(Model.Breed) ? Model.Species : Model.Breed;
     var gender = string.IsNullOrWhiteSpace(Model.Gender) ? "Chưa cập nhật" : Model.Gender;
     var personality = string.IsNullOrWhiteSpace(Model.Personality) ? "Thân thiện" : Model.Personality;
     var hasLocation = !string.IsNullOrWhiteSpace(Model.Location);
     var location = hasLocation ? Model.Location! : "Chưa cập nhật";
-    var mapQuery = hasLocation ? System.Net.WebUtility.UrlEncode(Model.Location) : string.Empty;
-    var mapUrl = hasLocation ? $"https://www.google.com/maps?q={mapQuery}&output=embed" : string.Empty;
+    var mapQueryText = hasLocation && location.Contains("Việt Nam", StringComparison.OrdinalIgnoreCase) ? location : $"{location}, Việt Nam";
+    var mapQuery = hasLocation ? System.Net.WebUtility.UrlEncode(mapQueryText) : string.Empty;
+    var mapUrl = hasLocation ? $"https://www.google.com/maps?q={mapQuery}&z=17&output=embed" : string.Empty;
     var mapLink = hasLocation ? $"https://www.google.com/maps/search/?api=1&query={mapQuery}" : "#";
     var canManagePet = ViewBag.CanManagePet as bool? ?? false;
     ViewData["ActiveMenu"] = canManagePet ? "MyPets" : "PetDirectory";
     var ownerName = !string.IsNullOrWhiteSpace(Model.User?.FullName) ? Model.User.FullName : Model.User?.Email ?? Model.User?.UserName ?? "PetSocial";
     var ownerAvatarUrl = string.IsNullOrWhiteSpace(Model.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.User.AvatarUrl);
     var backAction = canManagePet ? "MyPets" : "Index";
+    var nearbyPets = ViewBag.NearbyPets as IEnumerable<PetSocial.Models.PetModule> ?? Enumerable.Empty<PetSocial.Models.PetModule>();
+    var nearbyPetData = nearbyPets.Select((pet, index) => new
+    {
+        pet.Id,
+        Name = pet.Name,
+        Species = pet.Species,
+        Location = pet.Location,
+        Url = Url.Action("Details", "Pet", new { id = pet.Id }),
+        MarkerClass = (pet.Species ?? "").Contains("mèo", StringComparison.OrdinalIgnoreCase) || (pet.Species ?? "").Contains("meo", StringComparison.OrdinalIgnoreCase) ? "cat" : "dog",
+        Top = 18 + (index % 3) * 22,
+        Left = 16 + (index * 17 % 68)
+    }).ToList();
 }
 
 <section class="pet-page pet-detail-page">
@@ -43,7 +58,10 @@
                     <div class="pet-detail-title">
                         <span class="pet-detail-eyebrow"><i class="fa fa-paw"></i> @Model.Species</span>
                         <h1>@Model.Name</h1>
-                        <p class="pet-detail-meta"><span><i class="fa fa-star"></i> @breed</span><span><i class="fa fa-birthday-cake"></i> @Model.Age tuổi</span></p>
+                        <p class="pet-detail-meta">
+                            <span><i class="fa fa-star"></i> @breed</span>
+                            <span><i class="fa fa-birthday-cake"></i> @Model.Age tuổi</span>
+                        </p>
                         <a asp-controller="Profile" asp-action="Details" asp-route-id="@Model.UserId" class="pet-detail-owner-line">
                             <img src="@ownerAvatarUrl" alt="Ảnh đại diện của @ownerName" />
                             <span>Người đăng: <strong>@ownerName</strong></span>
@@ -56,10 +74,8 @@
                            asp-action="Index"
                            asp-route-communityPetId="@Model.Id"
                            class="pet-detail-connect">
-
                             <i class="fa fa-heart"></i>
                             Kết nối
-
                         </a>
                     }
                 </div>
@@ -68,11 +84,11 @@
                     <div class="pet-detail-tags">
                         <span><i class="fa fa-tag"></i> #@personality.Replace(" ", "")</span>
                         <span><i class="fa fa-tag"></i> #@breed.Replace(" ", "")</span>
-                        <span><i class="fa fa-tag"></i> #@Model.Age Tuổi</span>
+                        <span><i class="fa fa-tag"></i> #@Model.Age tuổi</span>
                     </div>
 
                     <div class="pet-detail-stats">
-                        <div><i class="fa fa-paw"></i><small>Loài</small><strong>@Model.Species</strong></div>
+                        <div><i class="fa fa-paw"></i><small>Loại</small><strong>@Model.Species</strong></div>
                         <div><i class="fa fa-venus-mars"></i><small>Giới tính</small><strong>@gender</strong></div>
                         <div><i class="fa fa-balance-scale"></i><small>Cân nặng</small><strong>@(Model.Weight.HasValue ? $"{Model.Weight:0.#} kg" : "Chưa cập nhật")</strong></div>
                     </div>
@@ -101,7 +117,39 @@
                                     <span class="pet-map-paw-marker" title="Vị trí của @Model.Name">
                                         <i class="fa fa-paw"></i>
                                     </span>
+
+                                    @if (nearbyPetData.Any())
+                                    {
+                                        <div class="pet-nearby-map-layer" aria-label="Thú cưng gần đây trên bản đồ">
+                                            @foreach (var item in nearbyPetData)
+                                            {
+                                                <a href="@item.Url"
+                                                   class="pet-nearby-marker @item.MarkerClass"
+                                                   style="--marker-top:@item.Top%;--marker-left:@item.Left%;"
+                                                   title="@item.Name - @item.Location">
+                                                    <i class="fa @(item.MarkerClass == "cat" ? "fa-github-alt" : "fa-paw")"></i>
+                                                    <span>@item.Name</span>
+                                                </a>
+                                            }
+                                        </div>
+                                    }
                                 </div>
+
+                                @if (nearbyPetData.Any())
+                                {
+                                    <div class="pet-nearby-list">
+                                        <strong>Thú cưng gần đây</strong>
+                                        <div>
+                                            @foreach (var item in nearbyPetData.Take(5))
+                                            {
+                                                <a href="@item.Url">
+                                                    <i class="fa @(item.MarkerClass == "cat" ? "fa-github-alt" : "fa-paw")"></i>
+                                                    @item.Name
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </article>
                         }
                     </div>
@@ -122,7 +170,13 @@
             const link = mapCard.querySelector('[data-pet-map-link]');
             if (!locationText || !frame || !link) return;
 
-            const getCoordsFromText = (value) => {
+            const normalizeMapQuery = value => {
+                const text = (value || '').trim();
+                if (!text) return '';
+                return /việt nam|viet nam/i.test(text) ? text : `${text}, Việt Nam`;
+            };
+
+            const getCoordsFromText = value => {
                 const match = value.match(/^\s*(-?\d+(?:[.,]\d+)?)\s*,\s*(-?\d+(?:[.,]\d+)?)\s*$/);
                 if (!match) return null;
 
@@ -134,6 +188,13 @@
 
             const setMapPosition = ({ lat, lng }) => {
                 const query = `${lat},${lng}`;
+                frame.src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=18&output=embed`;
+                link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+            };
+
+            const setMapByAddress = value => {
+                const query = normalizeMapQuery(value);
+                if (!query) return;
                 frame.src = `https://www.google.com/maps?q=${encodeURIComponent(query)}&z=17&output=embed`;
                 link.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
             };
@@ -146,16 +207,23 @@
                 }
 
                 try {
-                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=vi&q=${encodeURIComponent(locationText)}`;
+                    const query = normalizeMapQuery(locationText);
+                    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&addressdetails=1&accept-language=vi&q=${encodeURIComponent(query)}`;
                     const response = await fetch(url);
-                    if (!response.ok) return;
+                    if (!response.ok) {
+                        setMapByAddress(locationText);
+                        return;
+                    }
 
                     const results = await response.json();
-                    if (!results.length) return;
+                    if (!results.length) {
+                        setMapByAddress(locationText);
+                        return;
+                    }
 
                     setMapPosition({ lat: results[0].lat, lng: results[0].lon });
                 } catch {
-                    // Nếu không đổi được địa chỉ sang tọa độ, vẫn giữ bản đồ theo địa chỉ đã lưu.
+                    setMapByAddress(locationText);
                 }
             };
 
