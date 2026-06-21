@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Hong-Lam\\OneDrive\\Máy tính\\Hutech\\HK2N3\\LTW\\PetGr4\\Pet\\Pet\\PetSocial.csproj": {}
+    "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Hong-Lam\\OneDrive\\Máy tính\\Hutech\\HK2N3\\LTW\\PetGr4\\Pet\\Pet\\PetSocial.csproj": {
+    "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Hong-Lam\\OneDrive\\Máy tính\\Hutech\\HK2N3\\LTW\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
+        "projectUniqueName": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
         "projectName": "PetSocial",
-        "projectPath": "C:\\Users\\Hong-Lam\\OneDrive\\Máy tính\\Hutech\\HK2N3\\LTW\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
-        "packagesPath": "C:\\Users\\Hong-Lam\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Hong-Lam\\OneDrive\\Máy tính\\Hutech\\HK2N3\\LTW\\PetGr4\\Pet\\Pet\\obj\\",
+        "projectPath": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\PetSocial.csproj",
+        "packagesPath": "C:\\Users\\NGOC\\.nuget\\packages\\",
+        "outputPath": "D:\\LapTrinhWeb\\PetGr4\\Pet\\Pet\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Hong-Lam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\NGOC\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

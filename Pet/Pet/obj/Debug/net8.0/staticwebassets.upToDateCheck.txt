@@ -37,6 +37,7 @@ wwwroot\images\Pet\meo.jpg
 wwwroot\images\Pet\poodle.jpg
 wwwroot\images\posts\46ea1dee66fe4b1cad41029df2c628a7.jpg
 wwwroot\images\posts\630eefa986ab4ef690e8ccf7af319e2b.jpg
+wwwroot\images\posts\68615cb6bbab405e881b8f824637183e.jpg
 wwwroot\images\posts\fd4be11bd2274eac8a7caf593ae81012.png
 wwwroot\js\site.js
 wwwroot\js\splash.js

@@ -1,4 +1,11 @@
-<footer class="app-footer">
+@{
+    var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var action = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var area = (ViewContext.RouteData.Values["area"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var isHomePage = string.IsNullOrWhiteSpace(area) && controller == "home" && action == "index";
+}
+
+<footer class="app-footer @(isHomePage ? "app-footer-full" : "app-footer-compact")">
     <div class="container-fluid app-footer-inner">
         <div class="app-footer-brand-block">
             <a class="app-footer-logo" asp-controller="Home" asp-action="Index">
@@ -10,7 +17,7 @@
                     <small>Cộng đồng yêu thú cưng</small>
                 </span>
             </a>
-            <p>Kết nối, chia sẻ khoảnh khắc và quản lý hồ sơ thú cưng của bạn theo cách thân thiện hơn.</p>
+            <p class="app-footer-slogan">Kết nối, chia sẻ khoảnh khắc và quản lý hồ sơ thú cưng của bạn theo cách thân thiện hơn.</p>
             <div class="app-footer-socials">
                 <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
                 <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
@@ -18,31 +25,37 @@
             </div>
         </div>
 
-        <div class="app-footer-column">
-            <h3>Liên kết nhanh</h3>
-            <a asp-controller="Home" asp-action="Index">Trang chủ</a>
-            <a asp-controller="Pet" asp-action="Index">Hồ sơ thú cưng</a>
-            <a href="#">Pet Dating</a>
-            <a href="#">Tin nhắn</a>
-        </div>
+        @if (isHomePage)
+        {
+            <div class="app-footer-column">
+                <h3>Liên kết nhanh</h3>
+                <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                <a asp-controller="Pet" asp-action="Index">Hồ sơ thú cưng</a>
+                <a href="#">Pet Dating</a>
+                <a href="#">Tin nhắn</a>
+            </div>
 
-        <div class="app-footer-column">
-            <h3>Tài nguyên</h3>
-            <a href="#">Trung tâm hỗ trợ</a>
-            <a href="#">Quy định cộng đồng</a>
-            <a href="#">Chính sách riêng tư</a>
-            <a href="#">Điều khoản dịch vụ</a>
-        </div>
+            <div class="app-footer-column">
+                <h3>Tài nguyên</h3>
+                <a href="#">Trung tâm hỗ trợ</a>
+                <a href="#">Quy định cộng đồng</a>
+                <a href="#">Chính sách riêng tư</a>
+                <a href="#">Điều khoản dịch vụ</a>
+            </div>
 
-        <div class="app-footer-column app-footer-contact">
-            <h3>Liên hệ</h3>
-            <a href="mailto:hello@petsocial.com">hello@petsocial.com</a>
-            <a href="tel:0900000000">0900 000 000</a>
-        </div>
+            <div class="app-footer-column app-footer-contact">
+                <h3>Liên hệ</h3>
+                <a href="mailto:hello@petsocial.com">hello@petsocial.com</a>
+                <a href="tel:0900000000">0900 000 000</a>
+            </div>
+        }
     </div>
 
-    <div class="container-fluid app-footer-bottom">
-        <span>© 2026 PetSocial. All rights reserved.</span>
-        <span>Made for pet lovers.</span>
-    </div>
+    @if (isHomePage)
+    {
+        <div class="container-fluid app-footer-bottom">
+            <span>© 2026 PetSocial. All rights reserved.</span>
+            <span>Made for pet lovers.</span>
+        </div>
+    }
 </footer>

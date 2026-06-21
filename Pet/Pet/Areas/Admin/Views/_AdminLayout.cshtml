@@ -153,6 +153,23 @@
             color: #6f625b;
         }
 
+        .admin-main .app-footer-compact {
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .admin-main .app-footer-compact .app-footer-brand-block {
+            grid-template-columns: minmax(180px, 220px) minmax(260px, 1fr) minmax(116px, 220px);
+            align-items: center;
+        }
+
+        .admin-main .app-footer-compact .app-footer-slogan {
+            text-align: center;
+        }
+
+        .admin-main .app-footer-compact .app-footer-socials {
+            justify-content: flex-end;
+        }
+
         @@keyframes adminBellRing {
             0%, 100% { transform: rotate(0deg); }
             15% { transform: rotate(15deg); }
@@ -167,6 +184,19 @@
                 grid-column: 1;
                 grid-row: 3;
                 padding: 22px 16px 0;
+            }
+
+            .admin-main .app-footer-compact .app-footer-brand-block {
+                grid-template-columns: 1fr;
+                align-items: flex-start;
+            }
+
+            .admin-main .app-footer-compact .app-footer-slogan {
+                text-align: left;
+            }
+
+            .admin-main .app-footer-compact .app-footer-socials {
+                justify-content: flex-start;
             }
 
             .admin-shell.sidebar-collapsed {
@@ -252,7 +282,7 @@
                 @RenderBody()
             </main>
 
-            <footer class="app-footer mt-5">
+            <footer class="app-footer app-footer-compact mt-5">
                 <div class="container-fluid app-footer-inner">
                     <div class="app-footer-brand-block">
                         <a class="app-footer-logo" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
@@ -264,30 +294,13 @@
                                 <small>Quản trị cộng đồng</small>
                             </span>
                         </a>
-                        <p>Kiểm duyệt nội dung, theo dõi hoạt động và giữ cho cộng đồng yêu thú cưng an toàn hơn.</p>
+                        <p class="app-footer-slogan">Kiểm duyệt nội dung, theo dõi hoạt động và giữ cho cộng đồng yêu thú cưng an toàn hơn.</p>
+                        <div class="app-footer-socials">
+                            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                        </div>
                     </div>
-
-                    <div class="app-footer-column">
-                        <h3>Quản trị</h3>
-                        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Tổng quan</a>
-                        <a asp-area="Admin" asp-controller="User" asp-action="Index">Người dùng</a>
-                        <a asp-area="Admin" asp-controller="Pet" asp-action="Index">Thú cưng</a>
-                        <a asp-area="Admin" asp-controller="Posts" asp-action="Index">Bài viết</a>
-                    </div>
-
-                    <div class="app-footer-column">
-                        <h3>Kiểm duyệt</h3>
-                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Pending">Nội dung vi phạm</a>
-                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Resolved">Đã xử lý</a>
-                        <a asp-area="Admin" asp-controller="Posts" asp-action="Reports" asp-route-status="Dismissed">Bỏ qua</a>
-                    </div>
-
-                    
-                </div>
-
-                <div class="container-fluid app-footer-bottom">
-                    <span>© 2026 PetSocial Admin.</span>
-                    <span class="admin-footer-note">Made for a safer pet community.</span>
                 </div>
             </footer>
         </div>

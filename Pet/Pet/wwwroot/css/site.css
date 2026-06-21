@@ -1103,6 +1103,38 @@ img {
     padding: 34px clamp(18px, 4vw, 72px) 22px 28px;
 }
 
+.app-footer-compact {
+    background: rgba(255, 250, 246, 0.92);
+}
+
+.app-footer-compact .app-footer-inner {
+    display: block;
+    padding: 16px clamp(18px, 4vw, 72px) 16px 28px;
+}
+
+.app-footer-compact .app-footer-brand-block {
+    display: grid;
+    grid-template-columns: minmax(180px, 220px) minmax(260px, 1fr) minmax(116px, 220px);
+    align-items: center;
+    gap: 28px;
+    width: 100%;
+    min-width: 0;
+}
+
+.app-footer-compact .app-footer-slogan {
+    max-width: none;
+    margin: 0;
+    color: #7a6c65;
+    text-align: center;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.app-footer-compact .app-footer-socials {
+    justify-content: flex-end;
+    min-width: 116px;
+}
+
 .app-footer-logo strong,
 .app-footer-column h3 {
     color: #35241c;
@@ -3586,6 +3618,16 @@ img {
     .pet-delete-card,
     .app-footer-inner {
         grid-template-columns: 1fr;
+    }
+
+    .app-footer-compact .app-footer-brand-block {
+        grid-template-columns: 1fr;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .app-footer-compact .app-footer-socials {
+        justify-content: flex-start;
     }
 
     .app-shell {
