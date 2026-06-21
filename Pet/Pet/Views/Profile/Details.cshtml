@@ -10,6 +10,7 @@
     var displayName = string.IsNullOrWhiteSpace(Model.User.FullName) ? Model.User.UserName ?? "Người dùng PetSocial" : Model.User.FullName;
     var email = string.IsNullOrWhiteSpace(Model.User.Email) ? "Chưa cập nhật email" : Model.User.Email;
     var phone = string.IsNullOrWhiteSpace(Model.User.PhoneNumber) ? "Chưa cập nhật số điện thoại" : Model.User.PhoneNumber;
+    var currentUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
 @if (User.Identity?.IsAuthenticated == true)
@@ -70,8 +71,9 @@
                         <a asp-controller="Chat" asp-action="Index" asp-route-userId="@Model.User.Id" class="profile-primary-action">
                             <i class="fa fa-comments"></i> Nhắn tin
                         </a>
-                        <button type="button" id="profileFollowBtn" data-user-id="@Model.User.Id" class="profile-follow-button @(Model.IsFollowing ? "is-following" : "")">
-                            <i id="followBtnIcon" class="fa @(Model.IsFollowing ? "fa-user-check" : "fa-user-plus")"></i>
+                        <button type="button" id="profileFollowBtn" data-user-id="@Model.User.Id" class="profile-follow-button @(Model.IsFollowing ? "is-following" : "")"
+                                style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;font-weight:700;font-size:0.85rem;border:2px solid @(Model.IsFollowing ? "#d1d5db" : "#FF6B00");background:@(Model.IsFollowing ? "#f9fafb" : "#FF6B00");color:@(Model.IsFollowing ? "#374151" : "#fff");cursor:pointer;transition:all .2s;">
+                            <i class="fa @(Model.IsFollowing ? "fa-user-check" : "fa-user-plus")"></i>
                             <span id="followBtnText">@(Model.IsFollowing ? "Đang theo dõi" : "Theo dõi")</span>
                         </button>
 
@@ -89,8 +91,6 @@
                 </div>
             </div>
 
-            @if (Model.IsOwnProfile)
-            {
             <div class="profile-meta-grid">
                 <div class="profile-meta-item">
                     <i class="fa fa-envelope"></i> <span>Email</span> <strong>@email</strong>
@@ -111,8 +111,6 @@
                 </div>
             </div>
 
-            }
-
             <div class="profile-stats">
                 <div><strong>@Model.PostCount</strong> <span>Bài viết</span></div>
                 <a asp-action="Followers" asp-route-id="@Model.User.Id">
@@ -130,7 +128,15 @@
                     <h2>Bài viết đã đăng</h2>
                     <p>Những chia sẻ gần đây của @displayName.</p>
                 </div>
-                <span>@Model.PostCount bài viết</span>
+                <div class="profile-section-actions" style="display:flex;align-items:center;gap:10px;">
+                    @if (Model.IsOwnProfile)
+                    {
+                        <a asp-controller="Post" asp-action="Create" asp-route-returnUrl="@currentUrl" class="profile-primary-action" style="white-space:nowrap;">
+                            <i class="fa fa-plus"></i> Thêm bài viết
+                        </a>
+                    }
+                    <span>@Model.PostCount bài viết</span>
+                </div>
             </div>
 
             @if (!Model.Posts.Any())
@@ -170,8 +176,8 @@
                                 @if (Model.IsOwnProfile || isAdmin)
                                 {
                                     <div style="display:flex;gap:6px;align-items:center;">
-                                        <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id" class="profile-post-edit-btn" title="Sửa bài viết" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#f0fdf4;color:#15803d;text-decoration:none;"><i class="fa fa-pencil"></i></a>
-                                        <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" style="margin:0;">
+                                        <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id" asp-route-returnUrl="@currentUrl" class="profile-post-edit-btn" title="Sửa bài viết" style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#f0fdf4;color:#15803d;text-decoration:none;"><i class="fa fa-pencil"></i></a>
+                                        <form asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" asp-route-returnUrl="@currentUrl" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?');" style="margin:0;">
                                             @Html.AntiForgeryToken()
                                             <button type="submit" class="profile-post-delete" title="Xóa bài viết"><i class="fa fa-trash"></i></button>
                                         </form>
@@ -252,53 +258,51 @@
 
 @section Scripts {
     <script>
-        const profileFollowBtn = document.getElementById('profileFollowBtn');
-        if (profileFollowBtn) {
-            profileFollowBtn.addEventListener('click', async () => {
-                const targetUserId = profileFollowBtn.dataset.userId;
-                if (!targetUserId || profileFollowBtn.disabled) return;
+        // ===== THEO DÕI =====
+        (function () {
+            const btn = document.getElementById('profileFollowBtn');
+            if (!btn) return;
 
-                profileFollowBtn.disabled = true;
+            btn.addEventListener('click', function () {
+                btn.disabled = true;
 
-                try {
-                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
-                    const response = await fetch('/Post/ToggleFollow', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'RequestVerificationToken': token
-                        },
-                        body: new URLSearchParams({ targetUserId }).toString()
-                    });
+                const targetUserId = btn.getAttribute('data-user-id');
+                const formData = new FormData();
+                formData.append('targetUserId', targetUserId);
 
-                    const data = await response.json();
-                    if (!data.success) return;
+                fetch('/Post/ToggleFollow', { method: 'POST', body: formData })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (!data.success) { alert(data.message || 'Có lỗi xảy ra.'); return; }
 
-                    const followText = document.getElementById('followBtnText');
-                    const followIcon = document.getElementById('followBtnIcon');
-                    const followerCount = document.getElementById('followerCountLabel');
+                        const textEl = document.getElementById('followBtnText');
+                        const icon = btn.querySelector('i.fa');
 
-                    profileFollowBtn.classList.toggle('is-following', data.isFollowing);
-                    if (followText) {
-                        followText.textContent = data.isFollowing
-                            ? '\u0110ang theo d\u00f5i'
-                            : 'Theo d\u00f5i';
-                    }
+                        if (data.isFollowing) {
+                            if (textEl) textEl.textContent = 'Đang theo dõi';
+                            if (icon) { icon.classList.remove('fa-user-plus'); icon.classList.add('fa-user-check'); }
+                            btn.style.background = '#f9fafb';
+                            btn.style.color = '#374151';
+                            btn.style.borderColor = '#d1d5db';
+                            btn.classList.add('is-following');
+                        } else {
+                            if (textEl) textEl.textContent = 'Theo dõi';
+                            if (icon) { icon.classList.remove('fa-user-check'); icon.classList.add('fa-user-plus'); }
+                            btn.style.background = '#FF6B00';
+                            btn.style.color = '#fff';
+                            btn.style.borderColor = '#FF6B00';
+                            btn.classList.remove('is-following');
+                        }
 
-                    if (followIcon) {
-                        followIcon.classList.toggle('fa-user-check', data.isFollowing);
-                        followIcon.classList.toggle('fa-user-plus', !data.isFollowing);
-                    }
-
-                    if (followerCount) {
-                        followerCount.textContent = data.followerCount;
-                    }
-                } finally {
-                    profileFollowBtn.disabled = false;
-                }
+                        const countEl = document.getElementById('followerCountLabel');
+                        if (countEl && data.followerCount !== undefined) countEl.textContent = data.followerCount;
+                    })
+                    .catch(() => alert('Không thể kết nối. Vui lòng thử lại.'))
+                    .finally(() => { btn.disabled = false; });
             });
-        }
+        })();
 
+        // ===== BÌNH LUẬN TRONG PROFILE =====
         function toggleProfileComments(btn) {
             const postId = btn.getAttribute('data-post-id');
             const panel = document.getElementById('profile-comments-' + postId);
@@ -328,7 +332,7 @@
                     </div>
                     <div style="background:#faf7f5;border-radius:14px;padding:8px 14px;flex:1;">
                         <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
-                            <a href="/Profile/Details/${data.userId}" style="font-size:12px;color:#1a1a1a;font-weight:700;text-decoration:none;">${data.authorName ?? 'Thành viên'}</a>
+                            <span style="font-size:12px;color:#1a1a1a;font-weight:700;">${data.authorName ?? 'Thành viên'}</span>
                             <span style="font-size:10px;color:#9ca3af;">${data.createdAt}</span>
                         </div>
                         <p style="font-size:13px;color:#374151;margin:0;line-height:1.5;">${data.content.replace(/</g,'&lt;')}</p>
