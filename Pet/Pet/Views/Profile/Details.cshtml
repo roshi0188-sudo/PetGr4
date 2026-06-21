@@ -70,9 +70,8 @@
                         <a asp-controller="Chat" asp-action="Index" asp-route-userId="@Model.User.Id" class="profile-primary-action">
                             <i class="fa fa-comments"></i> Nhắn tin
                         </a>
-                        <button type="button" id="profileFollowBtn" data-user-id="@Model.User.Id" class="profile-follow-button @(Model.IsFollowing ? "is-following" : "")"
-                                style="display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;font-weight:700;font-size:0.85rem;border:2px solid @(Model.IsFollowing ? "#d1d5db" : "#FF6B00");background:@(Model.IsFollowing ? "#f9fafb" : "#FF6B00");color:@(Model.IsFollowing ? "#374151" : "#fff");cursor:pointer;transition:all .2s;">
-                            <i class="fa @(Model.IsFollowing ? "fa-user-check" : "fa-user-plus")"></i>
+                        <button type="button" id="profileFollowBtn" data-user-id="@Model.User.Id" class="profile-follow-button @(Model.IsFollowing ? "is-following" : "")">
+                            <i id="followBtnIcon" class="fa @(Model.IsFollowing ? "fa-user-check" : "fa-user-plus")"></i>
                             <span id="followBtnText">@(Model.IsFollowing ? "Đang theo dõi" : "Theo dõi")</span>
                         </button>
 
@@ -90,6 +89,8 @@
                 </div>
             </div>
 
+            @if (Model.IsOwnProfile)
+            {
             <div class="profile-meta-grid">
                 <div class="profile-meta-item">
                     <i class="fa fa-envelope"></i> <span>Email</span> <strong>@email</strong>
@@ -109,6 +110,8 @@
                     }
                 </div>
             </div>
+
+            }
 
             <div class="profile-stats">
                 <div><strong>@Model.PostCount</strong> <span>Bài viết</span></div>
@@ -249,6 +252,53 @@
 
 @section Scripts {
     <script>
+        const profileFollowBtn = document.getElementById('profileFollowBtn');
+        if (profileFollowBtn) {
+            profileFollowBtn.addEventListener('click', async () => {
+                const targetUserId = profileFollowBtn.dataset.userId;
+                if (!targetUserId || profileFollowBtn.disabled) return;
+
+                profileFollowBtn.disabled = true;
+
+                try {
+                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+                    const response = await fetch('/Post/ToggleFollow', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: new URLSearchParams({ targetUserId }).toString()
+                    });
+
+                    const data = await response.json();
+                    if (!data.success) return;
+
+                    const followText = document.getElementById('followBtnText');
+                    const followIcon = document.getElementById('followBtnIcon');
+                    const followerCount = document.getElementById('followerCountLabel');
+
+                    profileFollowBtn.classList.toggle('is-following', data.isFollowing);
+                    if (followText) {
+                        followText.textContent = data.isFollowing
+                            ? '\u0110ang theo d\u00f5i'
+                            : 'Theo d\u00f5i';
+                    }
+
+                    if (followIcon) {
+                        followIcon.classList.toggle('fa-user-check', data.isFollowing);
+                        followIcon.classList.toggle('fa-user-plus', !data.isFollowing);
+                    }
+
+                    if (followerCount) {
+                        followerCount.textContent = data.followerCount;
+                    }
+                } finally {
+                    profileFollowBtn.disabled = false;
+                }
+            });
+        }
+
         function toggleProfileComments(btn) {
             const postId = btn.getAttribute('data-post-id');
             const panel = document.getElementById('profile-comments-' + postId);

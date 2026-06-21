@@ -72,6 +72,57 @@
     color: inherit !important;
     }
 
+    .post-author-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+    }
+
+    .post-author-link:hover h3 {
+    color: #ff6b00 !important;
+    }
+
+    .post-author-avatar {
+    box-shadow: 0 0 0 3px #fff1e7;
+    border: 2px solid #ff7e21;
+    }
+
+    .post-comment-form {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    }
+
+    .post-comment-input-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    }
+
+    .post-comment-submit {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border: 0 !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    color: #ff6b00 !important;
+    font-weight: 900 !important;
+    box-shadow: none !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    }
+
+    .post-comment-submit:hover {
+    background: #fff1e7 !important;
+    color: #e55a00 !important;
+    transform: translateY(-1px);
+    }
+
     @@media (max-width: 860px) {
     .app-shell-content-container {
     padding: 24px 22px 56px;
@@ -129,14 +180,17 @@
                 <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden ambient-shadow transition-all duration-300">
                     
                     <div class="p-5 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
+                        <a asp-controller="Profile"
+                           asp-action="Details"
+                           asp-route-id="@post.UserId"
+                           class="post-author-link">
                             @if (!string.IsNullOrWhiteSpace(post.User?.AvatarUrl))
                             {
-                                <img src="@post.User.AvatarUrl" alt="Avatar" class="w-11 h-11 rounded-full object-cover ring-2 ring-pet-primary-fixed" />
+                                <img src="@post.User.AvatarUrl" alt="Avatar" class="post-author-avatar w-11 h-11 rounded-full object-cover" />
                             }
                             else
                             {
-                                <div class="w-11 h-11 rounded-full bg-orange-100 text-pet-primary flex items-center justify-center font-bold text-sm ring-2 ring-pet-primary-fixed">
+                                <div class="post-author-avatar w-11 h-11 rounded-full bg-orange-100 text-pet-primary flex items-center justify-center font-bold text-sm">
                                     @((string.IsNullOrEmpty(post.User?.FullName) ? "U" : post.User.FullName.Substring(0, 1).ToUpper()))
                                 </div>
                             }
@@ -147,7 +201,7 @@
                                     @post.CreatedAt.ToString("dd/MM/yyyy HH:mm")
                                 </p>
                             </div>
-                        </div>
+                        </a>
 
                         <div class="flex items-center gap-1 bg-gray-50 p-1 rounded-full">
                             <a asp-action="Details" asp-route-id="@post.Id" class="text-xs font-bold text-gray-600 hover:text-gray-900 hover:bg-white px-3 py-1.5 rounded-full transition-all">Chi tiết</a>
@@ -246,12 +300,12 @@
 
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <div class="flex items-end gap-2 pt-2 border-t border-gray-100">
-                                <div class="flex-1 border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-pet-primary transition-all bg-white shadow-sm">
+                            <div class="post-comment-form pt-2 border-t border-gray-100">
+                                <div class="post-comment-input-wrap border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-pet-primary transition-all bg-white shadow-sm">
                                     <textarea id="comment-input-@post.Id" rows="2" class="w-full px-3 py-2 border-none focus:ring-0 outline-none text-gray-800 text-xs resize-none" placeholder="Viết bình luận công khai..."></textarea>
                                 </div>
-                                <button type="button" onclick="submitComment(@post.Id)" class="flex-shrink-0 bg-pet-primary hover:bg-pet-primary-hover text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm active:scale-95">
-                                    Gửi
+                                <button type="button" onclick="submitComment(@post.Id)" class="post-comment-submit transition-all active:scale-95" aria-label="Gửi bình luận">
+                                    <span class="material-symbols-outlined text-[22px]">send</span>
                                 </button>
                             </div>
                         }

@@ -326,7 +326,8 @@ namespace PetSocial.Controllers
                 .Include(x => x.SenderPet)
                 .Include(x => x.ReceiverPet)
                 .Where(x =>
-                    myPetIds.Contains(x.ReceiverPetId) &&
+                    (myPetIds.Contains(x.ReceiverPetId) ||
+                     myPetIds.Contains(x.SenderPetId)) &&
                     x.Status == "Pending")
                 .OrderByDescending(x => x.CreatedAt)
                 .ToList();

@@ -35,39 +35,59 @@
 }
 
 .request-grid {
-    max-width: 1120px;
+    max-width: 1180px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 380px));
+    gap: 28px;
+    justify-content: start;
 }
 
 .request-card {
-    display: grid;
-    grid-template-columns: 210px minmax(0, 1fr);
-    min-height: 260px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-width: none;
     background: #ffffff;
-    border: 1px solid #fed7aa;
-    border-radius: 8px;
+    border: 1px solid #ffe0c4;
+    border-radius: 22px;
     overflow: hidden;
-    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.08);
+    box-shadow: 0 22px 46px rgba(31, 41, 55, 0.09);
+}
+
+.request-pet-pair {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 72px;
+    min-height: 158px;
+    margin: 24px 22px 0;
+    padding: 0 6px 18px;
+    background: #ffffff;
 }
 
 .request-pet-photo {
     position: relative;
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: 260px;
-    background: #ffedd5;
-    overflow: hidden;
+    display: flex;
+    flex: 0 0 118px;
+    flex-direction: column;
+    align-items: center;
+    min-height: 0;
+    color: #17233c;
+    overflow: visible;
+    text-decoration: none;
 }
 
 .request-pet-photo img {
-    width: 100%;
-    height: 100%;
+    width: 118px;
+    height: 118px;
     object-fit: cover;
     display: block;
+    border: 3px solid #ff7e21;
+    border-radius: 50%;
+    background: #ffedd5;
+    box-shadow: 0 12px 24px rgba(255, 126, 33, 0.16);
     transition: transform 0.2s ease;
 }
 
@@ -77,26 +97,77 @@
 
 .request-new-badge {
     position: absolute;
-    top: 12px;
-    left: 12px;
+    top: -5px;
+    left: 0;
     padding: 4px 8px;
-    border-radius: 6px;
+    border-radius: 9px;
     background: #fb3f5f;
     color: #ffffff;
     font-size: 11px;
     font-weight: 900;
+    box-shadow: 0 10px 18px rgba(251, 63, 95, 0.28);
+}
+
+.request-pet-label {
+    overflow: hidden;
+    max-width: 118px;
+    margin-top: 10px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #17233c;
+    font-size: 12px;
+    font-weight: 900;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.request-pair-heart {
+    position: absolute;
+    z-index: 2;
+    top: 58px;
+    left: 50%;
+    width: 54px;
+    height: 54px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    background: #fb3f5f;
+    color: #ffffff;
+    font-size: 24px;
+    box-shadow: 0 14px 28px rgba(251, 63, 95, 0.32);
+    transform: translateX(-50%);
 }
 
 .request-card-body {
-    padding: 22px;
+    padding: 2px 24px 24px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     min-width: 0;
+    text-align: center;
+    background: #ffffff;
+}
+
+.request-pair-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin: 6px 0 4px;
+}
+
+.request-pair-title > i {
+    color: #fb3f5f;
+    font-size: 16px;
 }
 
 .request-pet-name {
     color: #17233c;
-    font-size: 24px;
+    font-size: 1.38rem;
     line-height: 1.1;
     font-weight: 900;
     text-decoration: none;
@@ -109,20 +180,22 @@
 
 .request-breed {
     align-self: flex-start;
-    margin-top: 8px;
-    padding: 5px 9px;
-    border-radius: 6px;
-    background: #ffbf47;
+    margin: 10px auto 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fff4bf;
     color: #3b2600;
     font-size: 12px;
     font-weight: 900;
 }
 
 .request-card-body p {
-    margin: 16px 0 10px;
-    color: #5f6b7a;
-    font-weight: 600;
-    line-height: 1.5;
+    max-width: 260px;
+    margin: 14px auto 8px;
+    color: #17233c;
+    font-size: 1.08rem;
+    font-weight: 900;
+    line-height: 1.3;
 }
 
 .request-card-body p a {
@@ -135,57 +208,81 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    color: #7c8796;
-    font-size: 13px;
+    color: #667085;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .request-actions {
     margin-top: auto;
     padding-top: 20px;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
+}
+
+.request-actions-sent {
+    grid-template-columns: 0.9fr 1.1fr;
 }
 
 .request-actions form {
     margin: 0;
 }
 
-.request-accept,
-.request-decline {
+.request-sent-status {
     width: 100%;
-    min-height: 42px;
-    border-radius: 6px;
+    min-height: 46px;
+    border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-weight: 800;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.request-accept,
+.request-decline {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 900;
     font-size: 14px;
     text-decoration: none;
 }
 
 .request-accept {
     border: 1px solid #fb923c;
-    background: #fb923c;
+    background: linear-gradient(135deg, #ff8a2a, #ff6b00);
     color: #ffffff;
+    box-shadow: 0 12px 24px rgba(255, 107, 0, 0.2);
 }
 
 .request-accept:hover {
-    background: #f97316;
+    background: linear-gradient(135deg, #ff6b00, #e55a00);
     border-color: #f97316;
     color: #ffffff;
+    transform: translateY(-1px);
 }
 
 .request-decline {
-    border: 1px solid #fb7185;
-    background: #ffffff;
+    border: 1px solid #f3d7d7;
+    background: #fff8f8;
     color: #e11d48;
+    box-shadow: none;
 }
 
 .request-decline:hover {
     background: #fff1f2;
+    color: #be123c;
+    transform: translateY(-1px);
 }
 
 .empty-request-box {
@@ -215,29 +312,46 @@
     font-weight: 600;
 }
 
-@media (max-width: 1100px) {
-    .request-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 700px) {
     .request-page {
         padding: 24px 14px 42px;
     }
 
     .request-card {
-        grid-template-columns: 1fr;
+        max-width: none;
     }
 
-    .request-pet-photo {
-        aspect-ratio: 16 / 11;
+    .request-pet-pair {
         min-height: 0;
+        gap: 48px;
+    }
+
+    .request-pet-photo,
+    .request-pet-photo img {
+        width: 104px;
+        flex-basis: 104px;
+    }
+
+    .request-pet-photo img {
+        height: 104px;
+    }
+
+    .request-pair-heart {
+        top: 50px;
     }
 }
 
 @media (max-width: 430px) {
-    .request-actions {
+    .request-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .request-pet-pair {
+        gap: 34px;
+    }
+
+    .request-actions,
+    .request-actions-sent {
         grid-template-columns: 1fr;
     }
 }

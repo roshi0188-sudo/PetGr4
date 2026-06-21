@@ -34,26 +34,37 @@
 }
 
 .matches-grid {
-    max-width: 1120px;
+    max-width: 1180px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 360px));
+    gap: 24px;
+    justify-content: start;
 }
 
 .match-card {
-    padding: 22px;
+    padding: 20px;
     background: #ffffff;
-    border: 1px solid #fed7aa;
-    border-radius: 8px;
-    box-shadow: 0 16px 36px rgba(249, 115, 22, 0.08);
+    border: 1px solid #ffe0c4;
+    border-radius: 18px;
+    box-shadow: 0 18px 38px rgba(31, 41, 55, 0.08);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.match-card:hover {
+    border-color: #ffbf8a;
+    box-shadow: 0 24px 46px rgba(249, 115, 22, 0.13);
+    transform: translateY(-2px);
 }
 
 .match-pets {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 16px;
+    background: #fff8f1;
 }
 
 .match-pet {
@@ -69,8 +80,8 @@
     aspect-ratio: 1 / 1;
     object-fit: cover;
     display: block;
-    border-radius: 8px;
-    border: 4px solid #ffb36b;
+    border-radius: 16px;
+    border: 3px solid #ff8a2a;
     background: #ffedd5;
     transition: transform 0.2s ease;
 }
@@ -83,39 +94,40 @@
     display: inline-flex;
     max-width: 100%;
     margin-top: 10px;
-    padding: 5px 10px;
-    border-radius: 6px;
-    background: #ffbf47;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #fff4bf;
     color: #3b2600;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.2;
     overflow-wrap: anywhere;
 }
 
 .match-heart {
-    width: 56px;
-    height: 56px;
+    width: 48px;
+    height: 48px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #fff1f2;
-    color: #fb3f5f;
-    font-size: 28px;
-    box-shadow: 0 10px 24px rgba(244, 63, 94, 0.14);
+    border: 3px solid #ffffff;
+    background: #fb3f5f;
+    color: #ffffff;
+    font-size: 22px;
+    box-shadow: 0 12px 26px rgba(244, 63, 94, 0.22);
 }
 
 .match-info {
-    margin-top: 20px;
-    padding-top: 18px;
-    border-top: 1px solid #fed7aa;
+    margin-top: 16px;
+    padding: 0 6px;
+    border-top: 0;
     text-align: center;
 }
 
 .match-info h2 {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     color: #17233c;
-    font-size: 24px;
+    font-size: 1.35rem;
     line-height: 1.2;
     font-weight: 900;
     overflow-wrap: anywhere;
@@ -129,8 +141,8 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    padding: 6px 10px;
-    border-radius: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
     background: #ecfdf5;
     color: #047857;
     font-size: 13px;
@@ -149,8 +161,9 @@
 }
 
 .match-actions {
-    margin-top: 20px;
+    margin-top: 18px;
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
@@ -161,37 +174,41 @@
 .match-chat,
 .match-cancel {
     width: 100%;
-    min-height: 42px;
-    border-radius: 6px;
+    min-height: 44px;
+    border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 900;
     text-decoration: none;
 }
 
 .match-chat {
     border: 1px solid #fb923c;
-    background: #fb923c;
+    background: linear-gradient(135deg, #ff8a2a, #ff6b00);
     color: #ffffff;
+    box-shadow: 0 12px 24px rgba(255, 107, 0, 0.18);
 }
 
 .match-chat:hover {
-    background: #f97316;
+    background: linear-gradient(135deg, #ff6b00, #e55a00);
     border-color: #f97316;
     color: #ffffff;
+    transform: translateY(-1px);
 }
 
 .match-cancel {
-    border: 1px solid #fb7185;
-    background: #ffffff;
+    border: 1px solid #f3d7d7;
+    background: #fff8f8;
     color: #e11d48;
 }
 
 .match-cancel:hover {
     background: #fff1f2;
+    color: #be123c;
+    transform: translateY(-1px);
 }
 
 .matches-empty {
@@ -221,12 +238,6 @@
     font-weight: 600;
 }
 
-@media (max-width: 1100px) {
-    .matches-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 640px) {
     .matches-page {
         padding: 24px 14px 42px;
@@ -238,6 +249,10 @@
 
     .match-pets {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .match-actions {
+        grid-template-columns: 1fr;
     }
 
     .match-heart {

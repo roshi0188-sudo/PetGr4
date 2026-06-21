@@ -5,6 +5,8 @@
     ViewData["ActiveMenu"] = "Requests";
     ViewData["FullWidth"] = true;
 
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
     string PetImage(PetSocial.Models.PetModule pet)
     {
         return string.IsNullOrWhiteSpace(pet.AvatarUrl)
@@ -12,12 +14,6 @@
             : Url.Content(pet.AvatarUrl);
     }
 
-    string PetBreed(PetSocial.Models.PetModule pet)
-    {
-        return string.IsNullOrWhiteSpace(pet.Breed)
-            ? pet.Species
-            : pet.Breed;
-    }
 }
 
 <link rel="stylesheet"
@@ -66,37 +62,53 @@
         {
             @foreach (var item in Model)
             {
+                var isIncoming = item.ReceiverPet.UserId == currentUserId;
+
                 <article class="request-card">
 
-                    <a asp-controller="Pet"
-                       asp-action="Details"
-                       asp-route-id="@item.SenderPetId"
-                       class="request-pet-photo"
-                       aria-label="Xem chi tiết @item.SenderPet.Name">
-
-                        <img src="@PetImage(item.SenderPet)"
-                             alt="@item.SenderPet.Name" />
-
-                        @if ((DateTime.Now - item.CreatedAt).TotalHours < 24)
-                        {
-                            <span class="request-new-badge">
-                                NEW
-                            </span>
-                        }
-                    </a>
-
-                    <div class="request-card-body">
+                    <div class="request-pet-pair">
 
                         <a asp-controller="Pet"
                            asp-action="Details"
                            asp-route-id="@item.SenderPetId"
-                           class="request-pet-name">
-                            @item.SenderPet.Name
+                           class="request-pet-photo"
+                           aria-label="Xem chi tiết @item.SenderPet.Name">
+
+                            <img src="@PetImage(item.SenderPet)"
+                                 alt="@item.SenderPet.Name" />
+
+                            @if ((DateTime.Now - item.CreatedAt).TotalHours < 24)
+                            {
+                                <span class="request-new-badge">
+                                    NEW
+                                </span>
+                            }
+
+                            <span class="request-pet-label">
+                                @item.SenderPet.Name
+                            </span>
                         </a>
 
-                        <span class="request-breed">
-                            @PetBreed(item.SenderPet)
-                        </span>
+                        <div class="request-pair-heart">
+                            <i class="bi bi-heart-fill"></i>
+                        </div>
+
+                        <a asp-controller="Pet"
+                           asp-action="Details"
+                           asp-route-id="@item.ReceiverPetId"
+                           class="request-pet-photo"
+                           aria-label="Xem chi tiết @item.ReceiverPet.Name">
+
+                            <img src="@PetImage(item.ReceiverPet)"
+                                 alt="@item.ReceiverPet.Name" />
+
+                            <span class="request-pet-label">
+                                @item.ReceiverPet.Name
+                            </span>
+                        </a>
+                    </div>
+
+                    <div class="request-card-body">
 
                         <p>
                             <strong>@item.SenderPet.Name</strong>
@@ -113,30 +125,57 @@
                             @item.CreatedAt.ToString("HH:mm dd/MM/yyyy")
                         </span>
 
-                        <div class="request-actions">
+                        @if (isIncoming)
+                        {
+                            <div class="request-actions">
 
-                            <a asp-action="Accept"
-                               asp-route-id="@item.Id"
-                               class="request-accept">
-                                <i class="bi bi-check-circle-fill"></i>
-                                Đồng ý
-                            </a>
+                                <a asp-action="Accept"
+                                   asp-route-id="@item.Id"
+                                   class="request-accept">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Đồng ý
+                                </a>
 
-                            <form asp-action="Cancel"
-                                  method="post">
+                                <form asp-action="Cancel"
+                                      method="post">
 
-                                <input type="hidden"
-                                       name="id"
-                                       value="@item.Id" />
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.Id" />
 
-                                <button type="submit"
-                                        class="request-decline"
-                                        onclick="return confirm('Từ chối lời mời này?')">
-                                    <i class="bi bi-x-circle-fill"></i>
-                                    Từ chối
-                                </button>
-                            </form>
-                        </div>
+                                    <button type="submit"
+                                            class="request-decline"
+                                            onclick="return confirm('Từ chối lời mời này?')">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        Từ chối
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="request-actions request-actions-sent">
+                                <span class="request-sent-status">
+                                    <i class="bi bi-send-check-fill"></i>
+                                    Đã gửi
+                                </span>
+
+                                <form asp-action="Cancel"
+                                      method="post">
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.Id" />
+
+                                    <button type="submit"
+                                            class="request-decline"
+                                            onclick="return confirm('Hủy lời mời đã gửi?')">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        Hủy lời mời
+                                    </button>
+                                </form>
+                            </div>
+                        }
                     </div>
                 </article>
             }

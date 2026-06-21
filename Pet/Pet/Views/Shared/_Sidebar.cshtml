@@ -150,14 +150,7 @@
                 <span>Tin nhắn</span>
             </a>
 
-            <a asp-area=""
-               asp-controller="Notification"
-               asp-action="Index"
-               class="@(activeMenu == "Notification" ? "active" : "")">
-                <i class="fa fa-bell"></i>
-                <span>Thông báo</span>
-            </a>
-
+            
             @if (isAdmin)
             {
                 <a asp-area="Admin"

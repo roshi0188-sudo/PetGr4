@@ -24,6 +24,41 @@
     }
 </script>
 
+<style>
+    .details-comment-form {
+        display: flex;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .details-comment-input {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .details-comment-submit {
+        flex: 0 0 auto;
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border: 0 !important;
+        background: transparent !important;
+        color: #ff6b00 !important;
+        font-weight: 900 !important;
+        box-shadow: none !important;
+    }
+
+    .details-comment-submit:hover {
+        background: #fff1e7 !important;
+        color: #e55a00 !important;
+        transform: translateY(-1px);
+    }
+
+    .details-comment-submit span {
+        color: inherit !important;
+    }
+</style>
+
 <div class="max-w-3xl mx-auto px-4 py-8 text-[#161d1f]">
     @Html.AntiForgeryToken()
 
@@ -138,15 +173,15 @@
 
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <div class="flex gap-3 pt-4 border-t border-gray-100">
+            <div class="details-comment-form pt-4 border-t border-gray-100">
                 <input type="text" id="details-comment-input" placeholder="Viết bình luận của bạn..."
-                       class="w-full bg-white border border-gray-200 text-sm px-4 py-2.5 rounded-full focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all"
+                       class="details-comment-input bg-white border border-gray-200 text-sm px-4 py-2.5 rounded-full focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all"
                        onkeypress="if(event.key === 'Enter') submitDetailsComment()" />
                 
                 <button type="button" onclick="submitDetailsComment()"
-                        class="bg-pet-primary hover:bg-pet-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-full transition-all active:scale-95 flex items-center gap-1 shadow-sm">
-                    <span class="material-symbols-outlined text-sm">send</span>
-                    <span>Gửi</span>
+                        class="details-comment-submit rounded-full transition-all active:scale-95 flex items-center justify-center"
+                        aria-label="Gửi bình luận">
+                    <span class="material-symbols-outlined text-[22px]">send</span>
                 </button>
             </div>
         }

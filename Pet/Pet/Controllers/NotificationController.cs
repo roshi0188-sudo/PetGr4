@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetSocial.Data;
+using PetSocial.Models;
 using System.Security.Claims;
 
 namespace PetSocial.Controllers
@@ -71,7 +72,37 @@ namespace PetSocial.Controllers
                     new { area = "Admin", status = "Pending" });
             }
 
+            return GetNotificationRedirect(notification);
+        }
+
+        private IActionResult GetNotificationRedirect(Notification notification)
+        {
+            var title = notification.Title ?? string.Empty;
+            var content = notification.Content ?? string.Empty;
+            var text = $"{title} {content}";
+
+            if (ContainsAny(text, "Tin nh", "Message"))
+            {
+                return RedirectToAction("Index", "Chat");
+            }
+
+            if (ContainsAny(text, "Gh", "thanh cong", "thành công"))
+            {
+                return RedirectToAction("Matches", "Match");
+            }
+
+            if (ContainsAny(text, "ket noi", "kết nối", "Match"))
+            {
+                return RedirectToAction("Requests", "Match");
+            }
+
             return RedirectToAction(nameof(Index), null, $"notification-{notification.Id}");
+        }
+
+        private static bool ContainsAny(string text, params string[] values)
+        {
+            return values.Any(value =>
+                text.Contains(value, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

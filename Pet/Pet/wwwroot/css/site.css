@@ -1374,6 +1374,11 @@ img {
     border-radius: 12px;
     font-weight: 900;
     white-space: nowrap;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.profile-follow-button {
+    cursor: pointer;
 }
 
 .profile-primary-action,
@@ -1387,6 +1392,7 @@ img {
 .profile-follow-button:hover {
     background: var(--pet-orange-dark);
     color: #fff;
+    transform: translateY(-1px);
 }
 
 .profile-secondary-action,
@@ -1400,6 +1406,13 @@ img {
 .profile-follow-button.is-following:hover {
     background: #e8eef7;
     color: #14213d;
+    transform: translateY(-1px);
+}
+
+.profile-follow-button:disabled {
+    cursor: wait;
+    opacity: 0.72;
+    transform: none;
 }
 
 .profile-connect-list-action {
@@ -1768,6 +1781,9 @@ img {
     background: var(--pet-orange);
     color: #fff;
     font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .pet-add-button:hover,
@@ -1796,6 +1812,10 @@ img {
     width: 100%;
     background: #ef4444;
     box-shadow: 0 10px 22px rgba(239, 68, 68, 0.18);
+}
+
+.pet-apply-button {
+    width: 164px;
 }
 
 .pet-connect-button:hover {
@@ -2093,6 +2113,7 @@ img {
     gap: 10px;
     justify-content: flex-end;
     margin-top: auto;
+    min-width: 0;
 }
 
 .pet-card-actions-manage {
@@ -2102,9 +2123,11 @@ img {
 }
 
 .pet-card-actions-view {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(120px, 1fr) minmax(132px, 1fr);
     width: 100%;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: stretch;
 }
 
 .pet-card-connect-form,
@@ -2113,7 +2136,8 @@ img {
 }
 
 .pet-card-actions .pet-view-button {
-    min-width: 180px;
+    width: 100%;
+    min-width: 0;
     min-height: 42px;
     padding: 0 18px;
     border-radius: 12px;
@@ -2124,12 +2148,16 @@ img {
 }
 
 .pet-card-actions-view .pet-view-button {
-    margin-left: auto;
+    margin-left: 0;
+}
+
+.pet-card-actions-view .pet-view-button:only-child {
+    grid-column: 1 / -1;
 }
 
 .pet-card-actions-view .pet-connect-button {
-    width: auto;
-    min-width: 132px;
+    width: 100%;
+    min-width: 0;
     background: #ef4444;
 }
 
