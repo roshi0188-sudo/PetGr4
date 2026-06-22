@@ -111,6 +111,46 @@ namespace PetSocial.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HideViolation(int id, string? reason, string? returnTo = null)
+        {
+            EnsurePostReportsTable();
+
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+                return NotFound();
+
+            post.IsRemovedByAi = true;
+            post.ViolationReason = string.IsNullOrWhiteSpace(reason)
+                ? "Quản trị viên đã gỡ bài viết vì vi phạm tiêu chuẩn cộng đồng."
+                : reason.Trim();
+            post.RemovedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã gỡ bài viết khỏi cộng đồng.";
+            return RedirectBackToModerationPage(returnTo, id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RestorePost(int id, string? returnTo = null)
+        {
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null)
+                return NotFound();
+
+            post.IsRemovedByAi = false;
+            post.ViolationReason = null;
+            post.RemovedAt = null;
+
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã khôi phục bài viết lên cộng đồng.";
+            return RedirectBackToModerationPage(returnTo, id);
+        }
+
         public async Task<IActionResult> Reports(string status = "Pending")
         {
             EnsurePostReportsTable();
@@ -156,7 +196,9 @@ namespace PetSocial.Areas.Admin.Controllers
             if (status != "Resolved" && status != "Dismissed")
                 return BadRequest();
 
-            var report = await _context.PostReports.FindAsync(id);
+            var report = await _context.PostReports
+                .Include(r => r.Post)
+                .FirstOrDefaultAsync(r => r.Id == id);
             if (report == null)
                 return NotFound();
 
@@ -165,11 +207,28 @@ namespace PetSocial.Areas.Admin.Controllers
             report.ReviewedAt = DateTime.Now;
             report.ReviewedByAdminId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            if (status == "Resolved" && report.Post != null)
+            {
+                report.Post.IsRemovedByAi = true;
+                report.Post.ViolationReason = string.IsNullOrWhiteSpace(adminNote)
+                    ? report.Reason
+                    : adminNote.Trim();
+                report.Post.RemovedAt = DateTime.Now;
+            }
+
             await _context.SaveChangesAsync();
 
             TempData["Success"] = status == "Resolved"
                 ? "Đã đánh dấu báo cáo là đã xử lý."
                 : "Đã bỏ qua báo cáo.";
+
+            return RedirectToAction(nameof(Reports), new { status = "Pending" });
+        }
+
+        private IActionResult RedirectBackToModerationPage(string? returnTo, int postId)
+        {
+            if (string.Equals(returnTo, "Details", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction(nameof(Details), new { id = postId });
 
             return RedirectToAction(nameof(Reports), new { status = "Pending" });
         }

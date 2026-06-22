@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSocial.Data;
 using PetSocial.Models;
+using PetSocial.Services;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,12 +18,14 @@ namespace PetSocial.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _environment;
+        private readonly IPetAiService _petAiService;
 
-        public PostController(ApplicationDbContext context, UserManager<AppUser> userManager, IWebHostEnvironment environment)
+        public PostController(ApplicationDbContext context, UserManager<AppUser> userManager, IWebHostEnvironment environment, IPetAiService petAiService)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            _petAiService = petAiService;
         }
 
         // 1. TRANG CHỦ: HIỂN THỊ TOÀN BỘ BÀI VIẾT CỘNG ĐỒNG
@@ -33,9 +36,11 @@ namespace PetSocial.Controllers
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Likes)
+                .Where(p => !p.IsRemovedByAi)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
+            await RemoveViolatingExistingCommentsAsync(posts);
             await LoadFollowingIdsAsync();
 
             ViewData["ActiveMenu"] = "Home";
@@ -64,10 +69,11 @@ namespace PetSocial.Controllers
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Likes)
-                .Where(p => followingIds.Contains(p.UserId))
+                .Where(p => followingIds.Contains(p.UserId) && !p.IsRemovedByAi)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
+            await RemoveViolatingExistingCommentsAsync(posts);
             await LoadFollowingIdsAsync();
 
             ViewData["IsFeed"] = true;
@@ -90,6 +96,10 @@ namespace PetSocial.Controllers
 
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
             ViewBag.IsAdmin = User.IsInRole("Admin");
+            if (post.IsRemovedByAi && post.UserId != ViewBag.CurrentUserId && !ViewBag.IsAdmin)
+                return NotFound();
+
+            await RemoveViolatingExistingCommentsAsync(new[] { post });
 
             return View(post);
         }
@@ -130,6 +140,29 @@ namespace PetSocial.Controllers
                 model.User = user;
                 ViewBag.ReturnUrl = returnUrl;
                 return View(model);
+            }
+
+            var moderation = await _petAiService.CheckContentAsync(model.Content, imageFile);
+            if (IsViolation(moderation))
+            {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var imageUrl = await SavePostImageAsync(imageFile);
+                    if (!string.IsNullOrWhiteSpace(imageUrl)) model.ImageUrl = imageUrl;
+                }
+
+                var reason = BuildModerationReason(moderation);
+                model.IsRemovedByAi = true;
+                model.ViolationReason = reason;
+                model.RemovedAt = DateTime.Now;
+
+                _context.Posts.Add(model);
+                await _context.SaveChangesAsync();
+                await CreateAutomaticReportIfNeededAsync(model, user.Id, reason);
+                await NotifyPostViolationAsync(model, user, reason, isNewPost: true);
+
+                TempData["Error"] = BuildModerationMessage(moderation);
+                return RedirectToAction(nameof(Index));
             }
 
             if (imageFile != null && imageFile.Length > 0)
@@ -182,6 +215,7 @@ namespace PetSocial.Controllers
                 return View(formModel);
             }
 
+            var moderation = await _petAiService.CheckContentAsync(formModel.Content, imageFile);
             post.Content = formModel.Content ?? string.Empty;
 
             if (imageFile != null && imageFile.Length > 0)
@@ -194,6 +228,25 @@ namespace PetSocial.Controllers
                 }
             }
 
+            if (IsViolation(moderation))
+            {
+                var reason = BuildModerationReason(moderation);
+                post.IsRemovedByAi = true;
+                post.ViolationReason = reason;
+                post.RemovedAt = DateTime.Now;
+
+                _context.Update(post);
+                await _context.SaveChangesAsync();
+                await CreateAutomaticReportIfNeededAsync(post, post.UserId, reason);
+
+                var owner = await _userManager.FindByIdAsync(post.UserId);
+                if (owner != null)
+                    await NotifyPostViolationAsync(post, owner, reason, isNewPost: false);
+
+                TempData["Error"] = BuildModerationMessage(moderation);
+                return RedirectToAction(nameof(Index));
+            }
+
             _context.Update(post);
             await _context.SaveChangesAsync();
 
@@ -201,6 +254,49 @@ namespace PetSocial.Controllers
                 return Redirect(returnUrl);
 
             return RedirectToAction(nameof(Index)); // Chuyển về trang chủ
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Report(int postId, string? reason, string? returnUrl = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var post = await _context.Posts.FindAsync(postId);
+            if (post == null) return NotFound();
+            if (post.UserId == user.Id)
+            {
+                TempData["Error"] = "Không thể báo cáo bài viết của chính bạn.";
+                return RedirectToLocalOrIndex(returnUrl);
+            }
+
+            var hasPendingReport = await _context.PostReports.AnyAsync(r =>
+                r.PostId == postId &&
+                r.ReporterId == user.Id &&
+                r.Status == "Pending");
+
+            if (!hasPendingReport)
+            {
+                _context.PostReports.Add(new PostReport
+                {
+                    PostId = postId,
+                    ReporterId = user.Id,
+                    Reason = string.IsNullOrWhiteSpace(reason) ? "Nội dung vi phạm" : reason.Trim(),
+                    Status = "Pending",
+                    CreatedAt = DateTime.Now
+                });
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Đã gửi báo cáo bài viết đến quản trị viên.";
+            }
+            else
+            {
+                TempData["Error"] = "Bạn đã báo cáo bài viết này, vui lòng chờ quản trị viên xử lý.";
+            }
+
+            return RedirectToLocalOrIndex(returnUrl);
         }
 
         // 7. HIỂN THỊ FORM XÁC NHẬN XÓA BÀI VIẾT
@@ -245,6 +341,142 @@ namespace PetSocial.Controllers
             return post.UserId == user.Id || User.IsInRole("Admin");
         }
 
+        private static bool IsViolation(ContentModerationResult moderation)
+        {
+            return moderation.IsFlagged || moderation.IsSpam;
+        }
+
+        private static string BuildModerationMessage(ContentModerationResult moderation)
+        {
+            return "AI đã tự gỡ nội dung vi phạm tiêu chuẩn cộng đồng và gửi thông báo đến bạn cùng quản trị viên.";
+        }
+
+        private static string BuildModerationReason(ContentModerationResult moderation)
+        {
+            return string.IsNullOrWhiteSpace(moderation.Reason)
+                ? "Nội dung có dấu hiệu vi phạm tiêu chuẩn cộng đồng."
+                : moderation.Reason.Trim();
+        }
+
+        private async Task HidePostForViolationAsync(Post post, string reason)
+        {
+            post.IsRemovedByAi = true;
+            post.ViolationReason = reason;
+            post.RemovedAt = DateTime.Now;
+            _context.Posts.Update(post);
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task CreateAutomaticReportIfNeededAsync(Post post, string reporterId, string reason)
+        {
+            var hasPendingAutoReport = await _context.PostReports.AnyAsync(r =>
+                r.PostId == post.Id &&
+                r.Status == "Pending" &&
+                r.Reason.StartsWith("[AI]"));
+
+            if (hasPendingAutoReport) return;
+
+            _context.PostReports.Add(new PostReport
+            {
+                PostId = post.Id,
+                ReporterId = reporterId,
+                Reason = Truncate("[AI] " + reason, 300),
+                Status = "Pending",
+                CreatedAt = DateTime.Now
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task NotifyPostViolationAsync(Post post, AppUser owner, string reason, bool isNewPost)
+        {
+            var actionText = isNewPost ? "bài viết mới" : "bài viết đã chỉnh sửa";
+            _context.Notifications.Add(new Notification
+            {
+                UserId = owner.Id,
+                Title = "AI đã gỡ bài viết vi phạm",
+                Content = $"AI đã tự gỡ {actionText} của bạn khỏi cộng đồng. Lý do: {reason}",
+                CreatedAt = DateTime.Now
+            });
+
+            await NotifyAdminsAsync(
+                "AI phát hiện nội dung vi phạm",
+                $"AI đã tự gỡ bài viết #{post.Id} của {(string.IsNullOrWhiteSpace(owner.FullName) ? owner.UserName : owner.FullName)}. Lý do: {reason}",
+                owner.Id);
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task NotifyCommentViolationAsync(AppUser commenter, Post post, string reason)
+        {
+            _context.Notifications.Add(new Notification
+            {
+                UserId = commenter.Id,
+                Title = "AI đã chặn bình luận vi phạm",
+                Content = $"Bình luận của bạn trong bài viết #{post.Id} không được đăng vì vi phạm tiêu chuẩn cộng đồng. Lý do: {reason}",
+                CreatedAt = DateTime.Now
+            });
+
+            await NotifyAdminsAsync(
+                "AI phát hiện bình luận vi phạm",
+                $"AI đã chặn bình luận của {(string.IsNullOrWhiteSpace(commenter.FullName) ? commenter.UserName : commenter.FullName)} trong bài viết #{post.Id}. Lý do: {reason}",
+                commenter.Id);
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task RemoveViolatingExistingCommentsAsync(IEnumerable<Post> posts)
+        {
+            foreach (var post in posts)
+            {
+                foreach (var comment in post.Comments.ToList())
+                {
+                    if (comment.User == null || string.IsNullOrWhiteSpace(comment.Content))
+                        continue;
+
+                    var moderation = await _petAiService.CheckContentAsync(comment.Content);
+                    if (!IsViolation(moderation))
+                        continue;
+
+                    var reason = BuildModerationReason(moderation);
+                    _context.Comments.Remove(comment);
+                    post.Comments.Remove(comment);
+                    await NotifyCommentViolationAsync(comment.User, post, reason);
+                }
+            }
+        }
+
+        private async Task NotifyAdminsAsync(string title, string content, string? excludeUserId = null)
+        {
+            var admins = await _userManager.GetUsersInRoleAsync("Admin");
+            foreach (var admin in admins.Where(a => a.Id != excludeUserId))
+            {
+                _context.Notifications.Add(new Notification
+                {
+                    UserId = admin.Id,
+                    Title = title,
+                    Content = content,
+                    CreatedAt = DateTime.Now
+                });
+            }
+        }
+
+        private static string Truncate(string value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Length <= maxLength)
+                return value;
+
+            return value[..maxLength];
+        }
+
+        private IActionResult RedirectToLocalOrIndex(string? returnUrl)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private async Task<string?> SavePostImageAsync(IFormFile? imageFile)
         {
             if (imageFile == null || imageFile.Length == 0) return null;
@@ -280,6 +512,10 @@ namespace PetSocial.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
+
+            var post = await _context.Posts.FindAsync(postId);
+            if (post == null || post.IsRemovedByAi)
+                return Json(new { success = false, message = "Bài viết không còn khả dụng." });
 
             var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == user.Id);
             bool isLikedNow = false;
@@ -318,14 +554,23 @@ namespace PetSocial.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null) return Challenge();
 
+                var post = await _context.Posts.FindAsync(postId);
+                if (post == null || post.IsRemovedByAi)
+                    return NotFound();
+
+                var moderation = await _petAiService.CheckContentAsync(commentContent);
+                if (IsViolation(moderation))
+                {
+                    await NotifyCommentViolationAsync(user, post, BuildModerationReason(moderation));
+                    TempData["Error"] = BuildModerationMessage(moderation);
+                    return RedirectToLocalOrIndex(returnUrl);
+                }
+
                 _context.Comments.Add(new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now });
                 await _context.SaveChangesAsync();
             }
 
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                return Redirect(returnUrl);
-
-            return RedirectToAction(nameof(Index));
+            return RedirectToLocalOrIndex(returnUrl);
         }
 
         [HttpPost]
@@ -353,6 +598,17 @@ namespace PetSocial.Controllers
             if (string.IsNullOrWhiteSpace(commentContent)) return Json(new { success = false, message = "Nội dung trống." });
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Json(new { success = false, message = "Vui lòng đăng nhập." });
+
+            var post = await _context.Posts.FindAsync(postId);
+            if (post == null || post.IsRemovedByAi)
+                return Json(new { success = false, message = "Bài viết không còn khả dụng." });
+
+            var moderation = await _petAiService.CheckContentAsync(commentContent);
+            if (IsViolation(moderation))
+            {
+                await NotifyCommentViolationAsync(user, post, BuildModerationReason(moderation));
+                return Json(new { success = false, message = BuildModerationMessage(moderation) });
+            }
 
             var comment = new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now };
             _context.Comments.Add(comment);

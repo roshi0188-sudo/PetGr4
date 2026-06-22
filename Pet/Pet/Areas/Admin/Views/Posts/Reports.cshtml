@@ -304,6 +304,30 @@
                                     Chi tiết
                                 </a>
                             }
+                            @if (post != null)
+                            {
+                                @if (post.IsRemovedByAi)
+                                {
+                                    <form asp-action="RestorePost" asp-route-id="@report.PostId" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <button class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3"
+                                                onclick="return confirm('Khôi phục bài viết này lên cộng đồng?')">
+                                            Khôi phục
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="HideViolation" asp-route-id="@report.PostId" method="post" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="reason" value="@report.Reason" />
+                                        <button class="btn btn-sm btn-danger fw-bold rounded-pill px-3"
+                                                onclick="return confirm('Gỡ bài viết này khỏi cộng đồng?')">
+                                            Gỡ bài
+                                        </button>
+                                    </form>
+                                }
+                            }
                             @if (report.Status == "Pending")
                             {
                                 <form asp-action="UpdateReportStatus" method="post" class="m-0">

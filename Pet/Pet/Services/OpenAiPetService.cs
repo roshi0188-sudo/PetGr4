@@ -95,7 +95,7 @@ namespace PetSocial.Services
 
         public async Task<ContentModerationResult> CheckContentAsync(string content, IFormFile? imageFile = null, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(content))
+            if (string.IsNullOrWhiteSpace(content) && imageFile == null)
                 return new ContentModerationResult(false, false, string.Empty);
 
             var localResult = CheckLocalCommunityViolation(content);
@@ -106,39 +106,52 @@ namespace PetSocial.Services
             var flagged = false;
             var moderationReason = string.Empty;
 
-            try
+            if (!string.IsNullOrWhiteSpace(content))
             {
-                var moderationPayload = new
+                try
                 {
-                    model = _options.ModerationModel,
-                    input = content
-                };
+                    var moderationPayload = new
+                    {
+                        model = _options.ModerationModel,
+                        input = content
+                    };
 
-                using var moderationResponse = await SendJsonAsync("/v1/moderations", moderationPayload, cancellationToken);
-                var moderationJson = await moderationResponse.Content.ReadAsStringAsync(cancellationToken);
-                using var moderationDoc = JsonDocument.Parse(moderationJson);
-                var result = moderationDoc.RootElement.GetProperty("results")[0];
-                flagged = result.TryGetProperty("flagged", out var flaggedElement) && flaggedElement.GetBoolean();
+                    using var moderationResponse = await SendJsonAsync("/v1/moderations", moderationPayload, cancellationToken);
+                    var moderationJson = await moderationResponse.Content.ReadAsStringAsync(cancellationToken);
+                    using var moderationDoc = JsonDocument.Parse(moderationJson);
+                    var result = moderationDoc.RootElement.GetProperty("results")[0];
+                    flagged = result.TryGetProperty("flagged", out var flaggedElement) && flaggedElement.GetBoolean();
 
-                if (flagged && result.TryGetProperty("categories", out var categories))
+                    if (flagged && result.TryGetProperty("categories", out var categories))
+                    {
+                        var names = categories.EnumerateObject()
+                            .Where(x => x.Value.ValueKind == JsonValueKind.True)
+                            .Select(x => x.Name)
+                            .ToList();
+                        moderationReason = names.Count > 0 ? string.Join(", ", names) : "Nội dung có dấu hiệu vi phạm.";
+                    }
+                }
+                catch
                 {
-                    var names = categories.EnumerateObject()
-                        .Where(x => x.Value.ValueKind == JsonValueKind.True)
-                        .Select(x => x.Name)
-                        .ToList();
-                    moderationReason = names.Count > 0 ? string.Join(", ", names) : "Noi dung co dau hieu vi pham.";
+                    moderationReason = string.Empty;
                 }
             }
-            catch
-            {
-                moderationReason = string.Empty;
-            }
 
-            var spamResult = await ClassifySpamAsync(content, cancellationToken);
+            var imageResult = imageFile == null
+                ? new ContentModerationResult(false, false, string.Empty)
+                : await ClassifyCommunityImageAsync(content, imageFile, cancellationToken);
+            var spamResult = string.IsNullOrWhiteSpace(content)
+                ? (IsSpam: false, Reason: string.Empty)
+                : await ClassifySpamAsync(content, cancellationToken);
             var isSpam = spamResult.IsSpam || localResult.IsSpam;
-            var reason = string.Join("; ", new[] { localResult.Reason, moderationReason, spamResult.Reason }.Where(x => !string.IsNullOrWhiteSpace(x)));
+            var reasonParts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(localResult.Reason)) reasonParts.Add(localResult.Reason);
+            if (!string.IsNullOrWhiteSpace(moderationReason)) reasonParts.Add(moderationReason);
+            if (spamResult.IsSpam && !string.IsNullOrWhiteSpace(spamResult.Reason)) reasonParts.Add(spamResult.Reason);
+            if (imageResult.IsFlagged && !string.IsNullOrWhiteSpace(imageResult.Reason)) reasonParts.Add(imageResult.Reason);
+            var reason = string.Join("; ", reasonParts);
 
-            return new ContentModerationResult(flagged || localResult.IsFlagged, isSpam, reason);
+            return new ContentModerationResult(flagged || localResult.IsFlagged || imageResult.IsFlagged, isSpam, reason);
         }
 
         private static ContentModerationResult CheckLocalCommunityViolation(string content)
@@ -167,7 +180,40 @@ namespace PetSocial.Services
                 return new ContentModerationResult(
                     true,
                     false,
-                    "Noi dung co dau hieu bao luc hoac nguoc dai thu cung.");
+                    "Nội dung có dấu hiệu bạo lực hoặc ngược đãi thú cưng.");
+            }
+
+            var directViolenceTerms = new[]
+            {
+                "bi danh", "danh meo", "danh cho", "dap meo", "dap cho", "da meo", "da cho",
+                "bao hanh", "nguoc dai", "hanh ha", "tra tan", "giet meo", "giet cho",
+                "hanh hung thu cung"
+            };
+
+            if (directViolenceTerms.Any(term => normalized.Contains(term)))
+            {
+                return new ContentModerationResult(
+                    true,
+                    false,
+                    "Nội dung có dấu hiệu bạo lực hoặc ngược đãi thú cưng.");
+            }
+
+            var exclusionTerms = new[]
+            {
+                "luoi bieng", "khong nen duoc tham gia cong dong", "khong nen tham gia cong dong",
+                "khong duoc tham gia cong dong", "duoi khoi cong dong", "cam tham gia cong dong",
+                "loai khoi cong dong", "nhom x", "nhom nguoi x", "khong xung dang o cong dong",
+                "dung dang bai nua", "may dung dang bai nua", "may dung dang nua",
+                "dung xuat hien nua", "bien khoi cong dong", "nhin chuong mat",
+                "nhin kho chiu", "khong ai muon xem", "dang bai nua la", "may im di"
+            };
+
+            if (exclusionTerms.Any(term => normalized.Contains(term)))
+            {
+                return new ContentModerationResult(
+                    true,
+                    false,
+                    "Nội dung có dấu hiệu kỳ thị, xúc phạm hoặc loại trừ thành viên cộng đồng.");
             }
 
             return new ContentModerationResult(false, false, string.Empty);
@@ -188,6 +234,8 @@ namespace PetSocial.Services
             return builder.ToString()
                 .Normalize(NormalizationForm.FormC)
                 .Replace('đ', 'd')
+                .Replace('Đ', 'D')
+                .Replace('đ', 'd')
                 .Replace('Đ', 'D');
         }
 
@@ -205,6 +253,53 @@ namespace PetSocial.Services
             return Regex.Replace(value.Trim(), @"\s+", " ");
         }
 
+        private async Task<ContentModerationResult> ClassifyCommunityImageAsync(string content, IFormFile imageFile, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var imageDataUrl = await ToDataUrlAsync(imageFile, cancellationToken);
+                var payload = new
+                {
+                    model = _options.Model,
+                    instructions = "Ban la bo kiem duyet hinh anh cho mang xa hoi thu cung. Chi tra ve JSON hop le.",
+                    input = new object[]
+                    {
+                        new
+                        {
+                            role = "user",
+                            content = new object[]
+                            {
+                                new
+                                {
+                                    type = "input_text",
+                                    text = $$"""
+                                    Kiem tra bai viet va hinh anh co vi pham cong dong khong.
+                                    Gan vi pham neu co: bao luc/nguoc dai thu cung, hinh anh thu cung bi tan cong, kich dong thu han, ky thi/xuc pham/loai tru nhom nguoi, spam/lua dao.
+                                    Khong gan vi pham neu chi la anh meme an toan, cham soc thu cung binh thuong, hoac noi dung trung tinh.
+                                    Tra ve JSON: {"isViolation":true/false,"reason":"ly do ngan bang tieng Viet co dau"}
+
+                                    Noi dung bai viet: {{content}}
+                                    """
+                                },
+                                new { type = "input_image", image_url = imageDataUrl }
+                            }
+                        }
+                    }
+                };
+
+                var text = await PostResponsesAsync(payload, cancellationToken);
+                var parsed = TryReadJsonObject(text);
+                var isViolation = parsed.TryGetProperty("isViolation", out var violationElement) && violationElement.ValueKind == JsonValueKind.True;
+                var reason = ReadString(parsed, "reason") ?? string.Empty;
+
+                return new ContentModerationResult(isViolation, false, isViolation ? reason : string.Empty);
+            }
+            catch
+            {
+                return new ContentModerationResult(false, false, string.Empty);
+            }
+        }
+
         private async Task<(bool IsSpam, string Reason)> ClassifySpamAsync(string content, CancellationToken cancellationToken)
         {
             var payload = new
@@ -213,7 +308,7 @@ namespace PetSocial.Services
                 instructions = "Ban la bo loc bai viet mang xa hoi thu cung. Chi tra ve JSON hop le.",
                 input = $$"""
                 Kiem tra bai viet sau co phai spam/quang cao rac/lua dao/noi dung vi pham cong dong khong.
-                Tra ve JSON: {"isSpam":true/false,"reason":"ly do ngan bang tieng Viet"}
+                Tra ve JSON: {"isSpam":true/false,"reason":"ly do ngan bang tieng Viet co dau"}
 
                 Noi dung: {{content}}
                 """

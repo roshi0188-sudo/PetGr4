@@ -1,4 +1,4 @@
-@model IEnumerable<PetSocial.ViewModels.UserManageVM>
+﻿@model IEnumerable<PetSocial.ViewModels.UserManageVM>
 @{
     ViewData["Title"] = "Quản lý Người dùng";
 
@@ -130,6 +130,28 @@
     .role-pill.admin {
         background: #eef2ff;
         color: #4f46e5;
+    }
+
+    .violation-pill {
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 850;
+        padding: 0.35rem 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .violation-pill.warning {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .violation-pill.danger {
+        background: #fff1f2;
+        color: #be123c;
     }
 
     .table-action {
@@ -318,6 +340,15 @@
                                         <i class="fa-solid @(user.IsAdmin ? "fa-user-shield" : "fa-user")"></i>
                                         @(user.IsAdmin ? "Admin" : "Thành viên")
                                     </span>
+                                    @{
+                                        var violationClass = user.ViolationCount >= 3 ? "danger" : user.ViolationCount > 0 ? "warning" : "";
+                                    }
+                                    <div class="mt-2">
+                                        <span class="violation-pill @violationClass">
+                                            <i class="fa-solid fa-triangle-exclamation"></i>
+                                            @user.ViolationCount vi phạm
+                                        </span>
+                                    </div>
                                 </td>
                                 <td class="px-4 py-3 text-muted fw-semibold">
                                     @user.PetCount thú cưng &bull; @user.PostCount bài viết

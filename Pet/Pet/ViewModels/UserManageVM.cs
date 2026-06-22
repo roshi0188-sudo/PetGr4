@@ -11,6 +11,7 @@
         // Thống kê đóng góp
         public int PetCount { get; set; }
         public int PostCount { get; set; }
+        public int ViolationCount { get; set; }
 
         // Trạng thái và Phân quyền
         public bool IsActive { get; set; }

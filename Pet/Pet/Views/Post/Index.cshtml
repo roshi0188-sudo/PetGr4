@@ -108,18 +108,19 @@
     min-width: 42px;
     border: 0 !important;
     border-radius: 50% !important;
-    background: transparent !important;
-    color: #ff6b00 !important;
+    outline: none !important;
+    background: #ff6b00 !important;
+    color: #ffffff !important;
     font-weight: 900 !important;
-    box-shadow: none !important;
+    box-shadow: 0 10px 20px rgba(255, 107, 0, .22) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     }
 
     .post-comment-submit:hover {
-    background: #fff1e7 !important;
-    color: #e55a00 !important;
+    background: #e55a00 !important;
+    color: #ffffff !important;
     transform: translateY(-1px);
     }
 
@@ -342,7 +343,10 @@
     })
     .then(r => r.json())
     .then(data => {
-    if (!data.success) return;
+    if (!data.success) {
+    alert(data.message || 'Nội dung không hợp lệ.');
+    return;
+    }
     input.value = '';
 
     const noMsg = document.getElementById('no-comment-msg-' + postId);

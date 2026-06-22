@@ -134,6 +134,12 @@
                                     <div>
                                         <div class="fw-semibold post-content-preview">@post.Content</div>
                                         <small class="text-muted">#@post.Id</small>
+                                        @if (post.IsRemovedByAi)
+                                        {
+                                            <div class="mt-1">
+                                                <span class="badge bg-warning text-dark">Đang ẩn</span>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                             </td>
@@ -156,13 +162,32 @@
                                 <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-sm btn-outline-primary">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <form asp-action="DeleteViolation" asp-route-id="@post.Id" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa bài viết vi phạm này?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
+                                 <form asp-action="DeleteViolation" asp-route-id="@post.Id" method="post" class="d-inline">
+                                     @Html.AntiForgeryToken()
+                                     <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xóa bài viết vi phạm này?')">
+                                         <i class="fas fa-trash"></i>
+                                     </button>
+                                 </form>
+                                 @if (post.IsRemovedByAi)
+                                 {
+                                     <form asp-action="RestorePost" asp-route-id="@post.Id" method="post" class="d-inline">
+                                         @Html.AntiForgeryToken()
+                                         <button type="submit" class="btn btn-sm btn-outline-success" onclick="return confirm('Khôi phục bài viết này lên cộng đồng?')">
+                                             <i class="fas fa-undo"></i>
+                                         </button>
+                                     </form>
+                                 }
+                                 else
+                                 {
+                                     <form asp-action="HideViolation" asp-route-id="@post.Id" method="post" class="d-inline">
+                                         @Html.AntiForgeryToken()
+                                         <input type="hidden" name="reason" value="Quản trị viên đã gỡ bài viết vì vi phạm tiêu chuẩn cộng đồng." />
+                                         <button type="submit" class="btn btn-sm btn-outline-warning" onclick="return confirm('Gỡ bài viết này khỏi cộng đồng?')">
+                                             <i class="fas fa-eye-slash"></i>
+                                         </button>
+                                     </form>
+                                 }
+                             </td>
                         </tr>
                     }
                 }

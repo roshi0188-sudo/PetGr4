@@ -42,15 +42,16 @@
         height: 42px;
         min-width: 42px;
         border: 0 !important;
-        background: transparent !important;
-        color: #ff6b00 !important;
+        outline: none !important;
+        background: #ff6b00 !important;
+        color: #ffffff !important;
         font-weight: 900 !important;
-        box-shadow: none !important;
+        box-shadow: 0 10px 20px rgba(255, 107, 0, .22) !important;
     }
 
     .details-comment-submit:hover {
-        background: #fff1e7 !important;
-        color: #e55a00 !important;
+        background: #e55a00 !important;
+        color: #ffffff !important;
         transform: translateY(-1px);
     }
 
@@ -80,6 +81,17 @@
     </div>
 
     <article class="bg-white rounded-[24px] border border-gray-100 overflow-hidden p-6 space-y-5 shadow-sm">
+        @if (Model.IsRemovedByAi)
+        {
+            <div class="bg-amber-50 border border-amber-100 text-amber-800 text-sm font-bold px-4 py-3 rounded-2xl">
+                Bài viết này đang bị ẩn khỏi cộng đồng.
+                @if (!string.IsNullOrWhiteSpace(Model.ViolationReason))
+                {
+                    <span>@Model.ViolationReason</span>
+                }
+            </div>
+        }
+
         <header class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
                 @if (!string.IsNullOrWhiteSpace(Model.User?.AvatarUrl))
@@ -228,7 +240,11 @@
     })
     .then(res => res.json())
     .then(data => {
-    if (data && data.success) {
+    if (!data || !data.success) {
+    alert((data && data.message) || 'Nội dung không hợp lệ.');
+    return;
+    }
+
     input.value = ''; // Xóa dữ liệu cũ trong ô nhập
 
     // Ẩn thông báo "Chưa có bình luận"
@@ -260,7 +276,6 @@
     const countSpan = document.getElementById('details-comment-count');
     if(countSpan) {
     countSpan.innerText = parseInt(countSpan.innerText || '0') + 1;
-    }
     }
     });
     }

@@ -304,6 +304,34 @@
         <aside>
             <section class="admin-side-card">
                 <h2>Xử lý</h2>
+                @if (Model.IsRemovedByAi)
+                {
+                    <div class="alert alert-warning rounded-4 small fw-bold">
+                        Bài viết đang bị ẩn khỏi cộng đồng.
+                        @if (!string.IsNullOrWhiteSpace(Model.ViolationReason))
+                        {
+                            <div class="mt-2">@Model.ViolationReason</div>
+                        }
+                    </div>
+                    <form asp-action="RestorePost" asp-route-id="@Model.Id" method="post" class="mb-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="returnTo" value="Details" />
+                        <button class="btn btn-outline-primary w-100 fw-bold rounded-pill" onclick="return confirm('Khôi phục bài viết này lên cộng đồng?')">
+                            <i class="fa-solid fa-rotate-left me-2"></i>Khôi phục bài viết
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-action="HideViolation" asp-route-id="@Model.Id" method="post" class="mb-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="returnTo" value="Details" />
+                        <input type="hidden" name="reason" value="Quản trị viên đã gỡ bài viết vì vi phạm tiêu chuẩn cộng đồng." />
+                        <button class="btn btn-warning w-100 fw-bold rounded-pill" onclick="return confirm('Gỡ bài viết này khỏi cộng đồng?')">
+                            <i class="fa-solid fa-eye-slash me-2"></i>Gỡ khỏi cộng đồng
+                        </button>
+                    </form>
+                }
                 <form asp-action="DeleteViolation" asp-route-id="@Model.Id" method="post">
                     @Html.AntiForgeryToken()
                     <button class="btn btn-danger w-100 fw-bold rounded-pill" onclick="return confirm('Xóa vĩnh viễn bài viết vi phạm này?')">

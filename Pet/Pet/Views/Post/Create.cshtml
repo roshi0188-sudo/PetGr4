@@ -35,7 +35,7 @@
         @if (!ViewData.ModelState.IsValid)
         {
             <div class="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
-                <div asp-validation-summary="All"></div>
+                <div asp-validation-summary="ModelOnly"></div>
             </div>
         }
 
@@ -43,7 +43,6 @@
         <div class="space-y-2">
             <label asp-for="Content" class="block text-xs font-extrabold text-gray-400 uppercase tracking-wider">Nội dung văn bản</label>
             <textarea asp-for="Content" rows="5" class="w-full bg-white border border-gray-200 text-sm p-4 rounded-2xl focus:ring-1 focus:ring-pet-primary focus:border-pet-primary outline-none transition-all resize-none leading-relaxed placeholder-gray-400" placeholder="Hãy chia sẻ câu chuyện đáng yêu về thú cưng của bạn tại đây..."></textarea>
-            <span asp-validation-for="Content" class="text-rose-500 text-xs"></span>
         </div>
 
         <!-- KHUNG KÉO THẢ VÀ XEM TRƯỚC ẢNH MINH HỌA -->

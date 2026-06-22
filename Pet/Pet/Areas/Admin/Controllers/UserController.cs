@@ -69,6 +69,10 @@ namespace PetSocial.Areas.Admin.Controllers
             {
                 var petCount = await _context.Pets.CountAsync(p => p.UserId == user.Id);
                 var postCount = await _context.Posts.CountAsync(p => p.UserId == user.Id);
+                var removedPostViolationCount = await _context.Posts.CountAsync(p => p.UserId == user.Id && p.IsRemovedByAi);
+                var blockedCommentViolationCount = await _context.Notifications.CountAsync(n =>
+                    n.UserId == user.Id &&
+                    n.Title.Contains("AI đã chặn bình luận vi phạm"));
                 var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
                 bool isActive = !user.LockoutEnd.HasValue || user.LockoutEnd <= DateTimeOffset.Now;
 
@@ -81,6 +85,7 @@ namespace PetSocial.Areas.Admin.Controllers
                     AvatarUrl = user.AvatarUrl ?? "",
                     PetCount = petCount,
                     PostCount = postCount,
+                    ViolationCount = removedPostViolationCount + blockedCommentViolationCount,
                     IsActive = isActive,
                     IsAdmin = isAdmin
                 });
