@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetSocial.Data;
 using PetSocial.Models;
-using PetSocial.Services;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,14 +17,12 @@ namespace PetSocial.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _environment;
-        private readonly IPetAiService _petAiService;
 
-        public PostController(ApplicationDbContext context, UserManager<AppUser> userManager, IWebHostEnvironment environment, IPetAiService petAiService)
+        public PostController(ApplicationDbContext context, UserManager<AppUser> userManager, IWebHostEnvironment environment)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
-            _petAiService = petAiService;
         }
 
         // 1. TRANG CHỦ: HIỂN THỊ TOÀN BỘ BÀI VIẾT CỘNG ĐỒNG
@@ -34,56 +31,19 @@ namespace PetSocial.Controllers
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
-                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
+                    .ThenInclude(c => c.User)
                 .Include(p => p.Likes)
-                .Where(p => !p.IsRemovedByAi)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
             await LoadFollowingIdsAsync();
 
             ViewData["ActiveMenu"] = "Home";
-            ViewBag.PageTitle = "Bài viết mới nhất";
             ViewBag.CurrentUserId = _userManager.GetUserId(User);
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
             return View(posts);
         }
-
-        public Task<IActionResult> Community()
-        {
-            return Index();
-        }
-
-        // ====== THÊM MỚI NGHIỆP VỤ SIDEBAR: BÀI VIẾT CỦA TÔI ======
-        [Authorize]
-        public async Task<IActionResult> MyPosts()
-        {
-            var userId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(userId)) return Challenge();
-
-            // Lọc chính xác các bài viết do tài khoản đang đăng nhập tạo ra
-            var myPosts = await _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.Comments)
-                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
-                .Include(p => p.Likes)
-                .Where(p => p.UserId == userId && !p.IsRemovedByAi)
-                .OrderByDescending(p => p.CreatedAt)
-                .ToListAsync();
-
-            await LoadFollowingIdsAsync();
-
-            // Đánh dấu menu kích hoạt trên Sidebar gốc
-            ViewData["ActiveMenu"] = "MyPost";
-            ViewBag.PageTitle = "Bài viết của tôi";
-            ViewBag.CurrentUserId = userId;
-            ViewBag.IsAdmin = User.IsInRole("Admin");
-
-            // Tái sử dụng lại giao diện Index của Post để không cần viết lại giao diện mới
-            return View("Index", myPosts);
-        }
-        // =========================================================
 
         // 1B. NEWS FEED - CHỈ HIỂN THỊ BÀI VIẾT CỦA NHỮNG NGƯỜI MÌNH ĐANG THEO DÕI
         [Authorize]
@@ -102,16 +62,15 @@ namespace PetSocial.Controllers
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
-                    .ThenInclude(c => c.User) // ĐÃ CẬP NHẬT: Nạp thông tin người dùng cho bình luận
+                    .ThenInclude(c => c.User)
                 .Include(p => p.Likes)
-                .Where(p => followingIds.Contains(p.UserId) && !p.IsRemovedByAi)
+                .Where(p => followingIds.Contains(p.UserId))
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
             await LoadFollowingIdsAsync();
 
             ViewData["IsFeed"] = true;
-            ViewBag.PageTitle = "Bảng tin đang theo dõi";
             ViewBag.CurrentUserId = user.Id;
             ViewBag.IsAdmin = User.IsInRole("Admin");
 
@@ -125,7 +84,7 @@ namespace PetSocial.Controllers
                 .Include(p => p.User)
                 .Include(p => p.Comments).ThenInclude(c => c.User)
                 .Include(p => p.Likes)
-                .FirstOrDefaultAsync(p => p.Id == id && (!p.IsRemovedByAi || User.IsInRole("Admin")));
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (post == null) return NotFound();
 
@@ -137,7 +96,7 @@ namespace PetSocial.Controllers
 
         // 3. HIỂN THỊ FORM TẠO BÀI VIẾT MỚI
         [Authorize]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string? returnUrl = null)
         {
             var user = await _userManager.GetUserAsync(User);
             var model = new Post();
@@ -146,6 +105,7 @@ namespace PetSocial.Controllers
                 model.User = user;
                 model.UserId = user.Id;
             }
+            ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
 
@@ -153,7 +113,7 @@ namespace PetSocial.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Post model, IFormFile? imageFile)
+        public async Task<IActionResult> Create(Post model, IFormFile? imageFile, string? returnUrl = null)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
@@ -168,45 +128,35 @@ namespace PetSocial.Controllers
             if (!ModelState.IsValid)
             {
                 model.User = user;
-                return View(model);
-            }
-
-            var moderation = await _petAiService.CheckContentAsync(model.Content, imageFile);
-            if (moderation.IsFlagged || moderation.IsSpam)
-            {
-                await SaveRejectedPostForAdminReviewAsync(model, user, moderation);
-
-                ModelState.AddModelError(
-                    nameof(Post.Content),
-                    "Đăng bài không thành công vì nội dung có dấu hiệu vi phạm tiêu chuẩn cộng đồng.");
-                model.User = user;
+                ViewBag.ReturnUrl = returnUrl;
                 return View(model);
             }
 
             if (imageFile != null && imageFile.Length > 0)
             {
                 var imageUrl = await SavePostImageAsync(imageFile);
-                if (!string.IsNullOrWhiteSpace(imageUrl))
-                {
-                    model.ImageUrl = imageUrl;
-                }
+                if (!string.IsNullOrWhiteSpace(imageUrl)) model.ImageUrl = imageUrl;
             }
 
             _context.Posts.Add(model);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(MyPosts));
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction(nameof(Index)); // Chuyển về trang chủ
         }
 
         // 5. HIỂN THỊ FORM CẬP NHẬT BÀI VIẾT
         [Authorize]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string? returnUrl = null)
         {
-            var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id && !p.IsRemovedByAi);
+            var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null) return NotFound();
 
             if (!await CanManagePostAsync(post)) return Forbid();
 
+            ViewBag.ReturnUrl = returnUrl;
             return View(post);
         }
 
@@ -214,11 +164,11 @@ namespace PetSocial.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Post formModel, IFormFile? imageFile)
+        public async Task<IActionResult> Edit(int id, Post formModel, IFormFile? imageFile, string? returnUrl = null)
         {
             if (id != formModel.Id) return BadRequest();
 
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == id && !p.IsRemovedByAi);
+            var post = await _context.Posts.FindAsync(id);
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
@@ -228,6 +178,7 @@ namespace PetSocial.Controllers
 
             if (!ModelState.IsValid)
             {
+                ViewBag.ReturnUrl = returnUrl;
                 return View(formModel);
             }
 
@@ -246,17 +197,21 @@ namespace PetSocial.Controllers
             _context.Update(post);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(MyPosts));
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction(nameof(Index)); // Chuyển về trang chủ
         }
 
         // 7. HIỂN THỊ FORM XÁC NHẬN XÓA BÀI VIẾT
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, string? returnUrl = null)
         {
-            var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id && !p.IsRemovedByAi);
+            var post = await _context.Posts.Include(p => p.User).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
+            ViewBag.ReturnUrl = returnUrl;
             return View(post);
         }
 
@@ -264,9 +219,9 @@ namespace PetSocial.Controllers
         [HttpPost, ActionName("Delete")]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, string? returnUrl = null)
         {
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == id && !p.IsRemovedByAi);
+            var post = await _context.Posts.FindAsync(id);
             if (post == null) return NotFound();
             if (!await CanManagePostAsync(post)) return Forbid();
 
@@ -275,15 +230,18 @@ namespace PetSocial.Controllers
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(MyPosts));
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction(nameof(Index)); // Chuyển về trang chủ
         }
 
-        // PHÂN QUYỀN TRUY CẬP: Chỉ chủ sở hữu bài viết hoặc Admin mới được phép can thiệp sâu
+        // ... (Giữ nguyên các phương thức: CanManagePostAsync, SavePostImageAsync, DeleteLocalImage, ToggleLike, AddComment, ToggleFollow, AddCommentAjax, LoadFollowingIdsAsync)
+
         private async Task<bool> CanManagePostAsync(Post post)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return false;
-
             return post.UserId == user.Id || User.IsInRole("Admin");
         }
 
@@ -293,10 +251,7 @@ namespace PetSocial.Controllers
             if (string.IsNullOrWhiteSpace(imageFile.ContentType) || !imageFile.ContentType.StartsWith("image/"))
                 return null;
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "posts");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
+            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
             var extension = Path.GetExtension(imageFile.FileName);
             var fileName = $"{Guid.NewGuid():N}{extension}";
@@ -316,11 +271,9 @@ namespace PetSocial.Controllers
             var relativePath = imageUrl.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
             var fullPath = Path.Combine(_environment.WebRootPath, relativePath);
 
-            if (System.IO.File.Exists(fullPath))
-                System.IO.File.Delete(fullPath);
+            if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
         }
 
-        // 9. THẢ TIM BÀI VIẾT (XỬ LÝ AJAX)
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ToggleLike(int postId)
@@ -328,13 +281,7 @@ namespace PetSocial.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            var existingLike = await _context.Likes
-                .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == user.Id);
-
-            var postExists = await _context.Posts.AnyAsync(p => p.Id == postId && !p.IsRemovedByAi);
-            if (!postExists)
-                return Json(new { success = false, message = "Bài viết đã bị gỡ do vi phạm." });
-
+            var existingLike = await _context.Likes.FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == user.Id);
             bool isLikedNow = false;
 
             if (existingLike != null)
@@ -344,14 +291,12 @@ namespace PetSocial.Controllers
             }
             else
             {
-                var newLike = new Like { PostId = postId, UserId = user.Id };
-                _context.Likes.Add(newLike);
+                _context.Likes.Add(new Like { PostId = postId, UserId = user.Id });
                 isLikedNow = true;
             }
-
             await _context.SaveChangesAsync();
-
             var totalLikes = await _context.Likes.CountAsync(l => l.PostId == postId);
+<<<<<<< HEAD
 
             return Json(new
             {
@@ -363,87 +308,31 @@ namespace PetSocial.Controllers
                 avatarUrl = user.AvatarUrl ?? "",
                 createdAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
             });
+=======
+            return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
+>>>>>>> f77ce2958c32de9a7b8976421a42278faf2d5fea
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Report(int postId, string? reason)
+        public async Task<IActionResult> AddComment(int postId, string commentContent, string? returnUrl = null)
         {
-            EnsurePostReportsTable();
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
-
-            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId && !p.IsRemovedByAi);
-            if (post == null) return NotFound();
-
-            if (post.UserId == user.Id)
+            if (!string.IsNullOrWhiteSpace(commentContent))
             {
-                TempData["Error"] = "Bạn không thể báo cáo bài viết của chính mình.";
-                return RedirectToAction(nameof(Details), new { id = postId });
-            }
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Challenge();
 
-            var hasPendingReport = await _context.PostReports.AnyAsync(r =>
-                r.PostId == postId &&
-                r.ReporterId == user.Id &&
-                r.Status == "Pending");
-
-            if (!hasPendingReport)
-            {
-                _context.PostReports.Add(new PostReport
-                {
-                    PostId = postId,
-                    ReporterId = user.Id,
-                    Reason = string.IsNullOrWhiteSpace(reason) ? "Nội dung vi phạm" : reason.Trim(),
-                    Status = "Pending",
-                    CreatedAt = DateTime.Now
-                });
-
+                _context.Comments.Add(new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now });
                 await _context.SaveChangesAsync();
-                TempData["Success"] = "Đã gửi báo cáo bài viết đến quản trị viên.";
-            }
-            else
-            {
-                TempData["Error"] = "Bạn đã báo cáo bài viết này và đang chờ quản trị viên xử lý.";
             }
 
-            return RedirectToAction(nameof(Details), new { id = postId });
-        }
-
-        // 10. BÌNH LUẬN (ĐỒNG BỘ - RELOAD TRANG)
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int postId, string commentContent)
-        {
-            if (string.IsNullOrWhiteSpace(commentContent))
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
-
-            var postExists = await _context.Posts.AnyAsync(p => p.Id == postId && !p.IsRemovedByAi);
-            if (!postExists)
-                return RedirectToAction(nameof(Index));
-
-            var newComment = new Comment
-            {
-                PostId = postId,
-                UserId = user.Id,
-                Content = commentContent,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.Comments.Add(newComment);
-            await _context.SaveChangesAsync();
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
 
             return RedirectToAction(nameof(Index));
         }
 
-        // 11. THEO DÕI / BỎ THEO DÕI (AJAX)
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> ToggleFollow([FromForm] string targetUserId)
@@ -452,53 +341,28 @@ namespace PetSocial.Controllers
             if (currentUser == null) return Json(new { success = false, message = "Vui lòng đăng nhập." });
             if (currentUser.Id == targetUserId) return Json(new { success = false, message = "Không thể tự theo dõi bản thân." });
 
-            var existing = await _context.Follows
-                .FirstOrDefaultAsync(f => f.FollowerId == currentUser.Id && f.FollowingId == targetUserId);
-
+            var existing = await _context.Follows.FirstOrDefaultAsync(f => f.FollowerId == currentUser.Id && f.FollowingId == targetUserId);
             bool isFollowingNow;
-            if (existing != null)
-            {
-                _context.Follows.Remove(existing);
-                isFollowingNow = false;
-            }
-            else
-            {
-                _context.Follows.Add(new Follow { FollowerId = currentUser.Id, FollowingId = targetUserId });
-                isFollowingNow = true;
-            }
+            if (existing != null) { _context.Follows.Remove(existing); isFollowingNow = false; }
+            else { _context.Follows.Add(new Follow { FollowerId = currentUser.Id, FollowingId = targetUserId }); isFollowingNow = true; }
 
             await _context.SaveChangesAsync();
-
-            var followerCount = await _context.Follows.CountAsync(f => f.FollowingId == targetUserId);
-            return Json(new { success = true, isFollowing = isFollowingNow, followerCount });
+            return Json(new { success = true, isFollowing = isFollowingNow, followerCount = await _context.Follows.CountAsync(f => f.FollowingId == targetUserId) });
         }
 
-        // 12. THÊM BÌNH LUẬN - TRẢ VỀ JSON CHO INLINE COMMENT (XỬ LÝ AJAX)
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCommentAjax(int postId, string commentContent)
         {
-            if (string.IsNullOrWhiteSpace(commentContent))
-                return Json(new { success = false, message = "Nội dung không được để trống." });
-
+            if (string.IsNullOrWhiteSpace(commentContent)) return Json(new { success = false, message = "Nội dung trống." });
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Json(new { success = false, message = "Vui lòng đăng nhập." });
 
-            var postExists = await _context.Posts.AnyAsync(p => p.Id == postId && !p.IsRemovedByAi);
-            if (!postExists)
-                return Json(new { success = false, message = "Bài viết đã bị gỡ do vi phạm." });
-
-            var newComment = new Comment
-            {
-                PostId = postId,
-                UserId = user.Id,
-                Content = commentContent,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.Comments.Add(newComment);
+            var comment = new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now };
+            _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
+<<<<<<< HEAD
 
             return Json(new
             {
@@ -510,97 +374,17 @@ namespace PetSocial.Controllers
                 userId = user.Id,
                 avatarUrl = user.AvatarUrl ?? ""
             });
+=======
+            return Json(new { success = true, id = comment.Id, content = comment.Content, createdAt = comment.CreatedAt.ToString("dd/MM HH:mm"), authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName, avatarUrl = user.AvatarUrl ?? "" });
+>>>>>>> f77ce2958c32de9a7b8976421a42278faf2d5fea
         }
 
         private async Task LoadFollowingIdsAsync()
         {
             var currentUserId = _userManager.GetUserId(User);
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                ViewData["FollowingIds"] = new HashSet<string>();
-                return;
-            }
-
-            var followingIds = await _context.Follows
-                .Where(f => f.FollowerId == currentUserId)
-                .Select(f => f.FollowingId)
-                .ToListAsync();
-
+            if (string.IsNullOrEmpty(currentUserId)) { ViewData["FollowingIds"] = new HashSet<string>(); return; }
+            var followingIds = await _context.Follows.Where(f => f.FollowerId == currentUserId).Select(f => f.FollowingId).ToListAsync();
             ViewData["FollowingIds"] = new HashSet<string>(followingIds);
-        }
-
-        private void EnsurePostReportsTable()
-        {
-            _context.Database.ExecuteSqlRaw(@"
-            IF OBJECT_ID(N'[dbo].[PostReports]', N'U') IS NULL
-            BEGIN
-                CREATE TABLE [dbo].[PostReports]
-                (
-                    [Id] int IDENTITY(1,1) NOT NULL CONSTRAINT [PK_PostReports] PRIMARY KEY,
-                    [PostId] int NOT NULL,
-                    [ReporterId] nvarchar(450) NOT NULL,
-                    [Reason] nvarchar(300) NOT NULL,
-                    [Status] nvarchar(30) NOT NULL,
-                    [CreatedAt] datetime2 NOT NULL,
-                    [ReviewedAt] datetime2 NULL,
-                    [ReviewedByAdminId] nvarchar(max) NULL,
-                    [AdminNote] nvarchar(500) NULL,
-                    CONSTRAINT [FK_PostReports_Posts_PostId]
-                        FOREIGN KEY ([PostId]) REFERENCES [dbo].[Posts]([Id]) ON DELETE CASCADE,
-                    CONSTRAINT [FK_PostReports_Users_ReporterId]
-                        FOREIGN KEY ([ReporterId]) REFERENCES [dbo].[Users]([Id]) ON DELETE NO ACTION
-                );
-
-                CREATE INDEX [IX_PostReports_PostId]
-                    ON [dbo].[PostReports]([PostId]);
-
-                CREATE INDEX [IX_PostReports_ReporterId]
-                    ON [dbo].[PostReports]([ReporterId]);
-            END;
-            ");
-        }
-
-        private async Task SaveRejectedPostForAdminReviewAsync(Post post, AppUser author, ContentModerationResult moderation)
-        {
-            EnsurePostReportsTable();
-
-            var reason = string.IsNullOrWhiteSpace(moderation.Reason)
-                ? "AI phát hiện nội dung có dấu hiệu vi phạm hoặc spam."
-                : $"AI phát hiện: {moderation.Reason}";
-
-            var trimmedReason = reason.Length > 300 ? reason[..300] : reason;
-            post.UserId = author.Id;
-            post.CreatedAt = DateTime.Now;
-            post.IsRemovedByAi = true;
-            post.ViolationReason = trimmedReason;
-            post.RemovedAt = DateTime.Now;
-            post.User = author;
-
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            _context.PostReports.Add(new PostReport
-            {
-                PostId = post.Id,
-                ReporterId = author.Id,
-                Reason = trimmedReason,
-                Status = "Pending",
-                CreatedAt = DateTime.Now
-            });
-
-            var admins = await _userManager.GetUsersInRoleAsync("Admin");
-            foreach (var admin in admins)
-            {
-                _context.Notifications.Add(new Notification
-                {
-                    UserId = admin.Id,
-                    Title = "AI phát hiện nội dung vi phạm",
-                    Content = $"Bài viết #{post.Id} của {author.FullName ?? author.UserName} bị chặn khi đăng. Lý do: {trimmedReason}",
-                    CreatedAt = DateTime.Now
-                });
-            }
-
-            await _context.SaveChangesAsync();
         }
     }
 }
