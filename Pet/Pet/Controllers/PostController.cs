@@ -296,8 +296,6 @@ namespace PetSocial.Controllers
             }
             await _context.SaveChangesAsync();
             var totalLikes = await _context.Likes.CountAsync(l => l.PostId == postId);
-<<<<<<< HEAD
-
             return Json(new
             {
                 success = true,
@@ -308,9 +306,6 @@ namespace PetSocial.Controllers
                 avatarUrl = user.AvatarUrl ?? "",
                 createdAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
             });
-=======
-            return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
->>>>>>> f77ce2958c32de9a7b8976421a42278faf2d5fea
         }
 
         [HttpPost]
@@ -362,21 +357,16 @@ namespace PetSocial.Controllers
             var comment = new Comment { PostId = postId, UserId = user.Id, Content = commentContent, CreatedAt = DateTime.Now };
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
-<<<<<<< HEAD
-
             return Json(new
             {
                 success = true,
-                id = newComment.Id,
-                content = newComment.Content,
-                createdAt = newComment.CreatedAt.ToString("dd/MM HH:mm"),
+                id = comment.Id,
+                content = comment.Content,
+                createdAt = comment.CreatedAt.ToString("dd/MM HH:mm"),
                 authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName, // Ưu tiên tên hiển thị
                 userId = user.Id,
                 avatarUrl = user.AvatarUrl ?? ""
             });
-=======
-            return Json(new { success = true, id = comment.Id, content = comment.Content, createdAt = comment.CreatedAt.ToString("dd/MM HH:mm"), authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName, avatarUrl = user.AvatarUrl ?? "" });
->>>>>>> f77ce2958c32de9a7b8976421a42278faf2d5fea
         }
 
         private async Task LoadFollowingIdsAsync()

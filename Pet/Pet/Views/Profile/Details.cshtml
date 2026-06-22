@@ -10,11 +10,8 @@
     var displayName = string.IsNullOrWhiteSpace(Model.User.FullName) ? Model.User.UserName ?? "Người dùng" : Model.User.FullName;
     var email = string.IsNullOrWhiteSpace(Model.User.Email) ? "Chưa cập nhật email" : Model.User.Email;
     var phone = string.IsNullOrWhiteSpace(Model.User.PhoneNumber) ? "Chưa cập nhật số điện thoại" : Model.User.PhoneNumber;
-<<<<<<< HEAD
     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-=======
     var currentUrl = Context.Request.Path + Context.Request.QueryString;
->>>>>>> f77ce2958c32de9a7b8976421a42278faf2d5fea
 }
 
 @if (User.Identity?.IsAuthenticated == true)
