@@ -353,7 +353,16 @@ namespace PetSocial.Controllers
 
             var totalLikes = await _context.Likes.CountAsync(l => l.PostId == postId);
 
-            return Json(new { success = true, isLiked = isLikedNow, count = totalLikes });
+            return Json(new
+            {
+                success = true,
+                isLiked = isLikedNow,
+                count = totalLikes,
+                userId = user.Id,
+                userName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName,
+                avatarUrl = user.AvatarUrl ?? "",
+                createdAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+            });
         }
 
         [HttpPost]
@@ -498,6 +507,7 @@ namespace PetSocial.Controllers
                 content = newComment.Content,
                 createdAt = newComment.CreatedAt.ToString("dd/MM HH:mm"),
                 authorName = !string.IsNullOrWhiteSpace(user.FullName) ? user.FullName : user.UserName, // Ưu tiên tên hiển thị
+                userId = user.Id,
                 avatarUrl = user.AvatarUrl ?? ""
             });
         }

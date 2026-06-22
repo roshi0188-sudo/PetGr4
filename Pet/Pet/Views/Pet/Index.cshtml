@@ -124,12 +124,12 @@
                 {
                     var imageUrl = string.IsNullOrWhiteSpace(pet.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(pet.AvatarUrl);
                     var species = string.IsNullOrWhiteSpace(pet.Species) ? "Chưa cập nhật" : pet.Species;
-                    var location = string.IsNullOrWhiteSpace(pet.Location) ? "PetSocial" : pet.Location;
+                    var location = string.IsNullOrWhiteSpace(pet.Location) ? "PetGr4" : pet.Location;
                     var cardPersonality = string.IsNullOrWhiteSpace(pet.Personality) ? "Thân thiện" : pet.Personality;
                     var cardWeight = pet.Weight.HasValue ? $"{pet.Weight:0.#} kg" : "Chưa cập nhật";
                     var cardGender = string.IsNullOrWhiteSpace(pet.Gender) ? "Chưa cập nhật" : pet.Gender;
                     var canManagePet = canManageAllPets || pet.UserId == currentUserId;
-                    var ownerName = !string.IsNullOrWhiteSpace(pet.User?.FullName) ? pet.User.FullName : pet.User?.Email ?? pet.User?.UserName ?? "PetSocial";
+                    var ownerName = !string.IsNullOrWhiteSpace(pet.User?.FullName) ? pet.User.FullName : pet.User?.Email ?? pet.User?.UserName ?? "PetGr4";
                     var ownerAvatarUrl = string.IsNullOrWhiteSpace(pet.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(pet.User.AvatarUrl);
 
                     <article class="pet-card">

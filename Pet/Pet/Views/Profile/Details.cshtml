@@ -7,9 +7,10 @@
 
     var isAdmin = User.IsInRole("Admin");
     var avatarUrl = string.IsNullOrWhiteSpace(Model.User.AvatarUrl) ? null : Url.Content(Model.User.AvatarUrl);
-    var displayName = string.IsNullOrWhiteSpace(Model.User.FullName) ? Model.User.UserName ?? "Người dùng PetSocial" : Model.User.FullName;
+    var displayName = string.IsNullOrWhiteSpace(Model.User.FullName) ? Model.User.UserName ?? "Người dùng" : Model.User.FullName;
     var email = string.IsNullOrWhiteSpace(Model.User.Email) ? "Chưa cập nhật email" : Model.User.Email;
     var phone = string.IsNullOrWhiteSpace(Model.User.PhoneNumber) ? "Chưa cập nhật số điện thoại" : Model.User.PhoneNumber;
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 }
 
 @if (User.Identity?.IsAuthenticated == true)
@@ -138,7 +139,7 @@
                 <div class="profile-empty-posts">
                     <div><i class="fa fa-file-text-o"></i></div>
                     <h3>Chưa có bài viết nào</h3>
-                    <p>Tài khoản này chưa chia sẻ bài viết nào trên PetSocial.</p>
+                    <p>Tài khoản này chưa chia sẻ bài viết nào.</p>
                 </div>
             }
             else
@@ -148,6 +149,7 @@
                     {
                         var totalLikesCount = post.Likes?.Count ?? 0;
                         var totalCommentsCount = post.Comments?.Count ?? 0;
+                        var isLikedByMe = !string.IsNullOrEmpty(currentUserId) && post.Likes != null && post.Likes.Any(l => l.UserId == currentUserId);
 
                         <article class="profile-post-card">
                             <div class="profile-post-header">
@@ -190,19 +192,79 @@
                                          loading="lazy" />
                                 </a>
                             }
-                            <div class="profile-post-footer" style="display: flex; gap: 15px; align-items: center; color: #6b7280; font-size: 0.85rem; font-weight: 500;">
-    
-                                <span style="display: inline-flex; align-items: center; gap: 5px;">
-                                    <i class="fa fa-heart"></i> @totalLikesCount lượt thích
-                                </span>
+                            <div class="profile-post-footer">
+                                <div class="profile-like-group">
+                                    @if (User.Identity?.IsAuthenticated == true)
+                                    {
+                                        <button type="button"
+                                                onclick="toggleProfileLike(this)"
+                                                data-post-id="@post.Id"
+                                                class="profile-like-button @(isLikedByMe ? "is-liked" : "")"
+                                                title="Thích bài viết">
+                                            <i class="fa @(isLikedByMe ? "fa-heart" : "fa-heart-o")"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Account" asp-action="Login" class="profile-like-button" title="Đăng nhập để thích">
+                                            <i class="fa fa-heart-o"></i>
+                                        </a>
+                                    }
+
+                                    <button type="button"
+                                            onclick="openProfileLikes(@post.Id)"
+                                            class="profile-like-count-button"
+                                            data-like-count-for="@post.Id">
+                                        <span class="profile-like-count">@totalLikesCount</span> lượt thích
+                                    </button>
+                                </div>
 
                                 <button type="button"
                                         onclick="toggleProfileComments(this)"
                                         data-post-id="@post.Id"
-                                        style="background:none; border:none; cursor:pointer; color:inherit; font-family:inherit; font-size:inherit; font-weight:inherit; display:inline-flex; align-items:center; gap:5px; padding:0;">
+                                        class="profile-comment-toggle">
                                     <i class="fa fa-comment"></i>
                                     <span class="profile-comment-count-@post.Id">@totalCommentsCount</span> bình luận
                                 </button>
+                            </div>
+                            <div id="profile-likes-modal-@post.Id" class="profile-likes-modal" aria-hidden="true">
+                                <div class="profile-likes-backdrop" onclick="closeProfileLikes(@post.Id)"></div>
+                                <div class="profile-likes-dialog" role="dialog" aria-modal="true" aria-label="Người đã thích">
+                                    <div class="profile-likes-header">
+                                        <strong>Người đã thích</strong>
+                                        <button type="button" onclick="closeProfileLikes(@post.Id)" aria-label="Đóng"><i class="fa fa-times"></i></button>
+                                    </div>
+                                    <div class="profile-likes-list" id="profile-likes-list-@post.Id">
+                                        @if (post.Likes != null && post.Likes.Any())
+                                        {
+                                            @foreach (var like in post.Likes.OrderByDescending(l => l.CreatedAt))
+                                            {
+                                                var likeUserName = like.User?.FullName ?? like.User?.UserName ?? "Thành viên";
+                                                var likeAvatar = like.User?.AvatarUrl;
+                                                <a asp-controller="Profile" asp-action="Details" asp-route-id="@like.UserId" class="profile-like-user" data-like-user-id="@like.UserId">
+                                                    <span class="profile-like-user-avatar">
+                                                        @if (!string.IsNullOrWhiteSpace(likeAvatar))
+                                                        {
+                                                            <img src="@likeAvatar" alt="@likeUserName" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@likeUserName.Substring(0, 1).ToUpper()</span>
+                                                        }
+                                                    </span>
+                                                    <span>
+                                                        <strong>@likeUserName</strong>
+                                                        <small>@like.CreatedAt.ToString("dd/MM/yyyy HH:mm")</small>
+                                                    </span>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="profile-likes-empty" id="profile-likes-empty-@post.Id">Chưa có ai thích bài viết này.</p>
+                                        }
+                                    </div>
+                                </div>
                             </div>
                             <div id="profile-comments-@post.Id" style="display:none;border-top:1px solid #f0e9e3;padding:16px 0 4px 0;margin-top:8px;">
                                 <div id="profile-comment-list-@post.Id" style="display:flex;flex-direction:column;gap:10px;max-height:260px;overflow-y:auto;margin-bottom:12px;">
@@ -304,6 +366,82 @@
             const panel = document.getElementById('profile-comments-' + postId);
             if (!panel) return;
             panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function openProfileLikes(postId) {
+            const modal = document.getElementById('profile-likes-modal-' + postId);
+            if (!modal) return;
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProfileLikes(postId) {
+            const modal = document.getElementById('profile-likes-modal-' + postId);
+            if (!modal) return;
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        function toggleProfileLike(button) {
+            const postId = button.getAttribute('data-post-id');
+            if (!postId || button.disabled) return;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
+            const icon = button.querySelector('i');
+            const countEl = document.querySelector(`[data-like-count-for="${postId}"] .profile-like-count`);
+            button.disabled = true;
+
+            fetch(`/Post/ToggleLike?postId=${postId}`, {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': token }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) return;
+
+                button.classList.toggle('is-liked', data.isLiked);
+                if (icon) {
+                    icon.classList.toggle('fa-heart', data.isLiked);
+                    icon.classList.toggle('fa-heart-o', !data.isLiked);
+                }
+                if (countEl) countEl.textContent = data.count;
+
+                const list = document.getElementById('profile-likes-list-' + postId);
+                if (list && data.userId) {
+                    const existingUser = list.querySelector(`[data-like-user-id="${data.userId}"]`);
+                    if (data.isLiked && !existingUser) {
+                        const empty = document.getElementById('profile-likes-empty-' + postId);
+                        if (empty) empty.remove();
+
+                        const safeName = (data.userName || 'Thành viên').replace(/</g, '&lt;');
+                        const initial = safeName.charAt(0).toUpperCase() || 'U';
+                        const avatarHtml = data.avatarUrl
+                            ? `<img src="${data.avatarUrl}" alt="${safeName}" />`
+                            : `<span>${initial}</span>`;
+
+                        list.insertAdjacentHTML('afterbegin', `
+                            <a href="/Profile/Details/${data.userId}" class="profile-like-user" data-like-user-id="${data.userId}">
+                                <span class="profile-like-user-avatar">${avatarHtml}</span>
+                                <span>
+                                    <strong>${safeName}</strong>
+                                    <small>${data.createdAt || ''}</small>
+                                </span>
+                            </a>`);
+                    }
+
+                    if (!data.isLiked && existingUser) {
+                        existingUser.remove();
+                        if (data.count === 0) {
+                            list.insertAdjacentHTML('beforeend', '<p class="profile-likes-empty" id="profile-likes-empty-' + postId + '">Chưa có ai thích bài viết này.</p>');
+                        }
+                    }
+                }
+            })
+            .finally(() => {
+                button.disabled = false;
+            });
         }
 
         function submitProfileComment(postId) {

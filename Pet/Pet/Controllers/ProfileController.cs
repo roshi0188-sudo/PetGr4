@@ -60,6 +60,7 @@ namespace PetSocial.Controllers
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.User) // BẮT BUỘC PHẢI CÓ DÒNG NÀY để hiển thị tên thật thay vì "Thành viên"
                 .Include(p => p.Likes)
+                    .ThenInclude(l => l.User)
                 .Where(p => p.UserId == id && !p.IsRemovedByAi)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();

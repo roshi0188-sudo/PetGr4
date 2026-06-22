@@ -26,15 +26,12 @@
 }
 
 <aside class="pet-sidebar">
-    <a class="pet-sidebar-brand"
-       asp-area="@(isAdminArea ? "Admin" : "")"
-       asp-controller="@(isAdminArea ? "Dashboard" : "Post")"
-       asp-action="@(isAdminArea ? "Index" : "Community")">
+    <div class="pet-sidebar-brand">
         <span class="pet-sidebar-logo">
-            <img src="~/images/logo.jpg" alt="PetSocial" />
+            <img src="~/images/logo.jpg" alt="PetGr4" />
         </span>
-        <strong>@(isAdminArea ? "PetSocial Admin" : "PetGr4")</strong>
-    </a>
+        <strong>@(isAdminArea ? "Admin" : "PetGr4")</strong>
+    </div>
 
     <nav class="pet-menu">
         @if (isAdminArea)

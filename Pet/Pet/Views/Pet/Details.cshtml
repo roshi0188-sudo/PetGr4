@@ -17,7 +17,7 @@
     var mapLink = hasLocation ? $"https://www.google.com/maps/search/?api=1&query={mapQuery}" : "#";
     var canManagePet = ViewBag.CanManagePet as bool? ?? false;
     ViewData["ActiveMenu"] = canManagePet ? "MyPets" : "PetDirectory";
-    var ownerName = !string.IsNullOrWhiteSpace(Model.User?.FullName) ? Model.User.FullName : Model.User?.Email ?? Model.User?.UserName ?? "PetSocial";
+    var ownerName = !string.IsNullOrWhiteSpace(Model.User?.FullName) ? Model.User.FullName : Model.User?.Email ?? Model.User?.UserName ?? "PetGr4";
     var ownerAvatarUrl = string.IsNullOrWhiteSpace(Model.User?.AvatarUrl) ? Url.Content("~/images/logo.jpg") : Url.Content(Model.User.AvatarUrl);
     var backAction = canManagePet ? "MyPets" : "Index";
     var nearbyPets = ViewBag.NearbyPets as IEnumerable<PetSocial.Models.PetModule> ?? Enumerable.Empty<PetSocial.Models.PetModule>();

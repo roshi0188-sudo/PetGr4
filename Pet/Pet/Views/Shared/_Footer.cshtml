@@ -14,15 +14,15 @@
             <div style="flex: 1; @(isHomePage ? "max-width: 320px; display: block;" : "display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; width: 100%; gap: 24px;")">
 
                 <div style="@(isHomePage ? "" : "flex: 0 0 auto;")">
-                    <a asp-controller="Home" asp-action="Index" style="display: flex; align-items: center; gap: 14px; text-decoration: none;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
                         <div style="width: 44px; height: 44px; min-width: 44px; min-height: 44px; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(255, 107, 0, 0.08);">
-                            <img src="~/images/logo.jpg" alt="PetSocial" style="width: 100%; height: 100%; object-fit: cover;" />
+                            <img src="~/images/logo.jpg" alt="PetGr4" style="width: 100%; height: 100%; object-fit: cover;" />
                         </div>
                         <div>
-                            <strong style="font-size: 1.15rem; font-weight: 800; color: #0f172a; display: block; letter-spacing: -0.5px;">PetSocial</strong>
+                            <strong style="font-size: 1.15rem; font-weight: 800; color: #0f172a; display: block; letter-spacing: -0.5px;">PetGr4</strong>
                             <small style="font-size: 0.7rem; font-weight: 700; color: #ff6b00; text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-top: 2px;">CỘNG ĐỒNG THÚ CƯNG</small>
                         </div>
-                    </a>
+                    </div>
                 </div>
 
                 <p style="font-size: 0.8rem; color: #64748b; line-height: 1.6; font-weight: 500; margin: 0; @(isHomePage ? "margin-top: 16px; margin-bottom: 20px;" : "flex: 1; min-width: 280px; max-width: 600px; padding-left: 12px; padding-right: 12px;")">
@@ -91,7 +91,7 @@
         </div> @if (isHomePage)
         {
             <div style="border-top: 1px solid #f1f5f9; margin-top: 40px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 600; color: #94a3b8; gap: 12px;">
-                <span>© 2026 <span style="color: #475569; font-weight: 700;">PetSocial</span>. All rights reserved.</span>
+                <span>© 2026 <span style="color: #475569; font-weight: 700;">PetGr4</span>. All rights reserved.</span>
                 <span>Made for pet lovers.</span>
             </div>
         }
