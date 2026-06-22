@@ -26,7 +26,7 @@ namespace PetSocial.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            // Nếu đã đăng nhập thì đá về trang chủ
+           
             if (User.Identity!.IsAuthenticated) return RedirectToHomeByRole();
             return View();
         }
@@ -46,7 +46,7 @@ namespace PetSocial.Controllers
                     PhoneNumber = model.PhoneNumber
                 };
 
-                // CreateAsync sẽ tự động dùng BCryptPasswordHasher ta đã cấu hình
+                // CreateAsync sẽ tự động dùng BCryptPasswordHasher 
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)

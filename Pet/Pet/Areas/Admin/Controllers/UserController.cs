@@ -21,11 +21,11 @@ namespace PetSocial.Areas.Admin.Controllers
             _context = context;
         }
 
-        // 1. HIỂN THỊ DANH SÁCH TÀI KHOẢN KÈM TÌM KIẾM, LỌC, SẮP XẾP VÀ PHÂN TRANG
+      
         [HttpGet]
         public async Task<IActionResult> Index(string? searchString, string? filter = "all", string? sort = "newest", int page = 1)
         {
-            const int pageSize = 20; // fixed per user request
+            const int pageSize = 20; 
             filter = string.IsNullOrWhiteSpace(filter) ? "all" : filter.ToLowerInvariant();
             sort = sort == "oldest" ? "oldest" : "newest";
 
@@ -41,7 +41,7 @@ namespace PetSocial.Areas.Admin.Controllers
                     (u.Email != null && u.Email.ToLower().Contains(lowerSearch)));
             }
 
-            // Bộ lọc: all, active, suspended
+            // Bộ lọc
             if (filter != "all")
             {
                 if (filter == "active")
@@ -97,7 +97,7 @@ namespace PetSocial.Areas.Admin.Controllers
             ViewBag.Page = page;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = totalItems;
-            // Global stats (not limited to current page)
+        
             ViewBag.TotalUsers = await _userManager.Users.CountAsync();
             ViewBag.ActiveUsers = await _userManager.Users.CountAsync(u => !u.LockoutEnd.HasValue || u.LockoutEnd <= DateTimeOffset.Now);
             ViewBag.SuspendedUsers = await _userManager.Users.CountAsync(u => u.LockoutEnd.HasValue && u.LockoutEnd > DateTimeOffset.Now);
@@ -123,7 +123,7 @@ namespace PetSocial.Areas.Admin.Controllers
                 page
             };
 
-            // Chống Admin tự khóa chính mình
+        
             var currentUser = await _userManager.GetUserAsync(User);
             if (user.Id == currentUser?.Id)
             {
@@ -142,6 +142,6 @@ namespace PetSocial.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index), routeValues);
         }
 
-        // Role changes from admin UI are disabled per policy: admins must not change roles here.
+       
     }
 }

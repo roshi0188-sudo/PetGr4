@@ -8,7 +8,7 @@ using PetSocial.ViewModels;
 
 namespace PetSocial.Controllers
 {
-    [Authorize] // Bắt buộc đăng nhập mới được vào Controller này
+    [Authorize] 
     public class ProfileController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -18,11 +18,11 @@ namespace PetSocial.Controllers
         public ProfileController(UserManager<AppUser> userManager, IWebHostEnvironment webHostEnvironment, ApplicationDbContext context)
         {
             _userManager = userManager;
-            _webHostEnvironment = webHostEnvironment; // Dùng để lấy đường dẫn lưu ảnh
+            _webHostEnvironment = webHostEnvironment; 
             _context = context;
         }
 
-        // GET: /Profile/Index
+        // GET
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -31,7 +31,7 @@ namespace PetSocial.Controllers
             return RedirectToAction(nameof(Details), new { id = user.Id });
         }
 
-        // GET: /Profile/Details/{id} - Xem hồ sơ người dùng khác kèm Follow/Followers/Following
+        // GET
         [AllowAnonymous]
         public async Task<IActionResult> Details(string id)
         {
@@ -54,11 +54,10 @@ namespace PetSocial.Controllers
             bool isFollowing = !string.IsNullOrEmpty(currentUserId) &&
                 await _context.Follows.AnyAsync(f => f.FollowerId == currentUserId && f.FollowingId == id);
 
-            // ĐÃ SỬA: Thêm .ThenInclude(c => c.User) để nạp thông tin tài khoản của người bình luận
             var posts = await _context.Posts
                 .Include(p => p.User)
                 .Include(p => p.Comments)
-                    .ThenInclude(c => c.User) // BẮT BUỘC PHẢI CÓ DÒNG NÀY để hiển thị tên thật thay vì "Thành viên"
+                    .ThenInclude(c => c.User) 
                 .Include(p => p.Likes)
                     .ThenInclude(l => l.User)
                 .Where(p => p.UserId == id && !p.IsRemovedByAi)
@@ -80,7 +79,7 @@ namespace PetSocial.Controllers
             return View(model);
         }
 
-        // GET: /Profile/Followers/{id} - Danh sách người theo dõi
+        // GET
         [AllowAnonymous]
         public async Task<IActionResult> Followers(string id)
         {
@@ -101,7 +100,7 @@ namespace PetSocial.Controllers
             return View("FollowList", followers);
         }
 
-        // GET: /Profile/FollowingList/{id} - Danh sách đang theo dõi
+        // GET
         [AllowAnonymous]
         public async Task<IActionResult> FollowingList(string id)
         {
@@ -122,7 +121,7 @@ namespace PetSocial.Controllers
             return View("FollowList", following);
         }
 
-        // GET: /Profile/Edit
+        // GET
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
@@ -141,7 +140,7 @@ namespace PetSocial.Controllers
             return View(model);
         }
 
-        // POST: /Profile/Edit
+        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserProfileVM model)

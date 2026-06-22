@@ -14,12 +14,12 @@ namespace PetSocial.Controllers
             {
                 if (User.IsInRole("Admin"))
                 {
-                    // Đá sang khu vực của Admin
+
                     return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
                 }
                 else
                 {
-                    // Đá sang Bảng tin của User
+       
                     return RedirectToAction("Index", "Post");
                 }
             }
